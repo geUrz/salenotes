@@ -1,0 +1,18 @@
+.modal{
+  width: 90% !important;
+  max-width: 400px !important;
+}
+
+.header, .content{
+  background-color: var(--background1) !important;
+}
+
+.header{
+  font-size: medium !important;
+  color: azure !important;
+  font-weight: 200 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
