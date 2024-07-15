@@ -13,11 +13,21 @@ const {note} = props
       <div className={styles.note}>  
         <h1>{note.type_service}</h1>
         <h1>{note.concept}</h1>
-        <h1>${formatCurrency(note.price)}</h1>
+        {
+          note.price ? (
+            <h1>${formatCurrency(note.price)}</h1>
+          ) : (
+            ''
+          )
+        }
         <h1>{note.qty}</h1>
-        <h1>${
-          formatCurrency(note.price * note.qty)
-        }</h1>
+        {
+          note.price ? (
+            <h1>${formatCurrency(note.price * note.qty)}</h1>
+          ) : (
+            ''
+          )
+        }
       </div>
     
     </>
