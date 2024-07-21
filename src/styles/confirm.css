@@ -25,7 +25,7 @@
 .ui.button.secondary{
   display: flex;
   align-items: center;
-  background-color: darkgreen !important;
+  background-color: var(--bg1) !important;
 }
 
 .ui.button.secondary svg, .ui.button.secondary path{
@@ -34,12 +34,12 @@
 
 .ui.button.secondary:hover{
   color: azure !important;
-  background-color: rgb(0, 117, 0) !important;
+  background-color: var(--bg2) !important;
 }
 
 .ui.button.secondary:active, .ui.button.secondary:focus{
   color: azure !important;
-  background-color: rgb(0, 139, 0) !important;
+  background-color: var(--bg3) !important;
 }
 
 
@@ -48,12 +48,12 @@
 }
 
 .ui.button.primary{
-  background-color: var(--bg2) !important;
+  background-color: var(--clrBL0) !important;
 }
 
 .ui.button.primary:hover{
   color: azure !important;
-  background-color: var(--bg3) !important;
+  background-color: var(--clrBL1) !important;
 }
 
 .ui.button.primary:active, .ui.button.primary:focus{

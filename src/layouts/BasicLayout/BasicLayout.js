@@ -7,7 +7,8 @@ export function BasicLayout(props) {
   const {
     children, 
     relative=false,
-    title
+    title,
+    categorie
   } = props
 
   return (
@@ -20,7 +21,7 @@ export function BasicLayout(props) {
       {children}
     </div>
 
-    <BottomMenu />
+    <BottomMenu categorie={categorie}/>
 
     </>
 

@@ -1,0 +1,46 @@
+.section{
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rowNote{
+  padding: 8px 0;
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rowNote:hover{
+  background-color: var(--bg1);
+}
+
+.rowNote h1{
+  font-size: 14px;
+}
+
+.rowNote h1:nth-child(1){
+  width: 30%;
+  text-align: center;
+}
+
+.rowNote h1:nth-child(2){
+  padding: 0 5px;
+  width: 60%;
+  text-align: left;
+}
+
+.rowNote h1:nth-child(3){
+  width: 10%;
+  text-align: center;
+}
+
+.rowNote svg, .rowNote path{
+  font-size: 16px;
+  color: var(--clrBL2);
+  cursor: pointer;
+}

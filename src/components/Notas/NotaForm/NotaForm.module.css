@@ -1,0 +1,85 @@
+.main{
+  display: flex;
+  flex-direction: column;
+}
+
+.section{
+  width: 100%;
+  height: auto;
+}
+
+.rowConcept{
+  padding: 5px 0;
+  margin-top: 20px;
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg2);
+}
+
+.rowConcept h1{
+  font-size: 10px;
+  color: var(--clrBL2);
+}
+
+.rowConcept h1:nth-child(1), .rowMapConcept h1:nth-child(1){
+  width: 20%;
+  text-align: center;
+}
+.rowConcept h1:nth-child(2), .rowMapConcept h1:nth-child(2){
+  width: 40%;
+  text-align: left;
+  
+}
+.rowConcept h1:nth-child(3), .rowMapConcept h1:nth-child(3){
+  width: 25%;
+  text-align: right;
+}
+
+.rowConcept h1:nth-child(4), .rowMapConcept h1:nth-child(4){
+  width: 10%;
+  text-align: center;
+}
+
+.rowConcept h1:nth-child(5), .rowMapConcept h1:nth-child(5){
+  padding-right: 2.5px;
+  width: 20%;
+  text-align: right;
+}
+
+.rowMapConcept{
+  padding: 5px 0;
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rowMapConcept h1{
+  font-size: 10px;
+}
+
+.rowMapConcept h1:nth-child(3), .rowMapConcept h1:nth-child(4), .rowMapConcept h1:nth-child(5){
+  font-size: 9px;
+}
+
+.sectionTotal{
+  padding: 20px 0;
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.sectionTotal h1{
+  font-size: 12px;
+}
+
+.sectionTotal h1:nth-child(3){
+  font-size: 14.5px;
+}

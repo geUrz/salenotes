@@ -8,12 +8,13 @@
 .ui.form input, .ui.form textarea{
   padding-left: 5px !important;
   width: 300px !important;
-  font-size: small !important;
-  color: grey !important;
+  font-size: 11.5px !important;
+  color: azure !important;
+  background-color: var(--bg2) !important;
 }
 
 .ui.form input:focus, .ui.form textarea:focus{
-  border-color: var(--bg4) !important;
+  border-color: var(--clr2) !important;
 }
 
 .ui.form select{
@@ -51,31 +52,30 @@
 }
 
 .ui.label{
-  padding: 5px 0;
+  padding: 10px 5px;
   width: 100%;
   height: auto;
-  color: grey;
+  color: var(--clrBL2);
   display: flex !important;
   align-items: center !important;
   justify-content: flex-start;
-  background-color: azure;
+  background-color: var(--bg0);
 }
 
 /* .ui input{
   border: none !important;
 } */
 
-.ui.dimmer{
-  padding: 50px 0;
+.ui.page{
+  padding: 50px 0 !important;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, .65 );
 }
 
 .field.error input, .field.error select, .field.error textarea{
-  background-color: rgb(255, 78, 78) !important;
+  background-color: rgb(243, 255, 78) !important;
 }
 
 

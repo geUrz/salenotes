@@ -1,4 +1,3 @@
-// lib/db.js
 import mysql from 'mysql2/promise';
 
 // Configura la conexión a la base de datos

@@ -17,8 +17,12 @@
   margin: 0;
   font-family: 'Mulish' !important;
   font-weight: 200 !important;
-  color: azure;
+  color: rgb(209, 209, 209);
   cursor: default;
+}
+
+body{
+  background-color: var(--bg0);
 }
 
 h1,h2,h3,h4{

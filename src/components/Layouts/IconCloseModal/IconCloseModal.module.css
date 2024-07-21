@@ -1,0 +1,10 @@
+.iconClose{
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.iconClose svg, .iconClose path{
+  font-size: 20px;
+  cursor: pointer;
+}
