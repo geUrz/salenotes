@@ -15,7 +15,7 @@ export function BottomMenu(props) {
 
   const isBorder = () => {
 
-    if(categorie == '/'){
+    if(categorie == 'crearnota'){
       setBorderCreate(true)
       setBorderNotes(false)
       setBorderHome(false)

@@ -17,7 +17,7 @@
   margin: 0;
   font-family: 'Mulish' !important;
   font-weight: 200 !important;
-  color: rgb(209, 209, 209);
+  color: var(--clrGR0);
   cursor: default;
 }
 

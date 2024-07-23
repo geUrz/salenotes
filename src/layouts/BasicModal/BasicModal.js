@@ -10,7 +10,7 @@ export function BasicModal(props) {
     <>
       <Modal open={show} size="small" className={styles.modal}>
         <Modal.Header className={styles.header}>
-          {title}
+          <h1>{title}</h1>
         </Modal.Header>
         <Modal.Content className={styles.content}>{children}</Modal.Content>
       </Modal>

@@ -17,7 +17,7 @@ export default function Crearnota() {
 
   return (
 
-    <BasicLayout title='Crear Nota' categorie='create' onReload={onReload}>
+    <BasicLayout title='Crear Nota' categorie='crearnota' onReload={onReload}>
 
       <div className={styles.section}>
         <div className={styles.container}>

@@ -23,6 +23,7 @@ export default function Notas() {
           <div className={styles.rows}>
             
             <div className={styles.row}>
+              <h1>Folio</h1>
               <h1>Cliente</h1>
               <h1>Descripción</h1>
               <h1><FaCog /></h1>

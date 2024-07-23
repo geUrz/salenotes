@@ -7,13 +7,13 @@
   --bg5: rgb(70, 70, 70);
   --bg6: #00bcd4;
   
-  --clrBL0: #007785;
+  --clrBL0: rgb(0, 119, 133);
   --clrBL1: #008494;
-  --clrBL2: #0096aa;
+  --clrBL2: rgb(0, 150, 170);
   --clrBL3: #00a9bf;
   --clrBL4: #00bcd4;
 
-  --clrGR0: rgb(175, 175, 175);
+  --clrGR0: rgb(165, 165, 165);
   --clrGR1: #008494;
   --clrGR2: #0096aa;
   --clrGR3: #00a9bf;

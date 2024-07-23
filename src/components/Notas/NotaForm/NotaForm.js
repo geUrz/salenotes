@@ -1,6 +1,5 @@
-import { FaPlus, FaTimes } from 'react-icons/fa'
+import { useState } from 'react'
 import { Button, Form, FormField, FormGroup, Input, Label, TextArea } from 'semantic-ui-react'
-import { useEffect, useState } from 'react'
 import styles from './NotaForm.module.css'
 import axios from 'axios'
 import { formatCurrency } from '@/helpers/formatCurrency'
@@ -10,10 +9,10 @@ export function NotaForm(props) {
 
   const { reload, onReload, onOpenClose } = props
 
-  const [titulo, setTitulo] = useState('');
-  const [descripcion, setDescripcion] = useState('');
-  const [conceptos, setConceptos] = useState([]);
-  const [nuevoConcepto, setNuevoConcepto] = useState({ descripcion: '', cantidad: '', precio: '' });
+  const [titulo, setTitulo] = useState('')
+  const [descripcion, setDescripcion] = useState('')
+  const [conceptos, setConceptos] = useState([])
+  const [nuevoConcepto, setNuevoConcepto] = useState({ descripcion: '', cantidad: '', precio: '' })
 
   const crearNota = async () => {
     try {
@@ -27,8 +26,9 @@ export function NotaForm(props) {
       setTitulo('');
       setDescripcion('')
       setConceptos([])
+      onReload()
     } catch (error) {
-      console.error('Error al crear la nota:', error);
+      console.error('Error al crear la nota:', error)
       alert('Hubo un error al crear la nota. Por favor, inténtalo de nuevo.')
     }
   }
@@ -37,6 +37,15 @@ export function NotaForm(props) {
     setConceptos([...conceptos, nuevoConcepto]);
     setNuevoConcepto({ descripcion: '', cantidad: '', precio: '' })
   }
+
+  const calcularTotales = () => {
+    const subtotal = conceptos.reduce((acc, curr) => acc + curr.cantidad * curr.precio, 0);
+    const iva = subtotal * 0.16;
+    const total = subtotal + iva;
+    return { subtotal, iva, total }
+  };
+
+  const { subtotal, iva, total } = calcularTotales()
 
   return (
 
@@ -129,37 +138,40 @@ export function NotaForm(props) {
             </div>
             {conceptos.map((concepto, index) => (
               <div key={index} className={styles.rowMapConcept}>
-                <h1>{concepto.type}</h1>
-                <h1>{concepto.concept}</h1>
-                <h1>${formatCurrency(concepto.price * 1)}</h1>
-                <h1>{concepto.qty}</h1>
-                <h1>${formatCurrency(concepto.qty * concepto.price)}</h1>
+                <h1>{concepto.titulo}</h1>
+                <h1>{concepto.descripcion}</h1>
+                <h1>${formatCurrency(concepto.precio * 1)}</h1>
+                <h1>{concepto.cantidad}</h1>
+                <h1>${formatCurrency(concepto.cantidad * concepto.precio)}</h1>
               </div>
             ))}
 
             <div className={styles.sectionTotal}>
-              <h1>Subtotal: $
+              <div className={styles.boxLeft}>
+              <h1>Subtotal:</h1>
+              <h1>IVA:</h1>
+              <h1>Total:</h1>
+              </div>
+              
+              <div className={styles.boxRight}>
                 {!conceptos[0] ? (
-                  '0'
+                  <h1>$0.00</h1>
                 ) : (
-                  formatCurrency(conceptos[0].price * 1)
+                  <h1>${formatCurrency(subtotal)}</h1>
                 )}
-              </h1>
-              <h1>IVA: $
                 {!conceptos[0] ? (
-                  '0'
+                  <h1>$0.00</h1>
                 ) : (
-                  formatCurrency((conceptos[0].price / 100) * 16)
+                  <h1>${formatCurrency(iva)}</h1>
                 )
                 }
-              </h1>
-              <h1>Total: $
                 {!conceptos[0] ? (
-                  '0'
+                  <h1>$0.00</h1>
                 ) : (
-                  formatCurrency(conceptos[0].price * 1 + conceptos[0].price / 100 * 16)
+                  <h1>${formatCurrency(total)}</h1>
                 )
-                }</h1>
+                }
+                </div>
             </div>
 
           </div>
