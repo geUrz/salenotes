@@ -1,0 +1,7 @@
+.addConceptForm{
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}

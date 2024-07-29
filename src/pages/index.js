@@ -1,1 +1,1 @@
-export {default} from './crearnota'
+export {default} from './notas'

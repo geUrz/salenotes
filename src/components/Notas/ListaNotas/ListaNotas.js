@@ -1,23 +1,24 @@
-import { useEffect, useRef, useState } from 'react'
-import Modal from 'react-modal'
+import { useEffect, useState } from 'react'
 import { IconCloseModal, ListEmpty, Loading } from '@/components/Layouts'
 import { map, size } from 'lodash'
 import axios from 'axios'
-import { FaFilePdf, FaListAlt } from 'react-icons/fa'
+import { FaInfoCircle } from 'react-icons/fa'
 import { BasicModal } from '@/layouts'
-import styles from './ListaNotas.module.css'
 import { ConceptosBox } from '../ConceptosBox'
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
-import { formatCurrency } from '@/helpers/formatCurrency'
-import convertTimeZone from '@/helpers/FormatDate/FormatDate'
+import { formatCurrency, formatDate, formatId } from '@/helpers'
 import QRCode from 'qrcode'
+import { BiSolidFilePdf } from 'react-icons/bi'
+import styles from './ListaNotas.module.css'
 
 export function ListaNotas(props) {
 
   const { reload, onReload } = props
 
   const [notas, setNotas] = useState([])
+  const [notasClient, setNotasClient] = useState([])
+  const [show, setShow] = useState(false)
   const [notaSeleccionada, setNotaSeleccionada] = useState(null)
 
   useEffect(() => {
@@ -32,9 +33,18 @@ export function ListaNotas(props) {
     fetchNotas()
   }, [])
 
-  const [show, setShow] = useState(false)
+  /* useEffect(() => {
+    async function fetchNotas() {
+      try {
+        const response = await axios.get('/api/notes?simple=true')
+        setNotas(response.data);
+      } catch (error) {
+        console.error('Error al obtener las notas:', error)
+      }
+    }
+    fetchNotas()
+  }, []) */
 
-  //const onOpenClose = () => setShow((prevState) => !prevState)
   const onOpenClose = async (nota) => {
     try {
       const response = await axios.get(`/api/concepts?nota_id=${nota.id}`)
@@ -46,19 +56,49 @@ export function ListaNotas(props) {
     }
   }
 
+  const onDeleteConcept = async (conceptId) => {
+    try {
+      const response = await axios.delete(`/api/concepts`, {
+        params: { concept_id: conceptId },
+      });
+      if (response.status === 200) {
+        setNotaSeleccionada((prevState) => ({
+          ...prevState,
+          conceptos: prevState.conceptos.filter((concepto) => concepto.id !== conceptId),
+        }));
+      } else {
+        console.error('Error al eliminar el concepto: Respuesta del servidor no fue exitosa', response);
+      }
+    } catch (error) {
+      console.error('Error al eliminar el concepto:', error.response || error.message || error);
+    }
+  }
 
+  const onAddConcept = (concept) => {
+    setNotaSeleccionada((prevState) => ({
+      ...prevState,
+      conceptos: [...prevState.conceptos, concept],
+    }))
+    onReload()
+  }
 
-  
-    // Zona horaria en la que deseas convertir la fecha
-   // Hora en formato ISO en París
-  const fromZone = 'Europe/Paris'; // Zona horaria de origen
-  const toZone = 'America/Tijuana'; // Zona horaria de destino
-
-  // Convertir la fecha a la zona horaria deseada
-  const formatDate = notaSeleccionada ? convertTimeZone(notaSeleccionada.createdAt, fromZone, toZone) : ''; 
-
-  
-  
+  const handleUpdateConcept = async (conceptId, updatedConcept) => {
+    try {
+      const response = await axios.put(`/api/concepts/${conceptId}`, updatedConcept);
+      if (response.status === 200) {
+        setNotaSeleccionada((prevState) => ({
+          ...prevState,
+          conceptos: prevState.conceptos.map((concepto) =>
+            concepto.id === conceptId ? response.data : concepto
+          ),
+        }));
+      } else {
+        console.error('Error al actualizar el concepto: Respuesta del servidor no fue exitosa', response);
+      }
+    } catch (error) {
+      console.error('Error al actualizar el concepto:', error.response || error.message || error);
+    }
+  };
 
   const generarPDF = async () => {
     if (!notaSeleccionada) return;
@@ -101,18 +141,18 @@ export function ListaNotas(props) {
     doc.text('Cliente', 4.5, 40)
     doc.setFontSize(8)
     doc.setTextColor(120, 120, 120)
-    doc.text(`${notaSeleccionada.titulo}`, 4.5, 44)
+    doc.text(`${notaSeleccionada.cliente}`, 4.5, 44)
 
     doc.setFontSize(9)
     doc.setTextColor(0, 0, 0)
     doc.text('Folio', 93, 40)
     doc.setFontSize(8)
     doc.setTextColor(120, 120, 120)
-    doc.text(`# 00${notaSeleccionada.id}`, 91.5, 44)
+    doc.text(`# ${formatId(notaSeleccionada.id)}`, 89.8, 44)
 
     doc.setFontSize(9)
     doc.setTextColor(0, 0, 0)
-    doc.text('Descripción', 4.5, 50)
+    doc.text('Contacto', 4.5, 50)
     doc.setFontSize(8)
     doc.setTextColor(120, 120, 120)
     doc.text(`${notaSeleccionada.descripcion}`, 4.5, 54)
@@ -122,73 +162,93 @@ export function ListaNotas(props) {
     doc.text('Fecha/Hora', 83.6, 50)
     doc.setFontSize(8)
     doc.setTextColor(120, 120, 120)
-    doc.text(`${formatDate}`, 71, 54)
+    doc.text(`${formatDate(notaSeleccionada.createdAt)}`, 71, 54)
 
     doc.autoTable({
       startY: 58,
-      head: [['  Tipo', 'Descripción', 'Precio', 'Qty', '     Total']],
+      head: [
+        [
+          { content: 'Tipo', styles: { halign: 'center' } },
+          { content: 'Concepto', styles: { halign: 'left' } },
+          { content: 'Precio', styles: { halign: 'right' } },
+          { content: 'Qty', styles: { halign: 'center' } },
+          { content: 'Total', styles: { halign: 'right' } },         
+        ]
+      ],
+      styles: {
+        cellPadding: 1,
+        cellWidth: 'auto',
+      },
       body: notaSeleccionada.conceptos.map(concepto => [
-        { content: `${concepto.titulo}`, styles: { halign: 'center' } }, 
-        { content: `${concepto.descripcion}`, styles: { halign: 'left' } }, 
+        { content: `${concepto.tipo}`, styles: { halign: 'center' } }, 
+        { content: `${concepto.concepto}`, styles: { halign: 'left' } }, 
         { content: `$${formatCurrency(concepto.precio)}`, styles: { halign: 'right' } },  
         { content: `${concepto.cantidad}`, styles: { halign: 'center' } },  
         { content: `$${formatCurrency(concepto.precio * concepto.cantidad)}`, styles: { halign: 'right' } },  
         ]),
-      fontStyle: 'normal',
-      textColor: [0, 0, 0],
       headStyles: { fillColor: [0, 150, 170], fontSize: 6.8 },
       bodyStyles: { fontSize: 6.2 },
       columnStyles: {
         0: {
-          cellPadding: 1
+          cellPadding: 1,
+          cellWidth: 'auto', 
+          valign: 'middle'
         },
         1: {
-          cellPadding: 1
+          cellPadding: 1,
+          cellWidth: 'auto', 
+          valign: 'middle'
         },
         2: {
-          cellPadding: 3
+          cellPadding: 1,
+          cellWidth: 'auto', 
+          valign: 'middle'
         },
         3: {
-          cellPadding: 1
+          cellPadding: 1,
+          cellWidth: 'auto', 
+          valign: 'middle'
         },
         4: {
-          cellPadding: 1
+          cellPadding: 1,
+          cellWidth: 'auto', 
+          valign: 'middle'
         }
       },
+
       margin: { top: 0, left: 4.5, bottom: 0, right: 4.5 },
-      columnStyles: {
-        0: { cellWidth: 'auto', valign: 'middle' },
-        1: { cellWidth: 'auto', valign: 'middle' },
-        2: { cellWidth: 'auto', valign: 'middle' }, 
-        3: { cellWidth: 'auto', valign: 'middle' }, 
-        4: { cellWidth: 'auto', valign: 'middle' } 
-    },
+
     })
 
-    doc.setFontSize(8)
-    doc.setTextColor(120, 120, 120)
-    doc.text('SubTotal:', 72, 128)
-    doc.setFontSize(8)
-    doc.setTextColor(0, 0, 0)
-    doc.text(`${notaSeleccionada.conceptos[0].precio}`, 86, 128)
+    const subtotal = notaSeleccionada.conceptos.reduce((sum, concepto) => sum + concepto.precio * concepto.cantidad, 0);
+    const iva = subtotal * 0.16;
+    const total = subtotal + iva;
 
-    doc.setFontSize(7.5)
-    doc.setTextColor(120, 120, 120)
-    doc.text('IVA:', 79.2, 132)
-    doc.setFontSize(8)
-    doc.setTextColor(0, 0, 0)
-    doc.text(`${notaSeleccionada.conceptos[0].precio}`, 86, 132)
+    const verticalData = [
+      ['Subtotal:', `$${formatCurrency(subtotal)}`],
+      ['IVA:', `$${formatCurrency(iva)}`],
+      ['Total:', `$${formatCurrency(total)}`]
+    ]
+    
+    doc.autoTable({
+      startY: 124, // Posición en el eje Y
+      margin: { left: 67.5, bottom: 0, right: 4.5 },
+      body: verticalData, // Datos del cuerpo de la tabla
+      styles: {
+        cellPadding: 1,
+        valign: 'middle',
+        fontSize: 7,
+      },
+      columnStyles: {
+        0: { cellWidth: 15, fontStyle: 'bold', halign: 'right' },  // Ancho y estilo de la primera columna
+        1: { cellWidth: 18, halign: 'right' }  // Ancho de la segunda columna
+      }
+    })
 
-    doc.setFontSize(9)
-    doc.setTextColor(120, 120, 120)
-    doc.text('Total:', 76.3, 136)
-    doc.setFontSize(9)
-    doc.setTextColor(0, 0, 0)
-    doc.text(`${notaSeleccionada.conceptos[0].precio}`, 86, 136)
 
     const qrCodeText = `Nota ID: ${notaSeleccionada.id}, Cliente: ${notaSeleccionada.titulo}, Descripción: ${notaSeleccionada.descripcion}`
     const qrCodeDataUrl = await QRCode.toDataURL(qrCodeText)
-    doc.addImage(qrCodeDataUrl, 'PNG', 4, 118, 25, 25)
+    doc.addImage(qrCodeDataUrl, 'PNG', 2, 118, 25, 25)
 
     doc.save(`Nota_${notaSeleccionada.id}.pdf`)
   }
@@ -206,14 +266,13 @@ export function ListaNotas(props) {
           <div className={styles.section}>
             {map(notas, (nota) => (
               <div key={nota.id} className={styles.rowNota}>
-                <h1>00{nota.id}</h1>
-                <h1>{nota.titulo}</h1>
+                <h1>{formatId(nota.id)}</h1>
+                <h1>{nota.cliente}</h1>
                 <h1>{nota.descripcion}</h1>
-                <h1><FaListAlt onClick={() => onOpenClose(nota)} /></h1>
+                <h1><FaInfoCircle onClick={() => onOpenClose(nota)} /></h1>
               </div>
             ))}
           </div>
-
         )
       )}
 
@@ -231,11 +290,11 @@ export function ListaNotas(props) {
                 <div className={styles.rowClienFolio}>
                   <div>
                     <h1>Ciente</h1>
-                    <h2>{notaSeleccionada.titulo}</h2>
+                    <h2>{notaSeleccionada.cliente}</h2>
                   </div>
                   <div>
                     <h1>Folio</h1>
-                    <h2># 00{notaSeleccionada.id}</h2>
+                    <h2># {formatId(notaSeleccionada.id)}</h2>
                   </div>
                 </div>
                 <div className={styles.rowContactDate}>
@@ -245,13 +304,13 @@ export function ListaNotas(props) {
                   </div>
                   <div>
                     <h1>Fecha / Hora</h1>
-                    <h2>{formatDate}</h2>
+                    <h2>{formatDate(notaSeleccionada.createdAt)}</h2>
                   </div>
                 </div>
               </div>
 
               {notaSeleccionada.conceptos && notaSeleccionada.conceptos.length > 0 ? (
-                <ConceptosBox conceptos={notaSeleccionada.conceptos} />
+                <ConceptosBox reload={reload} onReload={onReload} conceptos={notaSeleccionada.conceptos} onDeleteConcept={onDeleteConcept} onAddConcept={onAddConcept} handleUpdateConcept={handleUpdateConcept} notaId={notaSeleccionada.id} />
               ) : (
                 <ListEmpty />
               )}
@@ -260,7 +319,7 @@ export function ListaNotas(props) {
 
           <div className={styles.iconPDF}>
             {notaSeleccionada && notaSeleccionada.conceptos.length > 0 ? (
-              <FaFilePdf onClick={generarPDF} />
+              <BiSolidFilePdf onClick={generarPDF} />
             ) : (
               ''
             )}
@@ -274,16 +333,3 @@ export function ListaNotas(props) {
 
   )
 }
-
-
-{/* <div>
-                  {map(notaSeleccionada.conceptos, (concepto) => (
-                    <div key={concepto.id} className={styles.rowMapConcept}>
-                      <h1>{concepto.titulo}</h1>
-                      <h1>{concepto.descripcion}</h1>
-                      <h1>${formatCurrency(concepto.precio * 1)}</h1>
-                      <h1>{concepto.cantidad}</h1>
-                      <h1>${formatCurrency(concepto.cantidad * concepto.precio)}</h1>
-                    </div>
-                  ))}
-                </div> */}

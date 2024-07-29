@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Form, FormField, FormGroup, Input, Label, TextArea } from 'semantic-ui-react'
 import styles from './NotaForm.module.css'
 import axios from 'axios'
@@ -9,23 +9,38 @@ export function NotaForm(props) {
 
   const { reload, onReload, onOpenClose } = props
 
-  const [titulo, setTitulo] = useState('')
+  const [cliente, setCliente] = useState('')
+  const [clientes, setClientes] = useState([]);
   const [descripcion, setDescripcion] = useState('')
   const [conceptos, setConceptos] = useState([])
-  const [nuevoConcepto, setNuevoConcepto] = useState({ descripcion: '', cantidad: '', precio: '' })
+  const [nuevoConcepto, setNuevoConcepto] = useState({ tipo: '', concepto: '', cantidad: '', precio: '' })
 
-  const crearNota = async () => {
+  useEffect(() => {
+    const fetchClientes = async () => {
+      try {
+        const response = await axios.get('/api/clients')
+        setClientes(response.data);
+      } catch (error) {
+        console.error('Error al obtener clientes:', error)
+      }
+    };
+    fetchClientes()
+  }, [])
+
+  const crearNota = async (e) => {
+    e.preventDefault()
     try {
-      const response = await axios.post('/api/notes', { titulo, descripcion })
+      const response = await axios.post('/api/notes', { cliente_id: cliente, descripcion })
       const notaId = response.data.id
       // Guardar conceptos asociados a la nota
       await Promise.all(conceptos.map(concepto =>
         axios.post('/api/concepts', { nota_id: notaId, ...concepto })
       ))
       alert('Nota creada exitosamente!')
-      setTitulo('');
+      setCliente('');
       setDescripcion('')
       setConceptos([])
+      onOpenClose()
       onReload()
     } catch (error) {
       console.error('Error al crear la nota:', error)
@@ -35,7 +50,7 @@ export function NotaForm(props) {
 
   const añadirConcepto = () => {
     setConceptos([...conceptos, nuevoConcepto]);
-    setNuevoConcepto({ descripcion: '', cantidad: '', precio: '' })
+    setNuevoConcepto({ tipo: '', concepto: '', cantidad: '', precio: '' })
   }
 
   const calcularTotales = () => {
@@ -61,35 +76,18 @@ export function NotaForm(props) {
               <Label>
                 Cliente
               </Label>
-              <Input
-                type="text"
-                placeholder='Nombre del cliente'
-                value={titulo}
-                onChange={(e) => setTitulo(e.target.value)}
-              />
-
-
-
-
-              {/* <select
-                    value={selectedNotaId}
-                    onChange={(e) => setSelectedNotaId(e.target.value)}
-                >
-                    <option value="">Selecciona un cliente</option>
-                    {note.map(nota => (
-                        <option key={nota.id} value={nota.id}>
-                            {nota.type}
-                        </option>
-                    ))}
-                </select> */}
-
-
-
+              <select value={cliente} onChange={(e) => setCliente(e.target.value)}>
+                <option value=""></option>
+                {clientes.map((cliente) => (
+                  <option key={cliente.id} value={cliente.id}>
+                    {cliente.cliente}
+                  </option>
+                ))}
+              </select>
               <Label>
                 Descripción
               </Label>
               <TextArea
-              placeholder='Descripción de la nota'
                 value={descripcion}
                 onChange={(e) => setDescripcion(e.target.value)}
               />
@@ -99,21 +97,34 @@ export function NotaForm(props) {
         </Form>
 
         <Form>
+          <FormGroup widths='equal'>
+            <FormField>
+            <Label className={styles.formLabel}>
+              Tipo
+            </Label>
+            <FormField
+              type="text"
+              control='select'
+              value={nuevoConcepto.tipo}
+              onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, tipo: e.target.value })}
+            >
+              <option value=''></option>
+              <option value='Servicio'>Servicio</option>
+              <option value='Producto'>Producto</option>
+            </FormField>
           <Label>
-            Descripción
+            Concepto
           </Label>
           <Input
             type="text"
-            placeholder="Descripción del concepto"
-            value={nuevoConcepto.descripcion}
-            onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, descripcion: e.target.value })}
+            value={nuevoConcepto.concepto}
+            onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, concepto: e.target.value })}
           />
           <Label>
-            Cantidad
+            Qty
           </Label>
           <Input
             type="number"
-            placeholder="Cantidad de servicio / producto"
             value={nuevoConcepto.cantidad}
             onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, cantidad: parseInt(e.target.value) })}
           />
@@ -122,24 +133,26 @@ export function NotaForm(props) {
           </Label>
           <Input
             type="number"
-            placeholder="Precio unitario"
             value={nuevoConcepto.precio}
             onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, precio: parseFloat(e.target.value) })}
           />
           <Button secondary onClick={añadirConcepto}>Añadir Concepto</Button>
+            </FormField>
+          </FormGroup>
+        </Form>
 
           <div className={styles.section}>
             <div className={styles.rowConcept}>
-              <h1>Titulo</h1>
-              <h1>Descripcion</h1>
+              <h1>Tipo</h1>
+              <h1>Concepto</h1>
               <h1>Precio</h1>
               <h1>Qty</h1>
               <h1>Total</h1>
             </div>
             {conceptos.map((concepto, index) => (
               <div key={index} className={styles.rowMapConcept}>
-                <h1>{concepto.titulo}</h1>
-                <h1>{concepto.descripcion}</h1>
+                <h1>{concepto.tipo}</h1>
+                <h1>{concepto.concepto}</h1>
                 <h1>${formatCurrency(concepto.precio * 1)}</h1>
                 <h1>{concepto.cantidad}</h1>
                 <h1>${formatCurrency(concepto.cantidad * concepto.precio)}</h1>
@@ -148,11 +161,11 @@ export function NotaForm(props) {
 
             <div className={styles.sectionTotal}>
               <div className={styles.boxLeft}>
-              <h1>Subtotal:</h1>
-              <h1>IVA:</h1>
-              <h1>Total:</h1>
+                <h1>Subtotal:</h1>
+                <h1>IVA:</h1>
+                <h1>Total:</h1>
               </div>
-              
+
               <div className={styles.boxRight}>
                 {!conceptos[0] ? (
                   <h1>$0.00</h1>
@@ -171,13 +184,13 @@ export function NotaForm(props) {
                   <h1>${formatCurrency(total)}</h1>
                 )
                 }
-                </div>
+              </div>
             </div>
 
           </div>
 
           <Button primary onClick={crearNota}>Crear</Button>
-        </Form>
+        
 
       </div>
 

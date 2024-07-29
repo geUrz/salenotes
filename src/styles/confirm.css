@@ -1,9 +1,15 @@
+.ui.mini.modal{
+  padding: 20PX 0 25px 0;
+  max-width: 350px !important;
+  background-color: var(--bg1) !important;
+}
+
 .content, .actions{
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   flex-direction: row-reverse;
-  background-color: var(--bg3) !important;
+  background-color: var(--bg1) !important;
 }
 
 .ui.button, .ui.button.primary{
@@ -52,11 +58,9 @@
 }
 
 .ui.button.primary:hover{
-  color: azure !important;
   background-color: var(--clrBL1) !important;
 }
 
 .ui.button.primary:active, .ui.button.primary:focus{
-  color: azure !important;
-  background-color: var(--bg4) !important;
+  background-color: var(--clrBL2) !important;
 }

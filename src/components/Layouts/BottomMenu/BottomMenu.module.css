@@ -11,7 +11,7 @@
 }
 
 .tab{
-  width: 33%;
+  width: 33.3%;
   height: 100%;
   display: flex;
   align-items: center;
@@ -33,23 +33,16 @@
 }
 
 .tab svg, .tab path{
+  font-size: 32px;
   cursor: pointer;
 }
 
-.tab:nth-child(1) svg, .tab:nth-child(1) path{
-  font-size: 34px;
-}
-
 .tab:nth-child(2) svg, .tab:nth-child(2) path{
-  font-size: 28px;
-}
-
-.tab:nth-child(3) svg, .tab:nth-child(3) path{
-  font-size: 30px;
+  font-size: 38px;
 }
 
 .tab:nth-child(4) svg, .tab:nth-child(4) path{
-  font-size: 22px;
+  font-size: 28px;
 }
 
 .isActive{

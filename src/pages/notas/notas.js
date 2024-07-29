@@ -1,14 +1,19 @@
 import { BasicLayout, BasicModal } from '@/layouts'
 import styles from './notas.module.css'
-import { ListaNotas, ProductoNotas, ServicioNotas } from '@/components/Notas'
+import { ListaNotas, NotaForm, ProductoNotas, ServicioNotas } from '@/components/Notas'
 import { FaCog } from 'react-icons/fa'
 import { useState } from 'react'
+import { Add } from '@/components/Layouts'
 
 export default function Notas() {
 
   const [reload, setReload] = useState()
 
   const onReload = () => setReload((prevState) => !prevState)
+
+  const [show, setShow] = useState(false)
+
+  const onOpenClose = () => setShow((prevState) => !prevState)
 
   return (
     
@@ -29,11 +34,17 @@ export default function Notas() {
               <h1><FaCog /></h1>
             </div>
             
-            <ListaNotas />
+            <ListaNotas reload={reload} onReload={onReload} />
             
           </div>
         </div>
       </div>
+
+      <Add onOpenClose={onOpenClose} />
+
+      <BasicModal title='Crear Nota' show={show} onClose={onOpenClose}>
+        <NotaForm reload={reload} onReload={onReload} onOpenClose={onOpenClose} />
+      </BasicModal>
 
     </BasicLayout>
 
