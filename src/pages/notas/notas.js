@@ -1,9 +1,11 @@
 import { BasicLayout, BasicModal } from '@/layouts'
+import { ListaNotas, NotaForm } from '@/components/Notas'
+import { FaCog, FaFileAlt } from 'react-icons/fa'
+import { useEffect, useState } from 'react'
+import { Add, CountBox } from '@/components/Layouts'
+import { size } from 'lodash'
+import axios from 'axios'
 import styles from './notas.module.css'
-import { ListaNotas, NotaForm, ProductoNotas, ServicioNotas } from '@/components/Notas'
-import { FaCog } from 'react-icons/fa'
-import { useState } from 'react'
-import { Add } from '@/components/Layouts'
 
 export default function Notas() {
 
@@ -15,6 +17,21 @@ export default function Notas() {
 
   const onOpenClose = () => setShow((prevState) => !prevState)
 
+  const [notas, setNotas] = useState([])
+
+  const countAll = size(notas)
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await axios.get('/api/notes')
+        setNotas(response.data)
+      } catch (error) {
+          console.error(error)
+      }
+    })()
+  }, [notas])
+
   return (
     
     <BasicLayout title='Lista de Notas' categorie='notas' onReload={onReload}>
@@ -22,8 +39,11 @@ export default function Notas() {
       <div className={styles.section}>
         <div className={styles.container}>
           <div className={styles.countNotes}>
-            <ServicioNotas />
-            <ProductoNotas />
+            <CountBox
+              title='notas'
+              icon={<FaFileAlt/>}
+              count={{countAll}}
+            />
           </div>
           <div className={styles.rows}>
             

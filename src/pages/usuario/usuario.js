@@ -1,7 +1,20 @@
+import { BasicLayout } from '@/layouts'
 import styles from './usuario.module.css'
+import { useState } from 'react'
 
 export default function Usuario() {
+
+  const [reload, setReload] = useState()
+
+  const onReload = () => setReload((prevState) => !prevState)
+
   return (
-    <div>usuario</div>
+    
+    <BasicLayout title='Usuario' categorie='usuario' onReload={onReload}>
+
+
+
+    </BasicLayout>
+
   )
 }

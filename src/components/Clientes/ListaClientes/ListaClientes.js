@@ -13,7 +13,7 @@ export function ListaClientes(props) {
   const {reload, onReload} = props
 
   const [show, setShow] = useState(false)
-  const [clientes, setClientes] = useState([])
+  const [clientes, setClientes] = useState()
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null)
 
   useEffect(() => {

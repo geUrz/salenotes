@@ -1,11 +1,12 @@
 import { map } from 'lodash'
 import { formatCurrency } from '@/helpers/formatCurrency'
 import { FaCheck, FaPlus, FaTimes } from 'react-icons/fa'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ModalForm } from '@/layouts'
 import { Confirm } from '@/components/Layouts/Confirm'
 import { ConceptoForm } from '../ConceptoForm'
 import { Loading } from '@/components/Layouts'
+import { BiToggleLeft, BiToggleRight } from 'react-icons/bi'
 import styles from './ConceptosBox.module.css'
 
 export function ConceptosBox(props) {
@@ -14,6 +15,7 @@ export function ConceptosBox(props) {
   const [show, setShow] = useState(false)
   const [showForm, setShowForm] = useState(false)
   const [currentConcept, setCurrentConcept] = useState(null)
+  const [toggleIVA, setToggleIVA] = useState()
 
   const onOpenClose = (concepto) => {
     setShow((prevState) => !prevState)
@@ -33,6 +35,21 @@ export function ConceptosBox(props) {
   const subtotal = conceptos.reduce((sum, concepto) => sum + concepto.precio * concepto.cantidad, 0)
   const iva = subtotal * 0.16
   const total = subtotal + iva
+
+  useEffect(() => {
+    const savedToggleIVA = localStorage.getItem('ontoggleIVA')
+    if (savedToggleIVA) {
+      setToggleIVA(JSON.parse(savedToggleIVA))
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('ontoggleIVA', JSON.stringify(toggleIVA))
+  }, [toggleIVA])
+
+  const onToggleIVA = () => {
+    setToggleIVA(prevState => (!prevState))
+  }
 
   return (
 
@@ -57,7 +74,7 @@ export function ConceptosBox(props) {
                 <h1>{concepto.concepto}</h1>
                 <h1>${formatCurrency(concepto.precio * 1)}</h1>
                 <h1>{concepto.cantidad}</h1>
-                <h1>${formatCurrency(concepto.cantidad * concepto.precio)}</h1>
+                <h1>${formatCurrency(subtotal)}</h1>
               </div>
             ))}
           </>
@@ -70,34 +87,76 @@ export function ConceptosBox(props) {
         </div>
 
         <div className={styles.sectionTotal}>
-          <div>
+          <div>       
             <h1>Subtotal:</h1>
-            <h1>IVA:</h1>
+            
+            {!toggleIVA ? (
+              <div className={styles.toggleOn}>
+                <BiToggleRight onClick={onToggleIVA} />
+                <h1>IVA:</h1>
+              </div>
+            ) : (
+              <div className={styles.toggleOff}>
+                <BiToggleLeft onClick={onToggleIVA} />
+                <h1>IVA:</h1>
+              </div>
+            )}
+
             <h1>Total:</h1>
           </div>
           <div>
-            <h1>$
+            
+            {toggleIVA ? (
+              
+              <>
+
+                <h1>-</h1>
+                <h1>-</h1>
+              
+              </>
+
+            ) : (
+              <>
+              
+              <h1>$
+                {!conceptos[0] ? (
+                  '0'
+                ) : (
+                  formatCurrency(subtotal)
+                )}
+              </h1>
+              <h1>$
+                {!conceptos[0] ? (
+                  '0'
+                ) : (
+                  formatCurrency(iva)
+                )
+                }
+              </h1>
+              
+              </>
+            )}
+
+            {toggleIVA ? (
+              <h1>$
               {!conceptos[0] ? (
                 '0'
               ) : (
                 formatCurrency(subtotal)
-              )}
-            </h1>
-            <h1>$
-              {!conceptos[0] ? (
-                '0'
-              ) : (
-                formatCurrency(iva)
               )
               }
             </h1>
-            <h1>$
+            ) : (
+              <h1>$
               {!conceptos[0] ? (
                 '0'
               ) : (
                 formatCurrency(total)
               )
-              }</h1>
+              }
+            </h1>
+            )}
+
           </div>
         </div>
 

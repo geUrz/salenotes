@@ -36,7 +36,7 @@ export function DetallesBox(props) {
             <h2>{formatClientId(cliente.id)}</h2>
           </div>
           <div>
-            <h1></h1>
+            <h1>Cliente</h1>
             <h2>{cliente.cliente}</h2>
           </div>
         </div>

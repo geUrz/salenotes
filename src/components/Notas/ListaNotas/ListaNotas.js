@@ -16,7 +16,7 @@ export function ListaNotas(props) {
 
   const { reload, onReload } = props
 
-  const [notas, setNotas] = useState([])
+  const [notas, setNotas] = useState()
   const [notasClient, setNotasClient] = useState([])
   const [show, setShow] = useState(false)
   const [notaSeleccionada, setNotaSeleccionada] = useState(null)
@@ -309,6 +309,11 @@ export function ListaNotas(props) {
                 </div>
               </div>
 
+              {/* PASAR TOGGLEIVA POR PROPS */}
+              {/* PASAR TOGGLEIVA POR PROPS */}
+              {/* PASAR TOGGLEIVA POR PROPS */}
+              {/* PASAR TOGGLEIVA POR PROPS */}
+              {/* PASAR TOGGLEIVA POR PROPS */}
               {notaSeleccionada.conceptos && notaSeleccionada.conceptos.length > 0 ? (
                 <ConceptosBox reload={reload} onReload={onReload} conceptos={notaSeleccionada.conceptos} onDeleteConcept={onDeleteConcept} onAddConcept={onAddConcept} handleUpdateConcept={handleUpdateConcept} notaId={notaSeleccionada.id} />
               ) : (

@@ -1,0 +1,71 @@
+.section{
+  padding: 10% 0 25% 0;
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container{
+  padding: 50px 10px;
+  width: 320px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg1);
+  position: relative;
+}
+
+.container svg, .container path{
+  font-size: 80px;
+  color: var(--clrBL2);
+}
+
+.toggleOn, .toggleOff{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.toggleOn h1{
+  font-size: 12px !important;
+  color: var(--clrBL2) !important;
+}
+
+.toggleOff h1{
+  font-size: 12px !important;
+  color: var(--bg6) !important;
+}
+
+.toggleOff svg, .toggleOff path{
+  font-size: 35px;
+  color: var(--bg5);
+  cursor: pointer;
+}
+
+.toggleOn svg, .toggleOn path{
+  font-size: 35px;
+  color: var(--clrBL2);
+  cursor: pointer;
+}
+
+.container h1{
+  font-size: 32px;
+  color: var(--clrBL2);
+}
+
+.container h2{
+  margin-top: 20px;
+  font-size: 25px;
+}
+
+.container h2:nth-child(4){
+  font-size: 22.5px;
+}
+

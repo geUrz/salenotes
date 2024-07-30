@@ -98,6 +98,26 @@
   justify-content: flex-end;
 }
 
+.toggleOff, .toggleOn{
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.toggleOn svg, .toggleOn path{
+  margin-right: 5px;
+  font-size: 24px;
+  color: var(--clrBL2);
+  cursor: pointer;
+}
+
+.toggleOff svg, .toggleOff path{
+  margin-right: 5px;
+  font-size: 24px;
+  color: var(--bg5);
+  cursor: pointer;
+}
+
 .sectionTotal h1{
   font-size: 12px;
 }
@@ -112,15 +132,12 @@
 }
 
 .sectionTotal div:nth-child(2) h1{
+  margin: 5px 0;
   text-align: right;
 }
 
 .sectionTotal h1:nth-child(3){
   font-size: 12.8px;
-}
-
-.iconCheck{
-  padding-bottom: 25px;
 }
 
 .iconClose{
@@ -129,16 +146,32 @@
   right: 10px;
 }
 
-.iconCheck svg, .iconCheck path{
-  font-size: 22px;
-  cursor: pointer;
-}
-
 .iconClose svg, .iconClose path{
   font-size: 18px;
   cursor: pointer;
 }
 
-.iconCheck svg, .iconCheck path{
-  color: var(--clrBL2);
+.iconCheck{
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg2);
+  cursor: pointer;
 }
+
+.iconCheck:hover{
+  background-color: var(--bg3);
+}
+
+.iconCheck:active{
+  background-color: var(--bg4);
+}
+
+.iconCheck svg, .iconCheck path{
+  font-size: 22px;
+  color: var(--clrBL2);
+  cursor: pointer;
+}
+

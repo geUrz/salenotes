@@ -21,10 +21,6 @@
   background-color: var(--bg1);
 }
 
-.rowNota h1{
-  font-size: 14px;
-}
-
 .rowNota h1:nth-child(1){
   width: 15%;
   font-size: 11.5px;
@@ -33,7 +29,7 @@
 
 .rowNota h1:nth-child(2){
   width: 30%;
-  font-size: 11.5px;
+  font-size: 14px;
   text-align: center;
   text-transform: capitalize;
 }
@@ -41,6 +37,7 @@
 .rowNota h1:nth-child(3){
   padding: 0 5px;
   width: 60%;
+  font-size: 14px;
   text-align: left;
 }
 
@@ -50,7 +47,7 @@
 }
 
 .rowNota svg, .rowNota path{
-  font-size: 16px;
+  font-size: 18px;
   color: var(--clrBL2);
   cursor: pointer;
 }
