@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { IconCloseModal, ListEmpty, Loading } from '@/components/Layouts'
+import { IconCloseModal, ListEmpty, Loading, ToastSuccess } from '@/components/Layouts'
 import { map, size } from 'lodash'
 import axios from 'axios'
 import { FaInfoCircle } from 'react-icons/fa'
@@ -20,6 +20,15 @@ export function ListaNotas(props) {
   const [notasClient, setNotasClient] = useState([])
   const [show, setShow] = useState(false)
   const [notaSeleccionada, setNotaSeleccionada] = useState(null)
+
+  const[toastSuccess, setToastSuccess] = useState(false)
+
+  const onToastSuccess = () => {
+    setToastSuccess(true)
+    setTimeout(() => {
+      setToastSuccess(false)
+    }, 3000)
+  }
 
   useEffect(() => {
     async function fetchNotas() {
@@ -282,6 +291,8 @@ export function ListaNotas(props) {
       >
         <IconCloseModal onOpenClose={onOpenClose} />
 
+        {toastSuccess && <ToastSuccess contain='Concepto creado exitosamente' onClose={() => setToast(false)} />}
+
         <div className={styles.sectionModal}>
           {notaSeleccionada && (
             <>
@@ -314,7 +325,7 @@ export function ListaNotas(props) {
               {/* PASAR TOGGLEIVA POR PROPS */}
               {/* PASAR TOGGLEIVA POR PROPS */}
               {/* {notaSeleccionada.conceptos && notaSeleccionada.conceptos.length > 0 ? ( */}
-                <ConceptosBox reload={reload} onReload={onReload} conceptos={notaSeleccionada.conceptos} onDeleteConcept={onDeleteConcept} onAddConcept={onAddConcept} handleUpdateConcept={handleUpdateConcept} notaId={notaSeleccionada.id} />
+                <ConceptosBox onToastSuccess={onToastSuccess} reload={reload} onReload={onReload} conceptos={notaSeleccionada.conceptos} onDeleteConcept={onDeleteConcept} onAddConcept={onAddConcept} handleUpdateConcept={handleUpdateConcept} notaId={notaSeleccionada.id} />
               {/* ) : (
                 <ListEmpty />
               )} */}

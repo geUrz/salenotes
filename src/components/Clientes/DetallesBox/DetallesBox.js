@@ -12,12 +12,12 @@ export function DetallesBox(props) {
 
   const [show, setShow] = useState(false)
 
-  const[toast, setToast] = useState(false)
+  const[toastSuccess, setToastSuccess] = useState(false)
 
-  const onToast = () => {
-    setToast(true)
+  const onToastSuccess = () => {
+    setToastSuccess(true)
     setTimeout(() => {
-      setToast(false)
+      setToastSuccess(false)
     }, 3000)
   }
 
@@ -36,7 +36,7 @@ export function DetallesBox(props) {
 
       <IconCloseModal onOpenClose={onOpenClose} />
 
-      {toast && <ToastSuccess contain='Cliente actualizado exitosamente' onClose={() => setToast(false)} />}
+      {toastSuccess && <ToastSuccess contain='Cliente actualizado exitosamente' onClose={() => setToast(false)} />}
 
       <div className={styles.section}>
         <div className={styles.box1}>
@@ -79,7 +79,7 @@ export function DetallesBox(props) {
       </div>
 
       <BasicModal title='Modificar cliente' show={show} onClose={() => onOpen(null)}>
-        <ClienteModForm onToast={onToast} reload={reload} onReload={onReload} clienteSeleccionado={clienteSeleccionado} onOpenClose={() => {
+        <ClienteModForm onToastSuccess={onToastSuccess} reload={reload} onReload={onReload} clienteSeleccionado={clienteSeleccionado} onOpenClose={() => {
             onOpen(null)
             //fetchClientes()
           }} />

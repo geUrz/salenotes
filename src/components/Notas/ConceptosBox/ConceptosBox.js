@@ -5,13 +5,13 @@ import { useEffect, useState } from 'react'
 import { ModalForm } from '@/layouts'
 import { Confirm } from '@/components/Layouts/Confirm'
 import { ConceptoForm } from '../ConceptoForm'
-import { Loading } from '@/components/Layouts'
+import { Loading, ToastSuccess } from '@/components/Layouts'
 import { BiToggleLeft, BiToggleRight } from 'react-icons/bi'
 import styles from './ConceptosBox.module.css'
 
 export function ConceptosBox(props) {
 
-  const { reload, onReload, conceptos, onDeleteConcept, onAddConcept, notaId } = props
+  const { reload, onReload, conceptos, onDeleteConcept, onAddConcept, notaId, onToastSuccess } = props
   const [show, setShow] = useState(false)
   const [showForm, setShowForm] = useState(false)
   const [currentConcept, setCurrentConcept] = useState(null)
@@ -163,7 +163,7 @@ export function ConceptosBox(props) {
       </div>
 
       <ModalForm title='Crear Concepto' showForm={showForm}>
-        <ConceptoForm reload={reload} onReload={onReload} conceptos={conceptos} onOpenCloseForm={onOpenCloseForm} currentConcept={currentConcept} onAddConcept={onAddConcept} notaId={notaId} />
+        <ConceptoForm onToastSuccess={onToastSuccess} reload={reload} onReload={onReload} conceptos={conceptos} onOpenCloseForm={onOpenCloseForm} currentConcept={currentConcept} onAddConcept={onAddConcept} notaId={notaId} />
       </ModalForm>
 
       <Confirm

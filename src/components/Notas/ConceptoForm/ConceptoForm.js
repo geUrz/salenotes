@@ -6,9 +6,9 @@ import styles from './ConceptoForm.module.css'
 
 export function ConceptoForm(props) {
 
-  const { reload, onReload, conceptos, currentConcept, onAddConcept, notaId, onOpenCloseForm } = props
+  const { reload, onReload, conceptos, currentConcept, onAddConcept, notaId, onOpenCloseForm, onToastSuccess } = props
 
-  const [newConcept, setNewConcept] = useState({ tipo: '', concepto: '', precio: '', cantidad: '' })
+  const [newConcept, setNewConcept] = useState({ tipo: '', concepto: '', cantidad: '', precio: '' })
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,7 +31,8 @@ export function ConceptoForm(props) {
           if (id) {
             const newConceptWithId = { ...newConcept, id }
             onAddConcept(newConceptWithId)
-            setNewConcept({ tipo: '', concepto: '', precio: '', cantidad: '' })
+            setNewConcept({ tipo: '', concepto: '', cantidad: '', precio: '' })
+            onToastSuccess()
             onOpenCloseForm()
             onReload()
           } else {
@@ -70,6 +71,8 @@ export function ConceptoForm(props) {
 
       <IconCloseModal onOpenClose={onOpenCloseForm} />
 
+
+
       <div className={styles.addConceptForm}>
         <Form>
           <FormGroup widths='equal'>
@@ -97,15 +100,6 @@ export function ConceptoForm(props) {
                 onChange={handleChange}
               />
               <Label>
-                Precio
-              </Label>
-              <Input
-                type="number"
-                name="precio"
-                value={newConcept.precio}
-                onChange={handleChange}
-              />
-              <Label>
                 Qty
               </Label>
               <Input
@@ -114,13 +108,22 @@ export function ConceptoForm(props) {
                 value={newConcept.cantidad}
                 onChange={handleChange}
               />
+              <Label>
+                Precio
+              </Label>
+              <Input
+                type="number"
+                name="precio"
+                value={newConcept.precio}
+                onChange={handleChange}
+              />
             </FormField>
           </FormGroup>
         </Form>
 
         <Button primary onClick={handleAddConcept}>
-            Agregar Concepto
-          </Button>
+          Agregar Concepto
+        </Button>
 
       </div>
 
