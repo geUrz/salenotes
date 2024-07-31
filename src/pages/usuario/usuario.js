@@ -12,7 +12,7 @@ export default function Usuario() {
     
     <BasicLayout title='Usuario' categorie='usuario' onReload={onReload}>
 
-
+      <div className={styles.section}></div>
 
     </BasicLayout>
 

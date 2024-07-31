@@ -12,7 +12,7 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-export default pool   
+export default pool  
 
 /* import mysql from 'mysql2/promise';
 
@@ -27,5 +27,5 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-export default pool  */  
+export default pool  */ 
 
