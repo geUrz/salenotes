@@ -45,7 +45,6 @@ export function ConceptoForm(props) {
       }
     } else {
       console.warn('Datos incompletos o inválidos para agregar concepto', newConcept)
-      alert('FALTAN DATOS')
     }
   };
 

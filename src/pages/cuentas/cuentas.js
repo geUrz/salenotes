@@ -1,12 +1,11 @@
 import { BasicLayout } from '@/layouts'
 import { useEffect, useState } from 'react'
-import { BiSolidToggleLeft, BiSolidToggleRight, BiToggleLeft, BiToggleRight, BiTrendingUp } from 'react-icons/bi'
+import { BiToggleLeft, BiToggleRight, BiTrendingUp } from 'react-icons/bi'
 import { formatCurrency } from '@/helpers'
 import axios from 'axios'
 import { sumBy } from 'lodash'
 import styles from './cuentas.module.css'
-import { Loading } from '@/components/Layouts'
-import { FaToggleOff, FaToggleOn } from 'react-icons/fa'
+import { MoonLoader } from 'react-spinners'
 
 export default function Cuentas() {
 
@@ -70,7 +69,13 @@ export default function Cuentas() {
 
           <BiTrendingUp />
           {!counts ? (
-            <Loading />
+            <div className={styles.loading}>
+              <MoonLoader
+                color='cyan'
+                size={25}
+                speedMultiplier={.8}
+              />
+            </div>
           ) : (
             <>
               

@@ -1,18 +1,25 @@
-import { IconCloseModal } from '@/components/Layouts'
-import styles from './DetallesBox.module.css'
+import { useState } from 'react'
+import { IconCloseModal, ToastSuccess } from '@/components/Layouts'
 import { formatClientId } from '@/helpers'
-import { FaCheck, FaEdit, FaTimes, FaTrash } from 'react-icons/fa'
-import { Confirm } from '@/components/Layouts/Confirm'
-import { useEffect, useState } from 'react'
+import { FaEdit } from 'react-icons/fa'
 import { BasicModal } from '@/layouts'
 import { ClienteModForm } from '../ClienteModForm'
-import axios from 'axios'
+import styles from './DetallesBox.module.css'
 
 export function DetallesBox(props) {
 
   const { reload, onReload, cliente, onOpenClose, onDelete } = props
 
   const [show, setShow] = useState(false)
+
+  const[toast, setToast] = useState(false)
+
+  const onToast = () => {
+    setToast(true)
+    setTimeout(() => {
+      setToast(false)
+    }, 3000)
+  }
 
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null)
 
@@ -28,6 +35,8 @@ export function DetallesBox(props) {
     <>
 
       <IconCloseModal onOpenClose={onOpenClose} />
+
+      {toast && <ToastSuccess contain='Cliente actualizado exitosamente' onClose={() => setToast(false)} />}
 
       <div className={styles.section}>
         <div className={styles.box1}>
@@ -70,7 +79,7 @@ export function DetallesBox(props) {
       </div>
 
       <BasicModal title='Modificar cliente' show={show} onClose={() => onOpen(null)}>
-        <ClienteModForm reload={reload} onReload={onReload} clienteSeleccionado={clienteSeleccionado} onOpenClose={() => {
+        <ClienteModForm onToast={onToast} reload={reload} onReload={onReload} clienteSeleccionado={clienteSeleccionado} onOpenClose={() => {
             onOpen(null)
             //fetchClientes()
           }} />

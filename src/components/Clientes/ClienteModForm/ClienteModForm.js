@@ -6,7 +6,7 @@ import styles from './ClienteModForm.module.css'
 
 export function ClienteModForm(props) {
 
-  const { reload, onReload, clienteSeleccionado, onOpenClose } = props
+  const { reload, onReload, clienteSeleccionado, onOpenClose, onToast } = props
 
   const [cliente, setCliente] = useState('')
   const [contacto, setContacto] = useState('')
@@ -28,6 +28,7 @@ export function ClienteModForm(props) {
     e.preventDefault()
     try {
       await axios.put(`/api/clients?id=${clienteSeleccionado.id}`, { cliente, contacto, direccion, cel, email })
+      onToast()
       onOpenClose()
       onReload()
     } catch (error) {
@@ -37,7 +38,9 @@ export function ClienteModForm(props) {
 
   return (
     <>
+
       <IconCloseModal onOpenClose={onOpenClose} />
+
       <div className={styles.main}>
         <Form>
           <FormGroup widths='equal'>

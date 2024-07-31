@@ -107,14 +107,13 @@ export function ListaNotas(props) {
       {
         orientation: 'p',
         unit: 'mm',
-        format: 'a6',
-        //putOnlyUsedFonts:true
+        format: 'a6'
       }
     )
 
-    const logoImg = 'img/logo.png'; // Ruta relativa a la carpeta `public`
-    const logoWidth = 30; // Ancho de la imagen en el PDF
-    const logoHeight = 8; // Alto de la imagen en el PDF
+    const logoImg = 'img/logo.png'
+    const logoWidth = 30
+    const logoHeight = 8
     doc.addImage(logoImg, 'PNG', 4.2, 14, logoWidth, logoHeight)
 
     doc.setFont('helvetica')
@@ -231,17 +230,17 @@ export function ListaNotas(props) {
     ]
     
     doc.autoTable({
-      startY: 124, // Posición en el eje Y
+      startY: 124,
       margin: { left: 67.5, bottom: 0, right: 4.5 },
-      body: verticalData, // Datos del cuerpo de la tabla
+      body: verticalData, 
       styles: {
         cellPadding: 1,
         valign: 'middle',
         fontSize: 7,
       },
       columnStyles: {
-        0: { cellWidth: 15, fontStyle: 'bold', halign: 'right' },  // Ancho y estilo de la primera columna
-        1: { cellWidth: 18, halign: 'right' }  // Ancho de la segunda columna
+        0: { cellWidth: 15, fontStyle: 'bold', halign: 'right' },
+        1: { cellWidth: 18, halign: 'right' }  
       }
     })
 
@@ -250,7 +249,7 @@ export function ListaNotas(props) {
     const qrCodeDataUrl = await QRCode.toDataURL(qrCodeText)
     doc.addImage(qrCodeDataUrl, 'PNG', 2, 118, 25, 25)
 
-    doc.save(`Nota_${notaSeleccionada.id}.pdf`)
+    doc.save(`Nota_${formatId(notaSeleccionada.id)}.pdf`)
   }
 
   return (
@@ -314,11 +313,11 @@ export function ListaNotas(props) {
               {/* PASAR TOGGLEIVA POR PROPS */}
               {/* PASAR TOGGLEIVA POR PROPS */}
               {/* PASAR TOGGLEIVA POR PROPS */}
-              {notaSeleccionada.conceptos && notaSeleccionada.conceptos.length > 0 ? (
+              {/* {notaSeleccionada.conceptos && notaSeleccionada.conceptos.length > 0 ? ( */}
                 <ConceptosBox reload={reload} onReload={onReload} conceptos={notaSeleccionada.conceptos} onDeleteConcept={onDeleteConcept} onAddConcept={onAddConcept} handleUpdateConcept={handleUpdateConcept} notaId={notaSeleccionada.id} />
-              ) : (
+              {/* ) : (
                 <ListEmpty />
-              )}
+              )} */}
             </>
           )}
 

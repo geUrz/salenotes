@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react'
 import { Button, Form, FormField, FormGroup, Input, Label, TextArea } from 'semantic-ui-react'
-import styles from './NotaForm.module.css'
 import axios from 'axios'
 import { formatCurrency } from '@/helpers/formatCurrency'
 import { IconCloseModal } from '@/components/Layouts'
+import styles from './NotaForm.module.css'
 
 export function NotaForm(props) {
 
-  const { reload, onReload, onOpenClose } = props
+  const { reload, onReload, onOpenClose, onToastSuccess } = props
 
   const [cliente, setCliente] = useState('')
   const [clientes, setClientes] = useState([]);
   const [descripcion, setDescripcion] = useState('')
   const [conceptos, setConceptos] = useState([])
   const [nuevoConcepto, setNuevoConcepto] = useState({ tipo: '', concepto: '', cantidad: '', precio: '' })
+  const [errors, setErrors] = useState({})
 
   useEffect(() => {
     const fetchClientes = async () => {
@@ -27,16 +28,61 @@ export function NotaForm(props) {
     fetchClientes()
   }, [])
 
+  const validarFormCliente = () => {
+    const newErrors = {}
+
+    if (!cliente) {
+      newErrors.cliente = 'El campo es requerido'
+    }
+
+    if (!descripcion) {
+      newErrors.descripcion = 'El campo es requerido'
+    }
+    
+    setErrors(newErrors)
+
+    return Object.keys(newErrors).length === 0
+  }
+
+  const validarFormConceptos = () => {
+    const newErrors = {}
+
+    if (!conceptos.tipo) {
+      newErrors.tipo = 'El campo es requerido'
+    }
+
+    if (!conceptos.concepto) {
+      newErrors.concepto = 'El campo es requerido'
+    }
+
+    if (!conceptos.cantidad) {
+      newErrors.cantidad = 'El campo es requerido'
+    }
+
+    if (!conceptos.precio) {
+      newErrors.precio = 'El campo es requerido'
+    }
+    
+
+    setErrors(newErrors)
+
+    return Object.keys(newErrors).length === 0
+  }
+
   const crearNota = async (e) => {
     e.preventDefault()
+
+    if (!validarFormCliente()) {
+      return
+    }
+
     try {
       const response = await axios.post('/api/notes', { cliente_id: cliente, descripcion })
       const notaId = response.data.id
-      // Guardar conceptos asociados a la nota
       await Promise.all(conceptos.map(concepto =>
         axios.post('/api/concepts', { nota_id: notaId, ...concepto })
       ))
-      alert('Nota creada exitosamente!')
+      onToastSuccess()
       setCliente('');
       setDescripcion('')
       setConceptos([])
@@ -44,11 +90,14 @@ export function NotaForm(props) {
       onReload()
     } catch (error) {
       console.error('Error al crear la nota:', error)
-      alert('Hubo un error al crear la nota. Por favor, inténtalo de nuevo.')
+
     }
   }
 
   const añadirConcepto = () => {
+    if (!validarFormConceptos()) {
+      return
+    }
     setConceptos([...conceptos, nuevoConcepto]);
     setNuevoConcepto({ tipo: '', concepto: '', cantidad: '', precio: '' })
   }
@@ -72,7 +121,7 @@ export function NotaForm(props) {
 
         <Form>
           <FormGroup widths='equal'>
-            <FormField>
+            <FormField error={!!errors.cliente}>
               <Label>
                 Cliente
               </Label>
@@ -84,6 +133,7 @@ export function NotaForm(props) {
                   </option>
                 ))}
               </select>
+              {errors.cliente && <span className={styles.error}>{errors.cliente}</span>}
               <Label>
                 Descripción
               </Label>
@@ -91,14 +141,14 @@ export function NotaForm(props) {
                 value={descripcion}
                 onChange={(e) => setDescripcion(e.target.value)}
               />
-
+              {errors.descripcion && <span className={styles.error}>{errors.descripcion}</span>}
             </FormField>
           </FormGroup>
         </Form>
 
         <Form>
           <FormGroup widths='equal'>
-            <FormField>
+            <FormField error={!!errors.concepto}>
             <Label className={styles.formLabel}>
               Tipo
             </Label>
@@ -112,6 +162,7 @@ export function NotaForm(props) {
               <option value='Servicio'>Servicio</option>
               <option value='Producto'>Producto</option>
             </FormField>
+            {errors.tipo && <span className={styles.error}>{errors.tipo}</span>}
           <Label>
             Concepto
           </Label>
@@ -120,6 +171,7 @@ export function NotaForm(props) {
             value={nuevoConcepto.concepto}
             onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, concepto: e.target.value })}
           />
+          {errors.concepto && <span className={styles.error}>{errors.concepto}</span>}
           <Label>
             Qty
           </Label>
@@ -128,6 +180,7 @@ export function NotaForm(props) {
             value={nuevoConcepto.cantidad}
             onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, cantidad: parseInt(e.target.value) })}
           />
+          {errors.cantidad && <span className={styles.error}>{errors.cantidad}</span>}
           <Label>
             Precio
           </Label>
@@ -136,6 +189,7 @@ export function NotaForm(props) {
             value={nuevoConcepto.precio}
             onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, precio: parseFloat(e.target.value) })}
           />
+          {errors.precio && <span className={styles.error}>{errors.precio}</span>}
           <Button secondary onClick={añadirConcepto}>Añadir Concepto</Button>
             </FormField>
           </FormGroup>

@@ -75,7 +75,7 @@
 }
 
 .field.error input, .field.error select, .field.error textarea{
-  background-color: rgb(243, 255, 78) !important;
+  background-color: var(--clrBL0) !important;
 }
 
 

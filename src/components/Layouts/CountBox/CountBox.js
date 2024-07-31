@@ -13,7 +13,7 @@ export function CountBox(props) {
         {icon}
       </div>
       <div className={styles.count}>
-        {countAll === undefined || countAll === null ? (
+        {!countAll || countAll === undefined || countAll === null ? (
           <h1>
             <MoonLoader
               color='cyan'

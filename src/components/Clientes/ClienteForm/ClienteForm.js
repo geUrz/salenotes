@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import styles from './ClienteForm.module.css'
 import { Button, Form, FormField, FormGroup, Input, Label } from 'semantic-ui-react'
 import { IconCloseModal } from '@/components/Layouts'
-import { formatClientId } from '@/helpers'
+import styles from './ClienteForm.module.css'
 
 export function ClienteForm(props) {
 
@@ -33,6 +32,7 @@ export function ClienteForm(props) {
     e.preventDefault()
     try {
       const response = await axios.post('/api/clients', { cliente, contacto, direccion, cel, email })
+
       setClientes([...clientes, response.data])
       setCliente('')
       setContacto('')
