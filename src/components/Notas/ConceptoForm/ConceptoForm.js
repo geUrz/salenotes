@@ -9,16 +9,43 @@ export function ConceptoForm(props) {
   const { reload, onReload, conceptos, currentConcept, onAddConcept, notaId, onOpenCloseForm, onToastSuccess } = props
 
   const [newConcept, setNewConcept] = useState({ tipo: '', concepto: '', cantidad: '', precio: '' })
+  const [errors, setErrors] = useState({})
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setNewConcept((prevState) => ({
       ...prevState,
       [name]: value,
-    }));
-  };
+    }))
+  }
+
+  const validateForm = () => {
+    const newErrors = {}
+
+    if (!newConcept.tipo) {
+      newErrors.tipo = 'El campo es requerido'
+    }
+    if (!newConcept.concepto) {
+      newErrors.concepto = 'El campo es requerido'
+    }
+    if (!newConcept.cantidad || newConcept.cantidad <= 0) {
+      newErrors.cantidad = 'El campo es requerido'
+    }
+    if (!newConcept.precio || newConcept.precio <= 0) {
+      newErrors.precio = 'El campo es requerido'
+    }
+
+    setErrors(newErrors)
+
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleAddConcept = async () => {
+
+    if (!validateForm()) {
+      return
+    }
+
     if (newConcept.tipo && newConcept.concepto && newConcept.precio > 0 && newConcept.cantidad > 0) {
       try {
         const response = await axios.post(`/api/concepts`, {
@@ -74,49 +101,52 @@ export function ConceptoForm(props) {
 
 
       <div className={styles.addConceptForm}>
-        <Form>
+      <Form>
           <FormGroup widths='equal'>
-            <FormField>
-            <Label className={styles.formLabel}>
-              Tipo
-            </Label>
-            <FormField
-              type="text"
-              control='select'
-              value={newConcept.tipo}
-              onChange={(e) => setNewConcept({ ...newConcept, tipo: e.target.value })}
-            >
-              <option value=''></option>
-              <option value='Servicio'>Servicio</option>
-              <option value='Producto'>Producto</option>
-            </FormField>
-              <Label>
-                Concepto
+            <FormField error={!!errors.tipo}>
+              <Label className={styles.formLabel}>
+                Tipo
               </Label>
+              <select
+                name="tipo"
+                value={newConcept.tipo}
+                onChange={handleChange}
+              >
+                <option value=''></option>
+                <option value='Servicio'>Servicio</option>
+                <option value='Producto'>Producto</option>
+              </select>
+              {errors.tipo && <span className={styles.error}>{errors.tipo}</span>}
+            </FormField>
+            <FormField error={!!errors.concepto}>
+              <Label>Concepto</Label>
               <Input
                 type="text"
                 name="concepto"
                 value={newConcept.concepto}
                 onChange={handleChange}
               />
-              <Label>
-                Qty
-              </Label>
+              {errors.concepto && <span className={styles.error}>{errors.concepto}</span>}
+            </FormField>
+            <FormField error={!!errors.cantidad}>
+              <Label>Qty</Label>
               <Input
                 type="number"
                 name="cantidad"
                 value={newConcept.cantidad}
                 onChange={handleChange}
               />
-              <Label>
-                Precio
-              </Label>
+              {errors.cantidad && <span className={styles.error}>{errors.cantidad}</span>}
+            </FormField>
+            <FormField error={!!errors.precio}>
+              <Label>Precio</Label>
               <Input
                 type="number"
                 name="precio"
                 value={newConcept.precio}
                 onChange={handleChange}
               />
+              {errors.precio && <span className={styles.error}>{errors.precio}</span>}
             </FormField>
           </FormGroup>
         </Form>

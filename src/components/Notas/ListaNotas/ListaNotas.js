@@ -25,6 +25,26 @@ export function ListaNotas(props) {
 
   const[toastSuccess, setToastSuccess] = useState(false)
   const[toastSuccessConfirm, setToastSuccessConfirm] = useState(false)
+  const [toggleIVA, setToggleIVA] = useState()
+
+  useEffect(() => {
+    const savedToggleIVA = localStorage.getItem('ontoggleIVA')
+    if (savedToggleIVA) {
+      setToggleIVA(JSON.parse(savedToggleIVA))
+    }
+  }, [])
+
+  /* useEffect(() => {
+    localStorage.setItem('ontoggleIVA', JSON.stringify(toggleIVA))
+  }, [toggleIVA]) */
+
+  const toggleIVAState = () => {
+    setToggleIVA((prevState) => {
+      const newState = !prevState
+      localStorage.setItem('ontoggleIVA', JSON.stringify(newState))
+      return newState
+    })
+  }
 
   const onToastSuccess = () => {
     setToastSuccess(true)
@@ -142,7 +162,8 @@ export function ListaNotas(props) {
   }
 
   const generarPDF = async () => {
-    if (!notaSeleccionada) return;
+
+    if (!notaSeleccionada) return
 
     const doc = new jsPDF(
       {
@@ -151,6 +172,8 @@ export function ListaNotas(props) {
         format: 'a6'
       }
     )
+
+    toggleIVAState()
 
     const logoImg = 'img/logo.png'
     const logoWidth = 30
@@ -260,15 +283,22 @@ export function ListaNotas(props) {
 
     })
 
-    const subtotal = notaSeleccionada.conceptos.reduce((sum, concepto) => sum + concepto.precio * concepto.cantidad, 0);
-    const iva = subtotal * 0.16;
-    const total = subtotal + iva;
+    const calcularTotales = () => {
+      const subtotal = notaSeleccionada.conceptos.reduce((acc, curr) => acc + curr.cantidad * curr.precio, 0);
+      const iva = subtotal * 0.16;
+      const total = !toggleIVA ? subtotal + iva : subtotal;
+      return { subtotal, iva, total };
+    };
+  
+    const { subtotal, iva, total } = calcularTotales();
 
     const verticalData = [
-      ['Subtotal:', `$${formatCurrency(subtotal)}`],
-      ['IVA:', `$${formatCurrency(iva)}`],
+      ...!toggleIVA ? [
+        ['Subtotal:', `$${formatCurrency(subtotal)}`],
+        ['IVA:', `$${formatCurrency(iva)}`],
+      ] : [],
       ['Total:', `$${formatCurrency(total)}`]
-    ]
+    ];
     
     doc.autoTable({
       startY: 124,
@@ -353,11 +383,6 @@ export function ListaNotas(props) {
                 </div>
               </div>
 
-              {/* PASAR TOGGLEIVA POR PROPS */}
-              {/* PASAR TOGGLEIVA POR PROPS */}
-              {/* PASAR TOGGLEIVA POR PROPS */}
-              {/* PASAR TOGGLEIVA POR PROPS */}
-              {/* PASAR TOGGLEIVA POR PROPS */}
               {/* {notaSeleccionada.conceptos && notaSeleccionada.conceptos.length > 0 ? ( */}
                 <ConceptosBox onToastSuccess={onToastSuccess} reload={reload} onReload={onReload} conceptos={notaSeleccionada.conceptos} onDeleteConcept={onDeleteConcept} onAddConcept={onAddConcept} handleUpdateConcept={handleUpdateConcept} notaId={notaSeleccionada.id} />
               {/* ) : (
