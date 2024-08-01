@@ -52,6 +52,26 @@
   cursor: pointer;
 }
 
+.iconTrash{
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+}
+
+.iconTrash svg, .iconTrash path{
+  font-size: 16px;
+  color: var(--clrGR0);
+  cursor: pointer;
+}
+
+.iconTrash svg:hover, .iconTrash path:hover{
+  color: var(--clrGR1);
+}
+
+.iconTrash svg:active, .iconTrash path:active{
+  color: var(--clrGR2);
+}
+
 
 /* MODAL */
 
@@ -89,8 +109,12 @@
   width: 100%;
   height: auto;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+}
+
+.rowClienFolio div, .rowContactDate div{
+  width: 50%;
 }
 
 .rowClienFolio div:nth-child(2), .rowContactDate div:nth-child(2){
@@ -100,9 +124,12 @@
   justify-content: center;
 }
 
+.rowClienFolio div:nth-child(1) h2{
+  text-transform: capitalize;
+}
+
 .rowClienFolio div:nth-child(2) h2, .rowContactDate div:nth-child(2) h2{
   font-size: 12px;
-  text-transform: uppercase;
 }
 
 .rowContactDate div:nth-child(2) h2:nth-child(2){
@@ -129,6 +156,49 @@
 
 .iconPDF svg, .iconPDF path{
   font-size: 46px;
+  color: var(--clrBL0);
+  cursor: pointer;
+}
+
+.iconPDF:hover path{
+  color: var(--clrBL1);
+}
+
+.iconPDF:active path{
+  color: var(--clrBL2);
+}
+
+.iconClose{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.iconClose svg, .iconClose path{
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.iconCheck{
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg2);
+  cursor: pointer;
+}
+
+.iconCheck:hover{
+  background-color: var(--bg3);
+}
+
+.iconCheck:active{
+  background-color: var(--bg4);
+}
+
+.iconCheck svg, .iconCheck path{
+  font-size: 22px;
   color: var(--clrBL2);
   cursor: pointer;
 }

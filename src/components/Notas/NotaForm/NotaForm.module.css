@@ -75,26 +75,41 @@
   justify-content: flex-end;
 }
 
-.boxLeft, .boxRight{
-  width: 18.5%;
+.toggleOff, .toggleOn{
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
+  align-items: center;
+  justify-content: flex-end;
 }
 
-.boxLeft{
-  margin-right: 10px;
- }
+.toggleOn svg, .toggleOn path, .toggleOff svg, .toggleOff path{
+  margin-right: 1px;
+  font-size: 30px;
+  color: var(--clrBL2);
+  cursor: pointer;
+}
+
+.toggleOff svg, .toggleOff path{
+  color: var(--bg5);
+}
 
 .sectionTotal h1{
-  font-size: 11px;
-}
-
-.sectionTotal h1:nth-child(3){
   font-size: 12px;
 }
 
-.error{
-  
+.sectionTotal div:nth-child(1){
+  margin-right: 5px;
+}
+
+.sectionTotal div:nth-child(1) h1{
+  text-align: right;
+  color: var(--clrBL2);
+}
+
+.sectionTotal div:nth-child(2) h1{
+  margin: 8.5px 0;
+  text-align: right;
+}
+
+.sectionTotal h1:nth-child(3){
+  font-size: 12.8px;
 }

@@ -4,6 +4,7 @@ import axios from 'axios'
 import { formatCurrency } from '@/helpers/formatCurrency'
 import { IconCloseModal } from '@/components/Layouts'
 import styles from './NotaForm.module.css'
+import { BiToggleLeft, BiToggleRight } from 'react-icons/bi'
 
 export function NotaForm(props) {
 
@@ -15,6 +16,7 @@ export function NotaForm(props) {
   const [conceptos, setConceptos] = useState([])
   const [nuevoConcepto, setNuevoConcepto] = useState({ tipo: '', concepto: '', cantidad: '', precio: '' })
   const [errors, setErrors] = useState({})
+  const [toggleIVA, setToggleIVA] = useState()
 
   useEffect(() => {
     const fetchClientes = async () => {
@@ -38,7 +40,7 @@ export function NotaForm(props) {
     if (!descripcion) {
       newErrors.descripcion = 'El campo es requerido'
     }
-    
+
     setErrors(newErrors)
 
     return Object.keys(newErrors).length === 0
@@ -47,22 +49,25 @@ export function NotaForm(props) {
   const validarFormConceptos = () => {
     const newErrors = {}
 
-    if (!conceptos.tipo) {
+    if (!nuevoConcepto.tipo) {
       newErrors.tipo = 'El campo es requerido'
     }
 
-    if (!conceptos.concepto) {
+    if (!nuevoConcepto.concepto) {
       newErrors.concepto = 'El campo es requerido'
     }
 
-    if (!conceptos.cantidad) {
+    if (!nuevoConcepto.cantidad) {
       newErrors.cantidad = 'El campo es requerido'
+    } else if (nuevoConcepto.cantidad <= 0) {
+      newErrors.cantidad = 'La cantidad debe ser mayor a 0'
     }
 
-    if (!conceptos.precio) {
+    if (!nuevoConcepto.precio) {
       newErrors.precio = 'El campo es requerido'
+    } else if (nuevoConcepto.precio <= 0) {
+      newErrors.precio = 'El precio debe ser mayor a 0'
     }
-    
 
     setErrors(newErrors)
 
@@ -111,6 +116,21 @@ export function NotaForm(props) {
 
   const { subtotal, iva, total } = calcularTotales()
 
+  useEffect(() => {
+    const savedToggleIVA = localStorage.getItem('ontoggleIVA')
+    if (savedToggleIVA) {
+      setToggleIVA(JSON.parse(savedToggleIVA))
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('ontoggleIVA', JSON.stringify(toggleIVA))
+  }, [toggleIVA])
+
+  const onToggleIVA = () => {
+    setToggleIVA(prevState => (!prevState))
+  }
+
   return (
 
     <>
@@ -122,9 +142,7 @@ export function NotaForm(props) {
         <Form>
           <FormGroup widths='equal'>
             <FormField error={!!errors.cliente}>
-              <Label>
-                Cliente
-              </Label>
+              <Label>Cliente</Label>
               <select value={cliente} onChange={(e) => setCliente(e.target.value)}>
                 <option value=""></option>
                 {clientes.map((cliente) => (
@@ -134,9 +152,11 @@ export function NotaForm(props) {
                 ))}
               </select>
               {errors.cliente && <span className={styles.error}>{errors.cliente}</span>}
-              <Label>
-                Descripción
-              </Label>
+            </FormField>
+          </FormGroup>
+          <FormGroup widths='equal'>
+            <FormField error={!!errors.descripcion}>
+              <Label>Descripción</Label>
               <TextArea
                 value={descripcion}
                 onChange={(e) => setDescripcion(e.target.value)}
@@ -148,103 +168,146 @@ export function NotaForm(props) {
 
         <Form>
           <FormGroup widths='equal'>
-            <FormField error={!!errors.concepto}>
-            <Label className={styles.formLabel}>
-              Tipo
-            </Label>
-            <FormField
-              type="text"
-              control='select'
-              value={nuevoConcepto.tipo}
-              onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, tipo: e.target.value })}
-            >
-              <option value=''></option>
-              <option value='Servicio'>Servicio</option>
-              <option value='Producto'>Producto</option>
+            <FormField error={!!errors.tipo}>
+              <Label>Tipo</Label>
+              <select
+                value={nuevoConcepto.tipo}
+                onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, tipo: e.target.value })}
+              >
+                <option value=''></option>
+                <option value='Servicio'>Servicio</option>
+                <option value='Producto'>Producto</option>
+              </select>
+              {errors.tipo && <span className={styles.error}>{errors.tipo}</span>}
             </FormField>
-            {errors.tipo && <span className={styles.error}>{errors.tipo}</span>}
-          <Label>
-            Concepto
-          </Label>
-          <Input
-            type="text"
-            value={nuevoConcepto.concepto}
-            onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, concepto: e.target.value })}
-          />
-          {errors.concepto && <span className={styles.error}>{errors.concepto}</span>}
-          <Label>
-            Qty
-          </Label>
-          <Input
-            type="number"
-            value={nuevoConcepto.cantidad}
-            onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, cantidad: parseInt(e.target.value) })}
-          />
-          {errors.cantidad && <span className={styles.error}>{errors.cantidad}</span>}
-          <Label>
-            Precio
-          </Label>
-          <Input
-            type="number"
-            value={nuevoConcepto.precio}
-            onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, precio: parseFloat(e.target.value) })}
-          />
-          {errors.precio && <span className={styles.error}>{errors.precio}</span>}
-          <Button secondary onClick={añadirConcepto}>Añadir Concepto</Button>
+            <FormField error={!!errors.concepto}>
+              <Label>Concepto</Label>
+              <Input
+                type="text"
+                value={nuevoConcepto.concepto}
+                onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, concepto: e.target.value })}
+              />
+              {errors.concepto && <span className={styles.error}>{errors.concepto}</span>}
+            </FormField>
+            <FormField error={!!errors.cantidad}>
+              <Label>Qty</Label>
+              <Input
+                type="number"
+                value={nuevoConcepto.cantidad}
+                onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, cantidad: parseInt(e.target.value) })}
+              />
+              {errors.cantidad && <span className={styles.error}>{errors.cantidad}</span>}
+            </FormField>
+            <FormField error={!!errors.precio}>
+              <Label>Precio</Label>
+              <Input
+                type="number"
+                value={nuevoConcepto.precio}
+                onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, precio: parseFloat(e.target.value) })}
+              />
+              {errors.precio && <span className={styles.error}>{errors.precio}</span>}
             </FormField>
           </FormGroup>
+          <Button secondary onClick={añadirConcepto}>Añadir Concepto</Button>
         </Form>
 
-          <div className={styles.section}>
-            <div className={styles.rowConcept}>
-              <h1>Tipo</h1>
-              <h1>Concepto</h1>
-              <h1>Precio</h1>
-              <h1>Qty</h1>
-              <h1>Total</h1>
+        <div className={styles.section}>
+          <div className={styles.rowConcept}>
+            <h1>Tipo</h1>
+            <h1>Concepto</h1>
+            <h1>Precio</h1>
+            <h1>Qty</h1>
+            <h1>Total</h1>
+          </div>
+          {conceptos.map((concepto, index) => (
+            <div key={index} className={styles.rowMapConcept}>
+              <h1>{concepto.tipo}</h1>
+              <h1>{concepto.concepto}</h1>
+              <h1>${formatCurrency(concepto.precio * 1)}</h1>
+              <h1>{concepto.cantidad}</h1>
+              <h1>${formatCurrency(concepto.cantidad * concepto.precio)}</h1>
             </div>
-            {conceptos.map((concepto, index) => (
-              <div key={index} className={styles.rowMapConcept}>
-                <h1>{concepto.tipo}</h1>
-                <h1>{concepto.concepto}</h1>
-                <h1>${formatCurrency(concepto.precio * 1)}</h1>
-                <h1>{concepto.cantidad}</h1>
-                <h1>${formatCurrency(concepto.cantidad * concepto.precio)}</h1>
-              </div>
-            ))}
+          ))}
 
-            <div className={styles.sectionTotal}>
-              <div className={styles.boxLeft}>
-                <h1>Subtotal:</h1>
+          <div className={styles.sectionTotal}>
+          <div>       
+            <h1>Subtotal:</h1>
+            
+            {!toggleIVA ? (
+              <div className={styles.toggleOn}>
+                <BiToggleRight onClick={onToggleIVA} />
                 <h1>IVA:</h1>
-                <h1>Total:</h1>
               </div>
-
-              <div className={styles.boxRight}>
-                {!conceptos[0] ? (
-                  <h1>$0.00</h1>
-                ) : (
-                  <h1>${formatCurrency(subtotal)}</h1>
-                )}
-                {!conceptos[0] ? (
-                  <h1>$0.00</h1>
-                ) : (
-                  <h1>${formatCurrency(iva)}</h1>
-                )
-                }
-                {!conceptos[0] ? (
-                  <h1>$0.00</h1>
-                ) : (
-                  <h1>${formatCurrency(total)}</h1>
-                )
-                }
+            ) : (
+              <div className={styles.toggleOff}>
+                <BiToggleLeft onClick={onToggleIVA} />
+                <h1>IVA:</h1>
               </div>
-            </div>
+            )}
 
+            <h1>Total:</h1>
           </div>
 
-          <Button primary onClick={crearNota}>Crear</Button>
-        
+            <div>
+            
+            {toggleIVA ? (
+              
+              <>
+
+                <h1>-</h1>
+                <h1>-</h1>
+              
+              </>
+
+            ) : (
+              <>
+              
+              <h1>$
+                {!conceptos[0] ? (
+                  '0'
+                ) : (
+                  formatCurrency(subtotal)
+                )}
+              </h1>
+              <h1>$
+                {!conceptos[0] ? (
+                  '0'
+                ) : (
+                  formatCurrency(iva)
+                )
+                }
+              </h1>
+              
+              </>
+            )}
+
+            {toggleIVA ? (
+              <h1>$
+              {!conceptos[0] ? (
+                '0'
+              ) : (
+                formatCurrency(subtotal)
+              )
+              }
+            </h1>
+            ) : (
+              <h1>$
+              {!conceptos[0] ? (
+                '0'
+              ) : (
+                formatCurrency(total)
+              )
+              }
+            </h1>
+            )}
+
+          </div>
+          </div>
+
+        </div>
+
+        <Button primary onClick={crearNota}>Crear</Button>
+
 
       </div>
 

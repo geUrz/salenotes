@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { IconCloseModal, ListEmpty, Loading, ToastSuccess } from '@/components/Layouts'
 import { map, size } from 'lodash'
 import axios from 'axios'
-import { FaInfoCircle } from 'react-icons/fa'
+import { FaCheck, FaInfoCircle, FaTimes, FaTrash } from 'react-icons/fa'
 import { BasicModal } from '@/layouts'
 import { ConceptosBox } from '../ConceptosBox'
 import jsPDF from 'jspdf'
@@ -11,6 +11,7 @@ import { formatCurrency, formatDate, formatId } from '@/helpers'
 import QRCode from 'qrcode'
 import { BiSolidFilePdf } from 'react-icons/bi'
 import styles from './ListaNotas.module.css'
+import { Confirm } from '@/components/Layouts/Confirm'
 
 export function ListaNotas(props) {
 
@@ -19,9 +20,11 @@ export function ListaNotas(props) {
   const [notas, setNotas] = useState()
   const [notasClient, setNotasClient] = useState([])
   const [show, setShow] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
   const [notaSeleccionada, setNotaSeleccionada] = useState(null)
 
   const[toastSuccess, setToastSuccess] = useState(false)
+  const[toastSuccessConfirm, setToastSuccessConfirm] = useState(false)
 
   const onToastSuccess = () => {
     setToastSuccess(true)
@@ -29,6 +32,15 @@ export function ListaNotas(props) {
       setToastSuccess(false)
     }, 3000)
   }
+
+  const onToastSuccessConfirm = () => {
+    setToastSuccessConfirm(true)
+    setTimeout(() => {
+      setToastSuccessConfirm(false)
+    }, 3000)
+  }
+
+  const onShowConfirm = () => setShowConfirm((prevState) => !prevState)
 
   useEffect(() => {
     async function fetchNotas() {
@@ -53,6 +65,26 @@ export function ListaNotas(props) {
     }
     fetchNotas()
   }, []) */
+
+  const onDeleteNota = async (notaId) => {
+    try {
+      const response = await axios.delete(`/api/notes`, {
+        params: { id: notaId },
+      })
+      if (response.status === 200) {
+        setNotas((prevState) => prevState.filter((nota) => nota.id !== notaId))
+        setShow(false)
+        onShowConfirm()
+        onToastSuccessConfirm()
+      } else {
+        console.error('Error al eliminar la nota: Respuesta del servidor no fue exitosa', response)
+      }
+    } catch (error) {
+      console.error('Error al eliminar la nota:', error.response || error.message || error)
+    }
+  }
+  
+  
 
   const onOpenClose = async (nota) => {
     try {
@@ -93,21 +125,21 @@ export function ListaNotas(props) {
 
   const handleUpdateConcept = async (conceptId, updatedConcept) => {
     try {
-      const response = await axios.put(`/api/concepts/${conceptId}`, updatedConcept);
+      const response = await axios.put(`/api/concepts/${conceptId}`, updatedConcept)
       if (response.status === 200) {
         setNotaSeleccionada((prevState) => ({
           ...prevState,
           conceptos: prevState.conceptos.map((concepto) =>
             concepto.id === conceptId ? response.data : concepto
           ),
-        }));
+        }))
       } else {
-        console.error('Error al actualizar el concepto: Respuesta del servidor no fue exitosa', response);
+        console.error('Error al actualizar el concepto: Respuesta del servidor no fue exitosa', response)
       }
     } catch (error) {
       console.error('Error al actualizar el concepto:', error.response || error.message || error);
     }
-  };
+  }
 
   const generarPDF = async () => {
     if (!notaSeleccionada) return;
@@ -291,7 +323,9 @@ export function ListaNotas(props) {
       >
         <IconCloseModal onOpenClose={onOpenClose} />
 
-        {toastSuccess && <ToastSuccess contain='Concepto creado exitosamente' onClose={() => setToast(false)} />}
+        {toastSuccess && <ToastSuccess contain='Concepto creado exitosamente' onClose={() => setToastSuccess(false)} />}
+
+        {toastSuccessConfirm && <ToastSuccess contain='Nota eliminada exitosamente' onClose={() => setToastSuccessConfirm(false)} />}
 
         <div className={styles.sectionModal}>
           {notaSeleccionada && (
@@ -308,7 +342,7 @@ export function ListaNotas(props) {
                   </div>
                 </div>
                 <div className={styles.rowContactDate}>
-                  <div>
+                  <div className={styles.rowContactDate1}>
                     <h1>Descripción</h1>
                     <h2>{notaSeleccionada.descripcion}</h2>
                   </div>
@@ -340,9 +374,30 @@ export function ListaNotas(props) {
             )}
           </div>
 
+          <div className={styles.iconTrash}>
+            <FaTrash onClick={onShowConfirm} />
+          </div>
+
         </div>
 
       </BasicModal>
+
+      <Confirm
+        open={showConfirm}
+        cancelButton={
+          <div className={styles.iconClose}>
+            <FaTimes />
+          </div>
+        }
+        confirmButton={
+          <div className={styles.iconCheck}>
+            <FaCheck />
+          </div>
+        }
+        onConfirm={() => onDeleteNota(notaSeleccionada.id)}
+        onCancel={onShowConfirm}
+        content='¿Estás seguro de eliminar la nota?'
+      />
 
     </>
 

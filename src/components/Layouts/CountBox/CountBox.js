@@ -1,10 +1,19 @@
 import { MoonLoader } from 'react-spinners'
 import { size } from 'lodash'
 import styles from './CountBox.module.css'
+import { useEffect, useState } from 'react'
 
 export function CountBox(props) {
 
   const {icon, count:{countAll}, title} = props
+
+  const [count, setCount] = useState()
+
+  useEffect(() => {
+    if(countAll === 0){
+      setCount(true)
+    }
+  }, [])
 
   return (
     
@@ -13,7 +22,7 @@ export function CountBox(props) {
         {icon}
       </div>
       <div className={styles.count}>
-        {!countAll || countAll === undefined || countAll === null ? (
+        {!count ? (
           <h1>
             <MoonLoader
               color='cyan'

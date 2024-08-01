@@ -100,22 +100,19 @@
 
 .toggleOff, .toggleOn{
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: flex-end;
 }
 
-.toggleOn svg, .toggleOn path{
-  margin-right: 5px;
-  font-size: 24px;
+.toggleOn svg, .toggleOn path, .toggleOff svg, .toggleOff path{
+  margin-right: 1px;
+  font-size: 30px;
   color: var(--clrBL2);
   cursor: pointer;
 }
 
 .toggleOff svg, .toggleOff path{
-  margin-right: 5px;
-  font-size: 24px;
   color: var(--bg5);
-  cursor: pointer;
 }
 
 .sectionTotal h1{
@@ -132,7 +129,7 @@
 }
 
 .sectionTotal div:nth-child(2) h1{
-  margin: 5px 0;
+  margin: 8.5px 0;
   text-align: right;
 }
 

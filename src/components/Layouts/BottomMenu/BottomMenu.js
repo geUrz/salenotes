@@ -11,7 +11,6 @@ export function BottomMenu(props) {
   const [borderNote, setBorderNote] = useState(false)
   const [borderClient, setBorderClient] = useState(false)
   const [borderCount, setBorderCount] = useState(false)
-  const [borderUser, setBorderUser] = useState(false)
 
   const isBorder = () => {
 
@@ -19,28 +18,18 @@ export function BottomMenu(props) {
       setBorderNote(true)
       setBorderClient(false)
       setBorderCount(false)
-      setBorderUser(false)
     }
 
     if(categorie == 'clientes'){
       setBorderNote(false)
       setBorderClient(true)
       setBorderCount(false)
-      setBorderUser(false)
     }
     
     else if(categorie == 'cuentas'){
       setBorderNote(false)
       setBorderClient(false)
       setBorderCount(true)
-      setBorderUser(false)
-    }
-
-    else if(categorie == 'usuario'){
-      setBorderNote(false)
-      setBorderClient(false)
-      setBorderCount(false)
-      setBorderUser(true)
     }
   }
 
@@ -76,15 +65,6 @@ export function BottomMenu(props) {
             `${styles.noActive}`}
         >
           <FaFileInvoiceDollar />
-        </div>
-      </Link>
-      <Link href='usuario' className={styles.tab}>
-        <div 
-          className={borderUser ? 
-            `${styles.isActive}` : 
-            `${styles.noActive}`}
-        >
-          <FaUser />
         </div>
       </Link>
     </div>
