@@ -6,6 +6,7 @@ import axios from 'axios'
 import { sumBy } from 'lodash'
 import styles from './cuentas.module.css'
 import { MoonLoader } from 'react-spinners'
+import { Loading } from '@/components/Layouts'
 
 export default function Cuentas() {
 
@@ -14,8 +15,6 @@ export default function Cuentas() {
   const onReload = () => setReload((prevState) => !prevState)
 
   const [counts, setCounts] = useState()
-
-  const [toggleIVA, setToggleIVA] = useState(false)
  
   useEffect(() => {
     (async () => {
@@ -28,24 +27,9 @@ export default function Cuentas() {
     })()
   }, [reload])
 
-  const subtotal = sumBy(counts, count => count.precio * count.cantidad)
-  const iva = subtotal * 0.16
-  const total = subtotal + iva
-
-  useEffect(() => {
-    const savedToggleIVA = localStorage.getItem('toggleIVA');
-    if (savedToggleIVA !== null && savedToggleIVA !== undefined) {
-      setToggleIVA(JSON.parse(savedToggleIVA));
-    }
-  }, [])
-
-  const toggleIVAState = () => {
-    setToggleIVA((prevState) => {
-      const newState = !prevState;
-      localStorage.setItem('toggleIVA', JSON.stringify(newState))
-      return newState
-    })
-  }
+  const total = sumBy(counts, count => count.precio * count.cantidad)
+  /* const iva = subtotal * 0.16
+  const total = subtotal + iva */
 
   return (
     
@@ -53,60 +37,19 @@ export default function Cuentas() {
 
       <div className={styles.section}>
         <div className={styles.container}>
-
-
-        {toggleIVA ? (
-          <div className={styles.toggleOff}>
-            <h1>IVA</h1>
-            <BiToggleLeft onClick={toggleIVAState} />
-          </div>
-          ) : (
-            <div className={styles.toggleOn}>
-              <h1>IVA</h1>
-              <BiToggleRight onClick={toggleIVAState} />
-            </div>  
-          )}
-
           <BiTrendingUp />
           {!counts ? (
-            <div className={styles.loading}>
-              <MoonLoader
-                color='cyan'
-                size={25}
-                speedMultiplier={.8}
-              />
-            </div>
+            <Loading />
           ) : (
             <>
-              
-              {toggleIVA ? (
-                ''
-              ) : (
-                <>
-                  <h2>Subtotal</h2>
-                  <h1>${!counts.length ? '0' : formatCurrency(subtotal)}</h1>
-                  <h2>IVA</h2>
-                  <h1>${!counts.length ? '0' : formatCurrency(iva)}</h1>
-                
-                </>
-              )}
 
               <h2>Total</h2>
-              
-              {!toggleIVA ? (
-                <h1>$
-                  {!counts.length ? 
+              <h1>$
+                {!counts.length ? 
                   '0' : 
                   formatCurrency(total)
-                  }</h1>
-              ) : (
-                <h1>$
-                  {!counts.length ? 
-                  '0' : 
-                  formatCurrency(subtotal)
-                  }</h1>
-              )}
-
+                }
+              </h1>
             </>
           )}
         </div>
