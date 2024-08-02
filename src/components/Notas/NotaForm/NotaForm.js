@@ -225,7 +225,7 @@ export function NotaForm(props) {
               <h1>{concepto.concepto}</h1>
               <h1>${formatCurrency(concepto.precio * 1)}</h1>
               <h1>{concepto.cantidad}</h1>
-              <h1>${formatCurrency(concepto.cantidad * concepto.precio)}</h1>
+              <h1>${formatCurrency(concepto.precio * concepto.cantidad)}</h1>
             </div>
           ))}
 

@@ -74,7 +74,7 @@ export function ConceptosBox(props) {
                 <h1>{concepto.concepto}</h1>
                 <h1>${formatCurrency(concepto.precio * 1)}</h1>
                 <h1>{concepto.cantidad}</h1>
-                <h1>${formatCurrency(subtotal)}</h1>
+                <h1>${formatCurrency(concepto.precio * concepto.cantidad)}</h1>
               </div>
             ))}
           </>

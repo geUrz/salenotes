@@ -25,18 +25,18 @@ export function ListaNotas(props) {
 
   const[toastSuccess, setToastSuccess] = useState(false)
   const[toastSuccessConfirm, setToastSuccessConfirm] = useState(false)
-  const [toggleIVA, setToggleIVA] = useState()
+  const [toggleIVA, setToggleIVA] = useState(false)
 
   useEffect(() => {
-    const savedToggleIVA = localStorage.getItem('ontoggleIVA')
-    if (savedToggleIVA) {
-      setToggleIVA(JSON.parse(savedToggleIVA))
+    const savedToggleIVA = localStorage.getItem('ontoggleIVA');
+    if (savedToggleIVA !== null && savedToggleIVA !== undefined) {
+      setToggleIVA(JSON.parse(savedToggleIVA));
     }
   }, [])
 
-  /* useEffect(() => {
+  useEffect(() => {
     localStorage.setItem('ontoggleIVA', JSON.stringify(toggleIVA))
-  }, [toggleIVA]) */
+  }, [toggleIVA]) 
 
   const toggleIVAState = () => {
     setToggleIVA((prevState) => {

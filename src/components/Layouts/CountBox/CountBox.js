@@ -7,14 +7,6 @@ export function CountBox(props) {
 
   const {icon, count:{countAll}, title} = props
 
-  const [count, setCount] = useState()
-
-  useEffect(() => {
-    if(countAll === 0){
-      setCount(true)
-    }
-  }, [])
-
   return (
     
     <div className={styles.section}>
@@ -22,7 +14,7 @@ export function CountBox(props) {
         {icon}
       </div>
       <div className={styles.count}>
-        {!count ? (
+        {countAll === undefined || countAll === null ? (
           <h1>
             <MoonLoader
               color='cyan'

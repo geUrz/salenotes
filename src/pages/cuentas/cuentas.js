@@ -15,7 +15,7 @@ export default function Cuentas() {
 
   const [counts, setCounts] = useState()
 
-  const [toggleIVA, setToggleIVA] = useState()
+  const [toggleIVA, setToggleIVA] = useState(false)
  
   useEffect(() => {
     (async () => {
@@ -33,18 +33,18 @@ export default function Cuentas() {
   const total = subtotal + iva
 
   useEffect(() => {
-    const savedToggleIVA = localStorage.getItem('toggleIVA')
-    if (savedToggleIVA) {
-      setToggleIVA(JSON.parse(savedToggleIVA))
+    const savedToggleIVA = localStorage.getItem('toggleIVA');
+    if (savedToggleIVA !== null && savedToggleIVA !== undefined) {
+      setToggleIVA(JSON.parse(savedToggleIVA));
     }
   }, [])
 
-  useEffect(() => {
-    localStorage.setItem('toggleIVA', JSON.stringify(toggleIVA))
-  }, [toggleIVA])
-
-  const onToggleIVA = () => {
-    setToggleIVA ((prevState) => !prevState)
+  const toggleIVAState = () => {
+    setToggleIVA((prevState) => {
+      const newState = !prevState;
+      localStorage.setItem('toggleIVA', JSON.stringify(newState))
+      return newState
+    })
   }
 
   return (
@@ -58,12 +58,12 @@ export default function Cuentas() {
         {toggleIVA ? (
           <div className={styles.toggleOff}>
             <h1>IVA</h1>
-            <BiToggleLeft onClick={onToggleIVA} />
+            <BiToggleLeft onClick={toggleIVAState} />
           </div>
           ) : (
             <div className={styles.toggleOn}>
               <h1>IVA</h1>
-              <BiToggleRight onClick={onToggleIVA} />
+              <BiToggleRight onClick={toggleIVAState} />
             </div>  
           )}
 
