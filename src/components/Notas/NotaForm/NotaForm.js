@@ -3,13 +3,16 @@ import { Button, Form, FormField, FormGroup, Input, Label, TextArea } from 'sema
 import axios from 'axios'
 import { formatCurrency } from '@/helpers/formatCurrency'
 import { IconCloseModal } from '@/components/Layouts'
-import styles from './NotaForm.module.css'
 import { BiToggleLeft, BiToggleRight } from 'react-icons/bi'
+import { FaCheck, FaTimes } from 'react-icons/fa'
+import styles from './NotaForm.module.css'
+import { Confirm } from '@/components/Layouts/Confirm'
 
 export function NotaForm(props) {
 
   const { reload, onReload, onOpenClose, onToastSuccess } = props
 
+  const [showConfirm, setShowConfirm] = useState(false)
   const [cliente, setCliente] = useState('')
   const [clientes, setClientes] = useState([]);
   const [descripcion, setDescripcion] = useState('')
@@ -17,6 +20,17 @@ export function NotaForm(props) {
   const [nuevoConcepto, setNuevoConcepto] = useState({ tipo: '', concepto: '', cantidad: '', precio: '' })
   const [errors, setErrors] = useState({})
   const [toggleIVA, setToggleIVA] = useState()
+  const [conceptoAEliminar, setConceptoAEliminar] = useState(null)
+
+  const onShowConfirm = (index) => {
+    setConceptoAEliminar(index)
+    setShowConfirm(true)
+  }
+
+  const onHideConfirm = () => {
+    setConceptoAEliminar(null)
+    setShowConfirm(false)
+  }
 
   useEffect(() => {
     const fetchClientes = async () => {
@@ -105,6 +119,12 @@ export function NotaForm(props) {
     }
     setConceptos([...conceptos, nuevoConcepto]);
     setNuevoConcepto({ tipo: '', concepto: '', cantidad: '', precio: '' })
+  }
+
+  const eliminarConcepto = () => {
+    const nuevosConceptos = conceptos.filter((_, i) => i !== conceptoAEliminar);
+    setConceptos(nuevosConceptos);
+    onHideConfirm();
   }
 
   const calcularTotales = () => {
@@ -219,8 +239,9 @@ export function NotaForm(props) {
             <h1>Qty</h1>
             <h1>Total</h1>
           </div>
+
           {conceptos.map((concepto, index) => (
-            <div key={index} className={styles.rowMapConcept}>
+            <div key={index} className={styles.rowMapConcept} onClick={() => onShowConfirm(index)}>
               <h1>{concepto.tipo}</h1>
               <h1>{concepto.concepto}</h1>
               <h1>${formatCurrency(concepto.precio * 1)}</h1>
@@ -310,6 +331,23 @@ export function NotaForm(props) {
 
 
       </div>
+
+      <Confirm
+        open={showConfirm}
+        cancelButton={
+          <div className={styles.iconClose}>
+            <FaTimes />
+          </div>
+        }
+        confirmButton={
+          <div className={styles.iconCheck}>
+            <FaCheck />
+          </div>
+        }
+        onConfirm={eliminarConcepto}
+        onCancel={onHideConfirm}
+        content='¿Estás seguro de eliminar el concepto?'
+      />
 
     </>
 

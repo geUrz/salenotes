@@ -46,7 +46,7 @@ export function ConceptoForm(props) {
       return
     }
 
-    if (newConcept.tipo && newConcept.concepto && newConcept.precio > 0 && newConcept.cantidad > 0) {
+    if (newConcept.tipo && newConcept.concepto && newConcept.precio && newConcept.cantidad) {
       try {
         const response = await axios.post(`/api/concepts`, {
           nota_id: notaId,

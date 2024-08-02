@@ -10,7 +10,7 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
-});
+}); 
 
 export default pool   
 
@@ -27,5 +27,5 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-export default pool  */  
+export default pool  */ 
 
