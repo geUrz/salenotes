@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
-import { Button, Form, FormField, FormGroup, Input, Label, TextArea } from 'semantic-ui-react'
-import axios from 'axios'
-import { formatCurrency } from '@/helpers/formatCurrency'
 import { IconCloseModal } from '@/components/Layouts'
-import { BiToggleLeft, BiToggleRight } from 'react-icons/bi'
+import { Button, Confirm, Form, FormField, FormGroup, Input, Label, TextArea } from 'semantic-ui-react'
+import { useEffect, useState } from 'react'
+import { NotasRowHeadModal } from '../NotasRowHead'
 import { FaCheck, FaTimes } from 'react-icons/fa'
+import { BiToggleLeft, BiToggleRight } from 'react-icons/bi'
+import axios from 'axios'
 import styles from './NotaForm.module.css'
-import { Confirm } from '@/components/Layouts/Confirm'
+import { formatCurrency } from '@/helpers'
 
 export function NotaForm(props) {
 
@@ -35,13 +35,19 @@ export function NotaForm(props) {
   useEffect(() => {
     const fetchClientes = async () => {
       try {
-        const response = await axios.get('/api/clients')
-        setClientes(response.data);
+        const response = await axios.get('/api/clientes')
+        setClientes(response.data)
       } catch (error) {
         console.error('Error al obtener clientes:', error)
       }
     };
     fetchClientes()
+  }, [])
+
+  useEffect(() => {
+    if (Notification.permission !== 'granted') {
+      Notification.requestPermission()
+    }
   }, [])
 
   const validarFormCliente = () => {
@@ -96,10 +102,10 @@ export function NotaForm(props) {
     }
 
     try {
-      const response = await axios.post('/api/notes', { cliente_id: cliente, descripcion })
+      const response = await axios.post('/api/notas', { cliente_id: cliente, descripcion })
       const notaId = response.data.id
       await Promise.all(conceptos.map(concepto =>
-        axios.post('/api/concepts', { nota_id: notaId, ...concepto })
+        axios.post('/api/conceptos', { nota_id: notaId, ...concepto })
       ))
       onToastSuccess()
       setCliente('');
@@ -107,6 +113,13 @@ export function NotaForm(props) {
       setConceptos([])
       onOpenClose()
       onReload()
+      if (Notification.permission === 'granted') {
+        new Notification('Nota Creada', {
+          body: `La nota para el cliente ${cliente} ha sido creada exitosamente.`,
+          icon: '/path/to/your/icon.png',  // Asegúrate de tener un icono en esta ruta
+          tag: 'nota-creada'  // Opcional, para agrupar notificaciones relacionadas
+        })
+      }
     } catch (error) {
       console.error('Error al crear la nota:', error)
 
@@ -147,7 +160,7 @@ export function NotaForm(props) {
     localStorage.setItem('ontoggleIVA', JSON.stringify(toggleIVA))
   }, [toggleIVA])
 
-  const onToggleIVA = () => {
+  const onIVA = () => {
     setToggleIVA(prevState => (!prevState))
   }
 
@@ -178,9 +191,11 @@ export function NotaForm(props) {
             <FormField error={!!errors.descripcion}>
               <Label>Descripción</Label>
               <TextArea
+                type="text"
                 value={descripcion}
                 onChange={(e) => setDescripcion(e.target.value)}
-              />
+              >
+              </TextArea>
               {errors.descripcion && <span className={styles.error}>{errors.descripcion}</span>}
             </FormField>
           </FormGroup>
@@ -209,36 +224,31 @@ export function NotaForm(props) {
               />
               {errors.concepto && <span className={styles.error}>{errors.concepto}</span>}
             </FormField>
-            <FormField error={!!errors.cantidad}>
-              <Label>Qty</Label>
-              <Input
-                type="number"
-                value={nuevoConcepto.cantidad}
-                onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, cantidad: parseInt(e.target.value) })}
-              />
-              {errors.cantidad && <span className={styles.error}>{errors.cantidad}</span>}
-            </FormField>
             <FormField error={!!errors.precio}>
               <Label>Precio</Label>
               <Input
                 type="number"
                 value={nuevoConcepto.precio}
-                onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, precio: parseFloat(e.target.value) })}
+                onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, precio: e.target.value === '' ? '' : parseFloat(e.target.value) })}
               />
               {errors.precio && <span className={styles.error}>{errors.precio}</span>}
+            </FormField>
+            <FormField error={!!errors.cantidad}>
+              <Label>Qty</Label>
+              <Input
+                type="number"
+                value={nuevoConcepto.cantidad}
+                onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, cantidad: e.target.value === '' ? '' : parseInt(e.target.value) })}
+              />
+              {errors.cantidad && <span className={styles.error}>{errors.cantidad}</span>}
             </FormField>
           </FormGroup>
           <Button secondary onClick={añadirConcepto}>Añadir Concepto</Button>
         </Form>
 
         <div className={styles.section}>
-          <div className={styles.rowConcept}>
-            <h1>Tipo</h1>
-            <h1>Concepto</h1>
-            <h1>Precio</h1>
-            <h1>Qty</h1>
-            <h1>Total</h1>
-          </div>
+
+          <NotasRowHeadModal rowMain />
 
           {conceptos.map((concepto, index) => (
             <div key={index} className={styles.rowMapConcept} onClick={() => onShowConfirm(index)}>
@@ -250,85 +260,59 @@ export function NotaForm(props) {
             </div>
           ))}
 
-          <div className={styles.sectionTotal}>
-          <div>       
-            <h1>Subtotal:</h1>
-            
-            {!toggleIVA ? (
-              <div className={styles.toggleOn}>
-                <BiToggleRight onClick={onToggleIVA} />
-                <h1>IVA:</h1>
-              </div>
-            ) : (
-              <div className={styles.toggleOff}>
-                <BiToggleLeft onClick={onToggleIVA} />
-                <h1>IVA:</h1>
-              </div>
-            )}
+          <div className={styles.box3}>
+            <div className={styles.box3_1}>
+              <h1>Subtotal:</h1>
 
-            <h1>Total:</h1>
-          </div>
+              {!toggleIVA ? (
 
-            <div>
-            
-            {toggleIVA ? (
-              
-              <>
+                <div className={styles.toggleOFF} onClick={onIVA}>
+                  <BiToggleLeft />
+                  <h1>IVA:</h1>
+                </div>
 
-                <h1>-</h1>
-                <h1>-</h1>
-              
-              </>
-
-            ) : (
-              <>
-              
-              <h1>$
-                {!conceptos[0] ? (
-                  '0'
-                ) : (
-                  formatCurrency(subtotal)
-                )}
-              </h1>
-              <h1>$
-                {!conceptos[0] ? (
-                  '0'
-                ) : (
-                  formatCurrency(iva)
-                )
-                }
-              </h1>
-              
-              </>
-            )}
-
-            {toggleIVA ? (
-              <h1>$
-              {!conceptos[0] ? (
-                '0'
               ) : (
-                formatCurrency(subtotal)
-              )
-              }
-            </h1>
-            ) : (
-              <h1>$
-              {!conceptos[0] ? (
-                '0'
-              ) : (
-                formatCurrency(total)
-              )
-              }
-            </h1>
-            )}
 
-          </div>
+                <div className={styles.toggleON} onClick={onIVA}>
+                  <BiToggleRight />
+                  <h1>IVA:</h1>
+                </div>
+
+              )}
+
+              <h1>Total:</h1>
+            </div>
+
+            <div className={styles.box3_2}>
+
+              {!toggleIVA ? (
+                <>
+
+                  <h1>-</h1>
+                  <h1>-</h1>
+
+                </>
+              ) : (
+                <>
+
+                  <h1>${formatCurrency(subtotal)}</h1>
+                  <h1>${formatCurrency(iva)}</h1>
+
+                </>
+              )}
+
+              {!toggleIVA ? (
+                <h1>${formatCurrency(subtotal)}</h1>
+              ) : (
+                <h1>${formatCurrency(total)}</h1>
+              )}
+
+            </div>
           </div>
 
         </div>
 
-        <Button primary onClick={crearNota}>Crear</Button>
-
+        <Button primary onClick={crearNota}>Crear Nota</Button>
 
       </div>
 
@@ -353,6 +337,3 @@ export function NotaForm(props) {
 
   )
 }
-
-
-

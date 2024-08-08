@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { IconCloseModal } from '@/components/Layouts';
-import axios from 'axios';
-import { Button, Form, FormField, FormGroup, Input, Label } from 'semantic-ui-react';
-import styles from './ConceptoForm.module.css'
+import { IconClose, IconCloseModal } from '@/components/Layouts'
+import { Button, Form, FormField, FormGroup, Input, Label } from 'semantic-ui-react'
+import { useState } from 'react'
+import styles from './NotaConceptosForm.module.css'
+import axios from 'axios'
 
-export function ConceptoForm(props) {
+export function NotaConceptosForm(props) {
 
-  const { reload, onReload, conceptos, currentConcept, onAddConcept, notaId, onOpenCloseForm, onToastSuccess } = props
+  const { notaId, onAddConcept, onOpenCloseForm, onToastSuccess, reload, onReload} = props
 
-  const [newConcept, setNewConcept] = useState({ tipo: '', concepto: '', cantidad: '', precio: '' })
+  const [newConcept, setNewConcept] = useState({ tipo: '', concepto: '', precio: '', cantidad: '' })
   const [errors, setErrors] = useState({})
 
   const handleChange = (e) => {
@@ -48,8 +48,8 @@ export function ConceptoForm(props) {
 
     if (newConcept.tipo && newConcept.concepto && newConcept.precio && newConcept.cantidad) {
       try {
-        const response = await axios.post(`/api/concepts`, {
-          nota_id: notaId,
+        const response = await axios.post(`/api/conceptos`, {
+          recibo_id: notaId,
           ...newConcept,
         })
   
@@ -58,10 +58,12 @@ export function ConceptoForm(props) {
           if (id) {
             const newConceptWithId = { ...newConcept, id }
             onAddConcept(newConceptWithId)
-            setNewConcept({ tipo: '', concepto: '', cantidad: '', precio: '' })
+            setNewConcept({ tipo: '', concepto: '', precio: '', cantidad: '' })
+
+            onReload()
             onToastSuccess()
             onOpenCloseForm()
-            onReload()
+
           } else {
             console.error('Error al agregar el concepto: El ID no se encuentra en la respuesta del servidor', response);
           }
@@ -74,22 +76,6 @@ export function ConceptoForm(props) {
     } else {
       console.warn('Datos incompletos o inválidos para agregar concepto', newConcept)
     }
-  };
-
-  const handleUpdateConcept = async () => {
-    if (newConcept.tipo && newConcept.concepto && newConcept.precio > 0 && newConcept.cantidad > 0) {
-      try {
-        const response = await axios.put(`/api/concepts/${currentConcept.id}`, newConcept)
-        if (response.status === 200) {
-          onReload()
-          setShow(false)
-        } else {
-          console.error('Error al actualizar el concepto: Respuesta del servidor no fue exitosa', response);
-        }
-      } catch (error) {
-        console.error('Error al actualizar el concepto:', error.response || error.message || error);
-      }
-    }
   }
 
   return (
@@ -98,15 +84,11 @@ export function ConceptoForm(props) {
 
       <IconCloseModal onOpenClose={onOpenCloseForm} />
 
-
-
       <div className={styles.addConceptForm}>
-      <Form>
+        <Form>
           <FormGroup widths='equal'>
             <FormField error={!!errors.tipo}>
-              <Label className={styles.formLabel}>
-                Tipo
-              </Label>
+              <Label>Tipo</Label>
               <select
                 name="tipo"
                 value={newConcept.tipo}
@@ -128,16 +110,6 @@ export function ConceptoForm(props) {
               />
               {errors.concepto && <span className={styles.error}>{errors.concepto}</span>}
             </FormField>
-            <FormField error={!!errors.cantidad}>
-              <Label>Qty</Label>
-              <Input
-                type="number"
-                name="cantidad"
-                value={newConcept.cantidad}
-                onChange={handleChange}
-              />
-              {errors.cantidad && <span className={styles.error}>{errors.cantidad}</span>}
-            </FormField>
             <FormField error={!!errors.precio}>
               <Label>Precio</Label>
               <Input
@@ -147,6 +119,16 @@ export function ConceptoForm(props) {
                 onChange={handleChange}
               />
               {errors.precio && <span className={styles.error}>{errors.precio}</span>}
+            </FormField>
+            <FormField error={!!errors.cantidad}>
+              <Label>Qty</Label>
+              <Input
+                type="number"
+                name="cantidad"
+                value={newConcept.cantidad}
+                onChange={handleChange}
+              />
+              {errors.cantidad && <span className={styles.error}>{errors.cantidad}</span>}
             </FormField>
           </FormGroup>
         </Form>

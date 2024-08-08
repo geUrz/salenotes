@@ -26,7 +26,7 @@ export default function Cliente() {
   useEffect(() => {
     (async () => {
       try {
-        const response = await axios.get('/api/clients')
+        const response = await axios.get('/api/clientes')
         setClientes(response.data)
       } catch (error) {
         console.error(error)

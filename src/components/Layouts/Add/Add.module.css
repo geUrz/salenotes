@@ -6,23 +6,26 @@
   justify-content: center;
   position: fixed;
   bottom: 130px;
-  right: 0px;
-  z-index: 1000;
+  right: 0;
+  z-index: 900;
 }
 
 .icon svg, .icon path{
-  padding: 1px;
+  padding: 16px;
   font-size: 60px;
-  color: var(--clrBL0);
-  background-color: var(--bg2);
   border-radius: 50%;
+  background-color: var(--clrBL0);
   cursor: pointer;
 }
 
-.icon div:hover path{
-  color: var(--clrBL1);
+.icon div{
+  cursor: pointer;
 }
 
-.icon div:active path{
-  color: var(--clrBL2);
+.icon div:hover svg, .icon div:hover path{
+  background-color: var(--clrBL1);
+}
+
+.icon div:active svg, .icon div:active path{
+  background-color: var(--clrBL2);
 }

@@ -13,6 +13,7 @@
 }
 
 .ui.button, .ui.button.primary{
+  margin: 20px;
   color: azure !important;
   font-weight: 200 !important;
   display: flex;

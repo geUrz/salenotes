@@ -1,13 +1,13 @@
 import { BasicLayout, BasicModal } from '@/layouts'
-import { ListaNotas, NotaForm } from '@/components/Notas'
-import { FaCog, FaFileAlt } from 'react-icons/fa'
+import { NotaForm, NotasLista, NotasRowHeadMain } from '@/components/Notas'
 import { useEffect, useState } from 'react'
-import { Add, CountBox, ToastSuccess } from '@/components/Layouts'
-import { size } from 'lodash'
+import { Add, CountBox, Title, ToastSuccess } from '@/components/Layouts'
 import axios from 'axios'
 import styles from './notas.module.css'
 
-export default function Notas() {
+export default function Notas(props) {
+
+  const {rowMain=true} = props
 
   const [reload, setReload] = useState()
 
@@ -16,10 +16,6 @@ export default function Notas() {
   const [show, setShow] = useState(false)
 
   const onOpenClose = () => setShow((prevState) => !prevState)
-
-  const [notas, setNotas] = useState([])
-
-  const countAll = size(notas)
 
   const[toastSuccess, setToastSuccess] = useState(false)
 
@@ -30,51 +26,33 @@ export default function Notas() {
     }, 3000)
   }
 
-  useEffect(() => {
+  /* useEffect(() => {
     (async () => {
       try {
-        const response = await axios.get('/api/notes')
+        const response = await axios.get('/api/notas')
         setNotas(response.data)
       } catch (error) {
           console.error(error)
       }
     })()
-  }, [notas])
+  }, [notas]) */
 
   return (
     
-    <BasicLayout title='Lista de Notas' categorie='notas' onReload={onReload}>
+    <BasicLayout relative categorie='notas' onReload={onReload}>
 
-      {toastSuccess && <ToastSuccess contain='Nota creada exitosamente' onClose={() => setToast(false)} />}
+      <Title title='Notas' />
 
-      <div className={styles.section}>
-        <div className={styles.container}>
-          <div className={styles.countNotes}>
-            <CountBox
-              title='notas'
-              icon={<FaFileAlt/>}
-              count={{countAll}}
-            />
-          </div>
-          <div className={styles.rows}>
-            
-            <div className={styles.row}>
-              <h1>Folio</h1>
-              <h1>Cliente</h1>
-              <h1>Descripción</h1>
-              <h1><FaCog /></h1>
-            </div>
-            
-            <ListaNotas reload={reload} onReload={onReload} />
-            
-          </div>
-        </div>
-      </div>
+      {toastSuccess && <ToastSuccess contain='Nota creado exitosamente' onClose={() => setToast(false)} />}
+
+      <NotasRowHeadMain rowMain={rowMain} />
+
+      <NotasLista reload={reload} onReload={onReload} />
 
       <Add onOpenClose={onOpenClose} />
 
-      <BasicModal title='Crear Nota' show={show} onClose={onOpenClose}>
-        <NotaForm onToastSuccess={onToastSuccess} reload={reload} onReload={onReload} onOpenClose={onOpenClose} />
+      <BasicModal title='Crear nota' show={show} onClose={onOpenClose}>
+        <NotaForm reload={reload} onReload={onReload} onOpenClose={onOpenClose} onToastSuccess={onToastSuccess} />
       </BasicModal>
 
     </BasicLayout>

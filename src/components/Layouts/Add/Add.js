@@ -1,4 +1,4 @@
-import { FaPlusCircle } from 'react-icons/fa'
+import { FaPlus } from 'react-icons/fa'
 import styles from './Add.module.css'
 
 export function Add(props) {
@@ -9,7 +9,7 @@ export function Add(props) {
 
     <div className={styles.icon}>
       <div onClick={onOpenClose}>
-        <FaPlusCircle />
+        <FaPlus />
       </div>
     </div>
 

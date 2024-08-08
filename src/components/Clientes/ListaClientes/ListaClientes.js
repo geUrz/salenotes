@@ -19,20 +19,20 @@ export function ListaClientes(props) {
   useEffect(() => {
     const fetchClientes = async () => {
       try {
-        const response = await axios.get('/api/clients')
+        const response = await axios.get('/api/clientes')
         setClientes(response.data)
         onReload()
       } catch (error) {
         console.error('Error al obtener los clientes:', error)
       }
-    };
+    }
 
     fetchClientes()
   }, [clientes])
 
   const onOpenClose = async (cliente) => {
     try {
-      const response = await axios.get(`/api/clients?id=${cliente.id}`)
+      const response = await axios.get(`/api/clientes?id=${cliente.id}`)
       setClienteSeleccionado(response.data)
       setShow(true)
       onReload()
@@ -51,7 +51,7 @@ export function ListaClientes(props) {
 
   const handleDelete = async (clienteId) => {
     try {
-      await axios.delete(`/api/clients?id=${clienteId}`);
+      await axios.delete(`/api/clientes?id=${clienteId}`);
       setClientes(clientes.filter(cliente => cliente.id !== clienteId));
       handleCloseModal();
     } catch (error) {
@@ -64,18 +64,18 @@ export function ListaClientes(props) {
     <>
 
       {!clientes ? (
-        <Loading />
+        <Loading size={45} loading={1} />
       ) : (
         size(clientes) === 0 ? (
           <ListEmpty />
         ) : (
           <div className={styles.section}>
             {clientes.map((cliente) => (
-              <div key={cliente.id} className={styles.rowCliente}>
+              <div key={cliente.id} className={styles.rowCliente} onClick={() => onOpenClose(cliente)}>
                 <h1>{formatClientId(cliente.id)}</h1>
                 <h1>{cliente.cliente}</h1>
                 <h1>{cliente.contacto}</h1>
-                <h1><FaInfoCircle onClick={() => onOpenClose(cliente)} /></h1>
+                <h1><FaInfoCircle /></h1>
               </div>
             ))}
           </div>

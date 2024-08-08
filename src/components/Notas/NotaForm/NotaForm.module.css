@@ -8,57 +8,6 @@
   height: auto;
 }
 
-.rowConcept{
-  padding: 5px 0;
-  margin-top: 20px;
-  width: 100%;
-  height: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--bg2);
-}
-
-.rowConcept h1{
-  font-size: 12px;
-  color: var(--clrBL2);
-}
-
-.rowConcept h1:nth-child(1), .rowMapConcept h1:nth-child(1){
-  width: 20%;
-  text-align: center;
-}
-.rowConcept h1:nth-child(2), .rowMapConcept h1:nth-child(2){
-  width: 40%;
-  text-align: left;
-  
-}
-.rowConcept h1:nth-child(3), .rowMapConcept h1:nth-child(3){
-  width: 25%;
-  text-align: right;
-}
-
-.rowConcept h1:nth-child(4), .rowMapConcept h1:nth-child(4){
-  width: 10%;
-  text-align: center;
-}
-
-.rowConcept h1:nth-child(5), .rowMapConcept h1:nth-child(5){
-  padding-right: 2.5px;
-  width: 20%;
-  text-align: right;
-}
-
-/* .rowConcept h1:nth-child(6), .rowMapConcept h1:nth-child(6){
-  width: 10%;
-  text-align: center;
-} */
-
-.rowConcept svg, .rowConcept path{
-  font-size: 11.5px;
-  color: var(--clrBL1);
-}
-
 .rowMapConcept{
   padding: 5px 0;
   width: 100%;
@@ -68,12 +17,37 @@
   justify-content: center;
 }
 
-.rowMapConcept h1{
-  font-size: 10px;
+.rowMapConcept h1:nth-child(1){
+  width: 20%;
+  font-size: 11px;
+  text-align: center;
 }
 
-.rowMapConcept h1:nth-child(3), .rowMapConcept h1:nth-child(4), .rowMapConcept h1:nth-child(5){
-  font-size: 9px;
+.rowMapConcept h1:nth-child(2){
+  padding-left: 5px !important;
+  width: 50%;
+  font-size: 12px;
+  text-align: left;
+}
+
+.rowMapConcept h1:nth-child(3){
+  padding-left: 5px !important;
+  width: 20%;
+  font-size: 10px;
+  text-align: right;
+}
+
+.rowMapConcept h1:nth-child(4){
+  width: 10%;
+  font-size: 10px;
+  text-align: center;
+}
+
+.rowMapConcept h1:nth-child(5){
+  padding-right: 3.5px !important;
+  width: 20%;
+  font-size: 10px;
+  text-align: right;
 }
 
 .sectionTotal{
@@ -85,43 +59,49 @@
   justify-content: flex-end;
 }
 
-.toggleOff, .toggleOn{
+.toggleOFF, .toggleON{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.toggleOFF svg, .toggleON svg, .toggleOFF path, .toggleON path{
+  margin-right: 5px;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.toggleON svg, .toggleON path{
+  color: var(--clrBL3);
+}
+
+.box3{
+  padding-right: 3.5px !important;
+  margin-top: 30px;
+  width: 100%;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
 
-.toggleOn svg, .toggleOn path, .toggleOff svg, .toggleOff path{
-  margin-right: 1px;
-  font-size: 30px;
-  color: var(--clrBL2);
-  cursor: pointer;
+.box3 h1{
+  font-size: 11.5px;
 }
 
-.toggleOff svg, .toggleOff path{
-  color: var(--bg5);
+.box3_1{
+  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
 }
 
-.sectionTotal h1{
-  font-size: 12px;
-}
-
-.sectionTotal div:nth-child(1){
-  margin-right: 5px;
-}
-
-.sectionTotal div:nth-child(1) h1{
+.box3_2 h1{
+  padding: 3.5px 0 !important;
+  font-size: 11px;
   text-align: right;
-  color: var(--clrBL2);
-}
-
-.sectionTotal div:nth-child(2) h1{
-  margin: 8.5px 0;
-  text-align: right;
-}
-
-.sectionTotal h1:nth-child(3){
-  font-size: 12.8px;
 }
 
 .iconClose{
@@ -157,4 +137,10 @@
   font-size: 22px;
   color: var(--clrBL2);
   cursor: pointer;
+}
+
+.main span{
+  margin-top: 5px;
+  font-size: 11.5px;
+  color: red;
 }

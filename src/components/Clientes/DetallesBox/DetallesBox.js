@@ -23,8 +23,6 @@ export function DetallesBox(props) {
 
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null)
 
-  //const onOpenConfirm = () => setShowConfirm((prevStatus) => !prevStatus)
-
   const onOpen = (cliente = null) => {
     setClienteSeleccionado(cliente)
     setShow(!show)

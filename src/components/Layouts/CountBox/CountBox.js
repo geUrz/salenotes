@@ -2,6 +2,7 @@ import { MoonLoader } from 'react-spinners'
 import { size } from 'lodash'
 import styles from './CountBox.module.css'
 import { useEffect, useState } from 'react'
+import { Loading } from '../Loading'
 
 export function CountBox(props) {
 
@@ -16,24 +17,15 @@ export function CountBox(props) {
       <div className={styles.count}>
         {countAll === undefined || countAll === null ? (
           <h1>
-            <MoonLoader
-              color='cyan'
-              size={25}
-              speedMultiplier={.8}
-            />
+            <Loading size={20} loading={3} />
           </h1>
         ) : (
           countAll === 0 ? (
-            <>
-              <h1>0</h1>
-              <h2>{title}</h2>
-            </>
+            <h1>0</h1>
         ) : (
-          <>
-            <h1>{countAll}</h1>
-            <h2>{title}</h2>
-          </>
+            <h1>{countAll}</h1>      
         ))}
+          <h2>{title}</h2>
       </div>
     </div>
 
