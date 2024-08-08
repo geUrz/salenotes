@@ -1,13 +1,15 @@
 import { BasicLayout, BasicModal } from '@/layouts'
 import { NotaForm, NotasLista, NotasRowHeadMain } from '@/components/Notas'
 import { useEffect, useState } from 'react'
-import { Add, CountBox, Title, ToastSuccess } from '@/components/Layouts'
+import { Add, CountBox, ToastSuccess } from '@/components/Layouts'
 import axios from 'axios'
+import { FaFileAlt } from 'react-icons/fa'
+import { size } from 'lodash'
 import styles from './notas.module.css'
 
 export default function Notas(props) {
 
-  const {rowMain=true} = props
+  const { rowMain = true } = props
 
   const [reload, setReload] = useState()
 
@@ -17,7 +19,11 @@ export default function Notas(props) {
 
   const onOpenClose = () => setShow((prevState) => !prevState)
 
-  const[toastSuccess, setToastSuccess] = useState(false)
+  const [toastSuccess, setToastSuccess] = useState(false)
+
+  const [notas, setNotas] = useState([])
+
+  const countAll = size(notas)
 
   const onToastSuccess = () => {
     setToastSuccess(true)
@@ -26,24 +32,28 @@ export default function Notas(props) {
     }, 3000)
   }
 
-  /* useEffect(() => {
+  useEffect(() => {
     (async () => {
       try {
         const response = await axios.get('/api/notas')
         setNotas(response.data)
       } catch (error) {
-          console.error(error)
+        console.error(error)
       }
     })()
-  }, [notas]) */
+  }, [notas])
 
   return (
-    
-    <BasicLayout relative categorie='notas' onReload={onReload}>
 
-      <Title title='Notas' />
+    <BasicLayout title='Notas' categorie='notas' onReload={onReload}>
 
       {toastSuccess && <ToastSuccess contain='Nota creado exitosamente' onClose={() => setToast(false)} />}
+
+      <CountBox
+        title='Notas'
+        icon={<FaFileAlt />}
+        count={{ countAll }}
+      />
 
       <NotasRowHeadMain rowMain={rowMain} />
 

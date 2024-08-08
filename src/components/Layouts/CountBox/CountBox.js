@@ -6,26 +6,26 @@ import { Loading } from '../Loading'
 
 export function CountBox(props) {
 
-  const {icon, count:{countAll}, title} = props
+  const { icon, count: { countAll }, title } = props
 
   return (
-    
+
     <div className={styles.section}>
-      <div className={styles.icon}>
-        {icon}
-      </div>
-      <div className={styles.count}>
-        {countAll === undefined || countAll === null ? (
-          <h1>
+      <div>
+        <div className={styles.icon}>
+          {icon}
+        </div>
+        <div className={styles.count}>
+          {countAll === undefined || countAll === 0 ? (
             <Loading size={20} loading={3} />
-          </h1>
-        ) : (
-          countAll === 0 ? (
-            <h1>0</h1>
-        ) : (
-            <h1>{countAll}</h1>      
-        ))}
+          ) : (
+            countAll === 0 ? (
+              <h1>0</h1>
+            ) : (
+              <h1>{countAll}</h1>
+            ))}
           <h2>{title}</h2>
+        </div>
       </div>
     </div>
 
