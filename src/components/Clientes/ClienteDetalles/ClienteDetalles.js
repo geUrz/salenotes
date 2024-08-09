@@ -1,16 +1,18 @@
-import { useState } from 'react'
-import { IconCloseModal, ToastSuccess } from '@/components/Layouts'
-import { formatClientId } from '@/helpers'
 import { FaEdit } from 'react-icons/fa'
+import { IconCloseModal, ToastSuccess } from '@/components/Layouts'
+import { IconClose } from '@/components/Layouts'
+import styles from './ClienteDetalles.module.css'
+import { useState } from 'react'
+import { formatClientId } from '@/helpers'
 import { BasicModal } from '@/layouts'
 import { ClienteModForm } from '../ClienteModForm'
-import styles from './DetallesBox.module.css'
 
-export function DetallesBox(props) {
+export function ClienteDetalles(props) {
 
-  const { reload, onReload, cliente, onOpenClose, onDelete } = props
+  const { reload, onReload, cliente, onOpenClose } = props
 
-  const [show, setShow] = useState(false)
+  const [showEdit, setShowEdit] = useState(false)
+  const [clienteSeleccionado, setClienteSeleccionado] = useState(cliente)
 
   const[toastSuccess, setToastSuccess] = useState(false)
 
@@ -18,14 +20,13 @@ export function DetallesBox(props) {
     setToastSuccess(true)
     setTimeout(() => {
       setToastSuccess(false)
+      onOpenClose()
     }, 3000)
   }
 
-  const [clienteSeleccionado, setClienteSeleccionado] = useState(null)
-
-  const onOpen = (cliente = null) => {
+  const onOpenCloseEdit = (cliente = null) => {
     setClienteSeleccionado(cliente)
-    setShow(!show)
+    setShowEdit(!showEdit)
   }
 
   return (
@@ -34,7 +35,7 @@ export function DetallesBox(props) {
 
       <IconCloseModal onOpenClose={onOpenClose} />
 
-      {toastSuccess && <ToastSuccess contain='Cliente actualizado exitosamente' onClose={() => setToast(false)} />}
+      {toastSuccess && <ToastSuccess contain='Cliente actualizado exitosamente' onClose={() => setToastSuccess(false)} />}
 
       <div className={styles.section}>
         <div className={styles.box1}>
@@ -69,37 +70,16 @@ export function DetallesBox(props) {
         </div>
 
         <div className={styles.iconEdit}>
-          <div onClick={() => onOpen(cliente)}>
+          <div onClick={() => onOpenCloseEdit(cliente)}>
             <FaEdit />
           </div>
         </div>
 
       </div>
 
-      <BasicModal title='Modificar cliente' show={show} onClose={() => onOpen(null)}>
-        <ClienteModForm onToastSuccess={onToastSuccess} reload={reload} onReload={onReload} clienteSeleccionado={clienteSeleccionado} onOpenClose={() => {
-            onOpen(null)
-            //fetchClientes()
-          }} />
+      <BasicModal title='modificar cliente' show={showEdit} onClose={() => onOpenCloseEdit(null)}>
+        <ClienteModForm reload={reload} onReload={onReload} clienteId={clienteSeleccionado} onOpenCloseEdit={() => onOpenCloseEdit(null)} onToastSuccess={onToastSuccess} />
       </BasicModal>
-
-      {/* <Confirm
-        open={showConfirm}
-        cancelButton={
-          <div className={styles.iconClose}>
-            <FaTimes />
-          </div>
-        }
-        confirmButton={
-          <div className={styles.iconCheck}>
-            <FaCheck />
-          </div>
-        }
-        onConfirm={onDelete}
-        onCancel={onOpenConfirm}
-        content='¿ Estas seguro de eliminar el cliente ?'
-      /> */}
-
 
     </>
 

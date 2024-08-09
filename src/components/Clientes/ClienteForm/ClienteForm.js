@@ -6,7 +6,7 @@ import styles from './ClienteForm.module.css'
 
 export function ClienteForm(props) {
 
-  const {onOpenClose} = props
+  const {reload, onReload, onOpenClose} = props
 
   const [clientes, setClientes] = useState([])
   const [cliente, setCliente] = useState('')
@@ -14,11 +14,12 @@ export function ClienteForm(props) {
   const [direccion, setDireccion] = useState('')
   const [cel, setCel] = useState('')
   const [email, setEmail] = useState('')
+  const [errors, setErrors] = useState({})
 
   useEffect(() => {
     const fetchClientes = async () => {
       try {
-        const response = await axios.get('/api/clients')
+        const response = await axios.get('/api/clientes')
         setClientes(response.data)
       } catch (error) {
         console.error('Error al obtener los clientes:', error)
@@ -26,12 +27,51 @@ export function ClienteForm(props) {
     };
 
     fetchClientes()
-  }, []);
+  }, [])
+
+  useEffect(() => {
+    if (Notification.permission !== 'granted') {
+      Notification.requestPermission()
+    }
+  }, [])
+
+  const validarFormCliente = () => {
+    const newErrors = {}
+
+    if (!cliente) {
+      newErrors.cliente = 'El campo es requerido'
+    }
+
+    if (!contacto) {
+      newErrors.contacto = 'El campo es requerido'
+    }
+
+    if (!direccion) {
+      newErrors.direccion = 'El campo es requerido'
+    }
+
+    if (!cel) {
+      newErrors.cel = 'El campo es requerido'
+    }
+
+    if (!email) {
+      newErrors.email = 'El campo es requerido'
+    }
+
+    setErrors(newErrors)
+
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    if (!validarFormCliente()) {
+      return
+    }
+
     try {
-      const response = await axios.post('/api/clients', { cliente, contacto, direccion, cel, email })
+      const response = await axios.post('/api/clientes', { cliente, contacto, direccion, cel, email })
 
       setClientes([...clientes, response.data])
       setCliente('')
@@ -40,6 +80,17 @@ export function ClienteForm(props) {
       setCel('')
       setEmail('')
       onOpenClose()
+
+      if (Notification.permission === 'granted') {
+        new Notification('Cliente Creado', {
+          body: `El cliente "${cliente}" ha sido creado exitosamente.`,
+          icon: '/img/icon.png',  // Asegúrate de tener un icono en esta ruta
+          //tag: 'cliente-creado'  // Opcional, para agrupar notificaciones relacionadas
+        })
+      }
+
+      //onReload()
+
     } catch (error) {
       console.error('Error al crear el cliente:', error)
     }
@@ -54,7 +105,7 @@ export function ClienteForm(props) {
       <div className={styles.main}>
         <Form>
           <FormGroup widths='equal'>
-            <FormField>
+            <FormField error={!!errors.cliente}>
               <Label>
                 Cliente
               </Label>
@@ -63,6 +114,9 @@ export function ClienteForm(props) {
                 value={cliente}
                 onChange={(e) => setCliente(e.target.value)}
               />
+              {errors.cliente && <span className={styles.error}>{errors.cliente}</span>}
+              </FormField>
+              <FormField error={!!errors.contacto}>
               <Label>
                 Contacto
               </Label>
@@ -71,6 +125,9 @@ export function ClienteForm(props) {
                 value={contacto}
                 onChange={(e) => setContacto(e.target.value)}
               />
+              {errors.contacto && <span className={styles.error}>{errors.contacto}</span>}
+              </FormField>
+              <FormField error={!!errors.direccion}>
               <Label>
                 Dirección
               </Label>
@@ -79,6 +136,9 @@ export function ClienteForm(props) {
                 value={direccion}
                 onChange={(e) => setDireccion(e.target.value)}
               />
+              {errors.direccion && <span className={styles.error}>{errors.direccion}</span>}
+              </FormField>
+              <FormField error={!!errors.cel}>
               <Label>
                 Celular
               </Label>
@@ -87,6 +147,9 @@ export function ClienteForm(props) {
                 value={cel}
                 onChange={(e) => setCel(e.target.value)}
               />
+              {errors.cel && <span className={styles.error}>{errors.cel}</span>}
+              </FormField>
+              <FormField error={!!errors.email}>
               <Label>
                 Email
               </Label>
@@ -95,6 +158,7 @@ export function ClienteForm(props) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
+              {errors.email && <span className={styles.error}>{errors.email}</span>}
             </FormField>
           </FormGroup>
         </Form>

@@ -1,15 +1,15 @@
 import { BasicLayout, BasicModal } from '@/layouts'
 import { useEffect, useState } from 'react'
-import { Add, CountBox } from '@/components/Layouts'
-import { ClienteForm } from '@/components/Clientes'
-import { ListaClientes } from '@/components/Clientes/ListaClientes'
-import { FaCog, FaUsers } from 'react-icons/fa'
+import { Add, CountBox, ToastSuccess } from '@/components/Layouts'
+import { ClienteForm, ClientesLista, ClientesRowHeadMain } from '@/components/Clientes'
+import { FaUsers } from 'react-icons/fa'
 import axios from 'axios'
 import { size } from 'lodash'
 import styles from './clientes.module.css'
 
+export default function Cliente(props) {
 
-export default function Cliente() {
+  const { rowMain } = props
 
   const [show, setShow] = useState(false)
 
@@ -21,7 +21,16 @@ export default function Cliente() {
 
   const [clientes, setClientes] = useState([])
 
+  const [toastSuccess, setToastSuccess] = useState(false)
+
   const countAll = size(clientes)
+
+  const onToastSuccess = () => {
+    setToastSuccess(true)
+    setTimeout(() => {
+      setToastSuccess(false)
+    }, 3000)
+  }
 
   useEffect(() => {
     (async () => {
@@ -36,34 +45,24 @@ export default function Cliente() {
 
   return (
 
-    <BasicLayout title='Lista de Clientes' categorie='clientes' onReload={onReload}>
+    <BasicLayout title='Clientes' categorie='clientes' onReload={onReload}>
 
-      <div className={styles.section}>
-        <div className={styles.container}>
-          <CountBox
-            title='Clientes'
-            icon={<FaUsers />}
-            count={{ countAll }}
-          />
-          <div className={styles.rows}>
+      {toastSuccess && <ToastSuccess contain='Nota creado exitosamente' onClose={() => setToast(false)} />}
 
-            <div className={styles.row}>
-              <h1>Código</h1>
-              <h1>Cliente</h1>
-              <h1>Contacto</h1>
-              <h1><FaCog /></h1>
-            </div>
+      <CountBox
+        title='Clientes'
+        icon={<FaUsers />}
+        count={{ countAll }}
+      />
 
-            <ListaClientes reload={reload} onReload={onReload} />
+      <ClientesRowHeadMain rowMain />
 
-          </div>
-        </div>
-      </div>
+      <ClientesLista reload={reload} onReload={onReload} />
 
-      <Add title='Crear cliente' onOpenClose={onOpenClose} />
+      <Add onOpenClose={onOpenClose} />
 
       <BasicModal title='Crear cliente' show={show} onClose={onOpenClose}>
-        <ClienteForm reload={reload} onReload={onReload} onOpenClose={onOpenClose} />
+        <ClienteForm reload={reload} onReload={onReload} onOpenClose={onOpenClose} onToastSuccess={onToastSuccess} />
       </BasicModal>
 
     </BasicLayout>

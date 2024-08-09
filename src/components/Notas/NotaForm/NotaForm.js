@@ -113,13 +113,15 @@ export function NotaForm(props) {
       setConceptos([])
       onOpenClose()
       onReload()
+
       if (Notification.permission === 'granted') {
         new Notification('Nota Creada', {
-          body: `La nota para el cliente ${cliente} ha sido creada exitosamente.`,
-          icon: '/path/to/your/icon.png',  // Asegúrate de tener un icono en esta ruta
-          tag: 'nota-creada'  // Opcional, para agrupar notificaciones relacionadas
+          body: `La nota para el cliente "${cliente}" ha sido creada exitosamente.`,
+          icon: '/img/icon.png',  // Asegúrate de tener un icono en esta ruta
+          //tag: 'nota-creada'  // Opcional, para agrupar notificaciones relacionadas
         })
       }
+
     } catch (error) {
       console.error('Error al crear la nota:', error)
 

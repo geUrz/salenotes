@@ -59,7 +59,7 @@
 }
 
 .iconEdit svg, .iconEdit path{
-  color: var(--clrBL2);
+  color: var(--clr2);
 }
 
 .iconEdit div:hover{
@@ -72,6 +72,7 @@
 
 .iconEdit svg, .iconEdit path{
   font-size: 18px;
+  color: var(--clrBL1);
   cursor: pointer;
 }
 

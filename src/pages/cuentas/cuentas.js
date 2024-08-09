@@ -19,7 +19,7 @@ export default function Cuentas() {
   useEffect(() => {
     (async () => {
       try {
-        const response = await axios.get('/api/concepts')
+        const response = await axios.get('/api/conceptos')
         setCounts(response.data)
       } catch (error) {
           console.error(error)
@@ -39,7 +39,7 @@ export default function Cuentas() {
         <div className={styles.container}>
           <BiTrendingUp />
           {!counts ? (
-            <Loading />
+            <Loading size={40} loading={2} />
           ) : (
             <>
 

@@ -7,7 +7,7 @@ import styles from './NotaPDF.module.css'
 
 export function NotaPDF(props) {
 
-  const {notas, conceptos} = props
+  const {notas, conceptos, onToastSuccessPDF} = props
 
   const generarPDF = async () => {
 
@@ -169,6 +169,9 @@ export function NotaPDF(props) {
     doc.addImage(qrCodeDataUrl, 'PNG', 2, 118, 25, 25)
 
     doc.save(`Nota_${formatId(notas.id)}.pdf`)
+
+    onToastSuccessPDF()
+
   }
 
   return (

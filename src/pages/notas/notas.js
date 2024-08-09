@@ -55,7 +55,7 @@ export default function Notas(props) {
         count={{ countAll }}
       />
 
-      <NotasRowHeadMain rowMain={rowMain} />
+      <NotasRowHeadMain rowMain />
 
       <NotasLista reload={reload} onReload={onReload} />
 

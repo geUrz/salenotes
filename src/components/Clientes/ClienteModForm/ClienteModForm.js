@@ -1,12 +1,12 @@
+import { IconCloseModal } from '@/components/Layouts'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Button, Form, FormField, FormGroup, Input, Label } from 'semantic-ui-react'
-import { IconCloseModal } from '@/components/Layouts'
 import styles from './ClienteModForm.module.css'
 
 export function ClienteModForm(props) {
 
-  const { reload, onReload, clienteSeleccionado, onOpenClose, onToastSuccess } = props
+  const { reload, onReload, clienteId, onOpenCloseEdit, onToastSuccess } = props
 
   const [cliente, setCliente] = useState('')
   const [contacto, setContacto] = useState('')
@@ -15,31 +15,47 @@ export function ClienteModForm(props) {
   const [email, setEmail] = useState('')
 
   useEffect(() => {
-    if (clienteSeleccionado) {
-      setCliente(clienteSeleccionado.cliente)
-      setContacto(clienteSeleccionado.contacto)
-      setDireccion(clienteSeleccionado.direccion)
-      setCel(clienteSeleccionado.cel)
-      setEmail(clienteSeleccionado.email)
+    if (Notification.permission !== 'granted') {
+      Notification.requestPermission()
     }
-  }, [clienteSeleccionado])
+  }, [])
+
+  useEffect(() => {
+    if (clienteId) {
+      setCliente(clienteId.cliente)
+      setContacto(clienteId.contacto)
+      setDireccion(clienteId.direccion)
+      setCel(clienteId.cel)
+      setEmail(clienteId.email)
+    }
+  }, [clienteId])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await axios.put(`/api/clients?id=${clienteSeleccionado.id}`, { cliente, contacto, direccion, cel, email })
+      await axios.put(`/api/clientes?id=${clienteId.id}`, { cliente, contacto, cel, direccion, email })
+      onOpenCloseEdit()
       onToastSuccess()
-      onOpenClose()
       onReload()
+
+      if (Notification.permission === 'granted') {
+        new Notification('Cliente Modificado', {
+          body: `El cliente "${cliente}" ha sido modificado exitosamente.`,
+          icon: '/img/icon.png',  // Asegúrate de tener un icono en esta ruta
+          //tag: 'cliente-creado'  // Opcional, para agrupar notificaciones relacionadas
+        })
+      }
+
     } catch (error) {
       console.error('Error al actualizar el cliente:', error)
     }
   }
 
   return (
+
     <>
 
-      <IconCloseModal onOpenClose={onOpenClose} />
+      <IconCloseModal onOpenClose={onOpenCloseEdit} />
 
       <div className={styles.main}>
         <Form>
@@ -90,6 +106,8 @@ export function ClienteModForm(props) {
         </Form>
         <Button primary onClick={handleSubmit}>Actualizar</Button>
       </div>
+
     </>
+
   )
 }

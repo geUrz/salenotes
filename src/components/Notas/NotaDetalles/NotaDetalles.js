@@ -21,14 +21,22 @@ export function NotaDetalles(props) {
   const [showForm, setShowForm] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [currentConcept, setCurrentConcept] = useState(null)
-  const[toastSuccess, setToastSuccess] = useState(false)
   const[infoCliente, setInfoCliente] = useState(false)
   const [cliente, setCliente] = useState(null)
+  const[toastSuccess, setToastSuccess] = useState(false)
+  const[toastSuccessPDF, setToastSuccessPDF] = useState(false)
 
   const onToastSuccess = () => {
     setToastSuccess(true)
     setTimeout(() => {
       setToastSuccess(false)
+    }, 3000)
+  }
+
+  const onToastSuccessPDF = () => {
+    setToastSuccessPDF(true)
+    setTimeout(() => {
+      setToastSuccessPDF(false)
     }, 3000)
   }
 
@@ -95,6 +103,8 @@ export function NotaDetalles(props) {
 
       {toastSuccess && <ToastSuccess contain='Concepto agregado exitosamente' onClose={() => setToastSuccess(false)} />}
 
+      {toastSuccessPDF && <ToastSuccess contain='PDF creado exitosamente' onClose={() => setToastSuccessPDF(false)} />}
+
       <div className={styles.section}>
 
         <div className={styles.box1}>
@@ -110,8 +120,8 @@ export function NotaDetalles(props) {
           </div>
           <div className={styles.box1_2}>
             <div>
-              <h1>Contacto</h1>
-              <h1>{notas.cliente}</h1>
+              <h1>Descripción</h1>
+              <h1>{notas.descripcion}</h1>
             </div>
             <div>
               <h1>Fecha</h1>
@@ -180,7 +190,7 @@ export function NotaDetalles(props) {
           </div>
         </div>
 
-        <NotaPDF notas={notas} conceptos={notas.conceptos} />
+        <NotaPDF notas={notas} conceptos={notas.conceptos} onToastSuccessPDF={onToastSuccessPDF} />
 
         <div className={styles.iconTrash}>
           <div onClick={onShowConfirm}>
