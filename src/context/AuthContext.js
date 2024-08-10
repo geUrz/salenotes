@@ -30,7 +30,8 @@ export function AuthProvider({ children }) {
       setUser(response.data.user)
       router.push('/') // Redirigir después de iniciar sesión
     } catch (error) {
-      console.error('Login failed:', error)
+      
+      throw error.response?.data?.error || 'Error inesperado al iniciar sesión';
     }
   }
 

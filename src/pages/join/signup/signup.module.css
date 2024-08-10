@@ -30,3 +30,9 @@
   color: var(--clrBL2);
   cursor: pointer;
 }
+
+.error{
+  margin: 5px 0 0 0 !important;
+  font-size: 12px;
+  color: red;
+}

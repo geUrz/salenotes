@@ -12,6 +12,8 @@ export default function Signup() {
 
   const router = useRouter()
 
+  const [errors, setErrors] = useState({})
+
   const [credentials, setCredentials] = useState({
     usuario: '',
     email: '',
@@ -21,17 +23,46 @@ export default function Signup() {
 
   useRedirectIfAuthenticated()
 
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null)
 
   const handleChange = (e) => {
     setCredentials({
       ...credentials,
       [e.target.name]: e.target.value
-    });
-  };
+    })
+  }
+
+  const validarFormSignUp = () => {
+    const newErrors = {}
+
+    if (!credentials.usuario) {
+      newErrors.usuario = 'El campo es requerido'
+    }
+
+    if (!credentials.email) {
+      newErrors.email = 'El campo es requerido'
+    }
+
+    if (!credentials.password) {
+      newErrors.password = 'El campo es requerido'
+    }
+
+    if (!credentials.confirmarPassword) {
+      newErrors.confirmarPassword = 'El campo es requerido'
+    }
+
+    setErrors(newErrors)
+
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
+
+    if (!validarFormSignUp()) {
+      return
+    }
+    setError(null)
 
     if (credentials.password !== credentials.confirmarPassword) {
       setError("Las contraseñas no coinciden");
@@ -39,12 +70,10 @@ export default function Signup() {
     }
 
     try {
-      const response = await axios.post('/api/auth/register', credentials);
-      console.log('Usuario registrado:', response.data);
+      await axios.post('/api/auth/register', credentials)
 
       router.push('/join/signin')
 
-      // Limpiar el formulario
       setCredentials({
         usuario: '',
         email: '',
@@ -52,10 +81,17 @@ export default function Signup() {
         confirmarPassword: ''
       })
 
-      setError(null); // Limpiar el error si el registro fue exitoso
+      setError(null)
     } catch (error) {
-      setError("Hubo un problema al crear el usuario. Inténtalo de nuevo.");
-      console.error("Error:", error);
+      console.error('Error capturado:', error);
+
+      if (error.response && error.response.data && error.response.data.error) {
+         setError(error.response.data.error); // Error específico del backend
+      } else if (error.message) {
+         setError(error.message); // Error general de JS (por ejemplo, error de red)
+      } else {
+         setError('Ocurrió un error inesperado'); // Fallback para cualquier otro tipo de error
+      }
     }
   };
 
@@ -70,7 +106,7 @@ export default function Signup() {
 
       <Form onSubmit={handleSubmit}>
         <FormGroup>
-          <FormField>
+          <FormField error={!!errors.usuario}>
             <Label>Usuario</Label>
             <Input
               name='usuario'
@@ -78,8 +114,9 @@ export default function Signup() {
               value={credentials.usuario}
               onChange={handleChange}
             />
+            {errors.usuario && <span className={styles.error}>{errors.usuario}</span>}
           </FormField>
-          <FormField>
+          <FormField error={!!errors.email}>
             <Label>Correo</Label>
             <Input
               name='email'
@@ -87,8 +124,9 @@ export default function Signup() {
               value={credentials.email}
               onChange={handleChange}
             />
+            {errors.email && <span className={styles.error}>{errors.email}</span>}
           </FormField>
-          <FormField>
+          <FormField error={!!errors.password}>
             <Label>Contraseña</Label>
             <Input
               name='password'
@@ -96,8 +134,9 @@ export default function Signup() {
               value={credentials.password}
               onChange={handleChange}
             />
+            {errors.password && <span className={styles.error}>{errors.password}</span>}
           </FormField>
-          <FormField>
+          <FormField error={!!errors.confirmarPassword}>
             <Label>Confirmar contraseña</Label>
             <Input
               name='confirmarPassword'
@@ -105,6 +144,7 @@ export default function Signup() {
               value={credentials.confirmarPassword}
               onChange={handleChange}
             />
+            {errors.confirmarPassword && <span className={styles.error}>{errors.confirmarPassword}</span>}
           </FormField>
         </FormGroup>
         {error && <p className={styles.error}>{error}</p>}
