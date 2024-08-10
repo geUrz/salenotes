@@ -11,7 +11,7 @@
 }
 
 .icon svg, .icon path{
-  padding: 16px;
+  padding: 18px;
   font-size: 60px;
   border-radius: 50%;
   background-color: var(--clrBL0);

@@ -35,7 +35,7 @@ export function ClienteDetalles(props) {
 
       <IconCloseModal onOpenClose={onOpenClose} />
 
-      {toastSuccess && <ToastSuccess contain='Cliente actualizado exitosamente' onClose={() => setToastSuccess(false)} />}
+      {toastSuccess && <ToastSuccess contain='Cliente modificado exitosamente' onClose={() => setToastSuccess(false)} />}
 
       <div className={styles.section}>
         <div className={styles.box1}>

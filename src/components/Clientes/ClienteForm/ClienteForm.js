@@ -24,15 +24,10 @@ export function ClienteForm(props) {
       } catch (error) {
         console.error('Error al obtener los clientes:', error)
       }
-    };
+    }
 
     fetchClientes()
-  }, [])
 
-  useEffect(() => {
-    if (Notification.permission !== 'granted') {
-      Notification.requestPermission()
-    }
   }, [])
 
   const validarFormCliente = () => {
@@ -80,20 +75,12 @@ export function ClienteForm(props) {
       setCel('')
       setEmail('')
       onOpenClose()
-
-      if (Notification.permission === 'granted') {
-        new Notification('Cliente Creado', {
-          body: `El cliente "${cliente}" ha sido creado exitosamente.`,
-          icon: '/img/icon.png',  // Asegúrate de tener un icono en esta ruta
-          //tag: 'cliente-creado'  // Opcional, para agrupar notificaciones relacionadas
-        })
-      }
-
-      //onReload()
+      onReload()
 
     } catch (error) {
-      console.error('Error al crear el cliente:', error)
+      console.error('Error al crear el cliente:', error);
     }
+
   }
 
   return (

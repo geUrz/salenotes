@@ -1,12 +1,12 @@
 import { BasicLayout } from '@/layouts'
 import { useEffect, useState } from 'react'
-import { BiToggleLeft, BiToggleRight, BiTrendingUp } from 'react-icons/bi'
+import { BiTrendingUp } from 'react-icons/bi'
 import { formatCurrency } from '@/helpers'
 import axios from 'axios'
 import { sumBy } from 'lodash'
-import styles from './cuentas.module.css'
-import { MoonLoader } from 'react-spinners'
 import { Loading } from '@/components/Layouts'
+import ProtectedRoute from '@/components/Layouts/ProtectedRoute/ProtectedRoute'
+import styles from './cuentas.module.css'
 
 export default function Cuentas() {
 
@@ -15,14 +15,14 @@ export default function Cuentas() {
   const onReload = () => setReload((prevState) => !prevState)
 
   const [counts, setCounts] = useState()
- 
+
   useEffect(() => {
     (async () => {
       try {
         const response = await axios.get('/api/conceptos')
         setCounts(response.data)
       } catch (error) {
-          console.error(error)
+        console.error(error)
       }
     })()
   }, [reload])
@@ -32,30 +32,34 @@ export default function Cuentas() {
   const total = subtotal + iva */
 
   return (
-    
-    <BasicLayout title='Ingresos totales' categorie='cuentas' onReload={onReload}>
 
-      <div className={styles.section}>
-        <div className={styles.container}>
-          <BiTrendingUp />
-          {!counts ? (
-            <Loading size={40} loading={2} />
-          ) : (
-            <>
+    <ProtectedRoute>
 
-              <h2>Total</h2>
-              <h1>$
-                {!counts.length ? 
-                  '0' : 
-                  formatCurrency(total)
-                }
-              </h1>
-            </>
-          )}
+      <BasicLayout title='Ingresos totales' categorie='cuentas' onReload={onReload}>
+
+        <div className={styles.section}>
+          <div className={styles.container}>
+            <BiTrendingUp />
+            {!counts ? (
+              <Loading size={40} loading={2} />
+            ) : (
+              <>
+
+                <h2>Total</h2>
+                <h1>$
+                  {!counts.length ?
+                    '0' :
+                    formatCurrency(total)
+                  }
+                </h1>
+              </>
+            )}
+          </div>
         </div>
-      </div>
 
-    </BasicLayout>
+      </BasicLayout>
+
+    </ProtectedRoute>
 
   )
 }

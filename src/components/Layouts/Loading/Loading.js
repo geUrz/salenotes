@@ -7,9 +7,10 @@ export function Loading(props) {
   const {size, loading} = props
 
   const loadingClass = classNames({
+    [styles.loadingMain]: loading === 0,
     [styles.loadingLarge]: loading === 1, 
     [styles.loadingMiddle]: loading === 2, 
-    [styles.loadingMini]: loading === 3 
+    [styles.loadingMini]: loading === 3  
   });
 
   return (

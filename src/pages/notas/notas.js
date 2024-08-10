@@ -6,6 +6,7 @@ import axios from 'axios'
 import { FaFileAlt } from 'react-icons/fa'
 import { size } from 'lodash'
 import styles from './notas.module.css'
+import ProtectedRoute from '@/components/Layouts/ProtectedRoute/ProtectedRoute'
 
 export default function Notas(props) {
 
@@ -45,27 +46,31 @@ export default function Notas(props) {
 
   return (
 
-    <BasicLayout title='Notas' categorie='notas' onReload={onReload}>
+    <ProtectedRoute>
 
-      {toastSuccess && <ToastSuccess contain='Nota creado exitosamente' onClose={() => setToast(false)} />}
+      <BasicLayout title='Notas' categorie='notas' onReload={onReload}>
 
-      <CountBox
-        title='Notas'
-        icon={<FaFileAlt />}
-        count={{ countAll }}
-      />
+        {toastSuccess && <ToastSuccess contain='Nota creado exitosamente' onClose={() => setToast(false)} />}
 
-      <NotasRowHeadMain rowMain />
+        <CountBox
+          title='Notas'
+          icon={<FaFileAlt />}
+          count={{ countAll }}
+        />
 
-      <NotasLista reload={reload} onReload={onReload} />
+        <NotasRowHeadMain rowMain />
 
-      <Add onOpenClose={onOpenClose} />
+        <NotasLista reload={reload} onReload={onReload} />
 
-      <BasicModal title='Crear nota' show={show} onClose={onOpenClose}>
-        <NotaForm reload={reload} onReload={onReload} onOpenClose={onOpenClose} onToastSuccess={onToastSuccess} />
-      </BasicModal>
+        <Add onOpenClose={onOpenClose} />
 
-    </BasicLayout>
+        <BasicModal title='Crear nota' show={show} onClose={onOpenClose}>
+          <NotaForm reload={reload} onReload={onReload} onOpenClose={onOpenClose} onToastSuccess={onToastSuccess} />
+        </BasicModal>
+
+      </BasicLayout>
+
+    </ProtectedRoute>
 
   )
 }

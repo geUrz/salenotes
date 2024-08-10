@@ -22,11 +22,11 @@
 }
 
 .ui.button.negative:hover{
-  background-color: rgb(255, 22, 22) !important;
+  background-color: rgb(235, 43, 43) !important;
 }
 
 .ui.button.negative:active, .ui.button.negative:focus{
-  background-color: rgb(255, 43, 43) !important;
+  background-color: rgb(243, 51, 51) !important;
 }
 
 .ui.button.secondary{

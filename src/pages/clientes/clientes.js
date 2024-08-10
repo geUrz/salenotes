@@ -5,11 +5,10 @@ import { ClienteForm, ClientesLista, ClientesRowHeadMain } from '@/components/Cl
 import { FaUsers } from 'react-icons/fa'
 import axios from 'axios'
 import { size } from 'lodash'
+import ProtectedRoute from '@/components/Layouts/ProtectedRoute/ProtectedRoute'
 import styles from './clientes.module.css'
 
-export default function Cliente(props) {
-
-  const { rowMain } = props
+export default function Cliente() {
 
   const [show, setShow] = useState(false)
 
@@ -45,27 +44,31 @@ export default function Cliente(props) {
 
   return (
 
-    <BasicLayout title='Clientes' categorie='clientes' onReload={onReload}>
+    <ProtectedRoute>
 
-      {toastSuccess && <ToastSuccess contain='Nota creado exitosamente' onClose={() => setToast(false)} />}
+      <BasicLayout title='Clientes' categorie='clientes' onReload={onReload}>
 
-      <CountBox
-        title='Clientes'
-        icon={<FaUsers />}
-        count={{ countAll }}
-      />
+        {toastSuccess && <ToastSuccess contain='Nota creado exitosamente' onClose={() => setToast(false)} />}
 
-      <ClientesRowHeadMain rowMain />
+        <CountBox
+          title='Clientes'
+          icon={<FaUsers />}
+          count={{ countAll }}
+        />
 
-      <ClientesLista reload={reload} onReload={onReload} />
+        <ClientesRowHeadMain rowMain />
 
-      <Add onOpenClose={onOpenClose} />
+        <ClientesLista reload={reload} onReload={onReload} />
 
-      <BasicModal title='Crear cliente' show={show} onClose={onOpenClose}>
-        <ClienteForm reload={reload} onReload={onReload} onOpenClose={onOpenClose} onToastSuccess={onToastSuccess} />
-      </BasicModal>
+        <Add onOpenClose={onOpenClose} />
 
-    </BasicLayout>
+        <BasicModal title='Crear cliente' show={show} onClose={onOpenClose}>
+          <ClienteForm reload={reload} onReload={onReload} onOpenClose={onOpenClose} onToastSuccess={onToastSuccess} />
+        </BasicModal>
+
+      </BasicLayout>
+
+    </ProtectedRoute>
 
   )
 }

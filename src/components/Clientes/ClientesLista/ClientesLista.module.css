@@ -11,11 +11,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--bg1);
+  background-color: var(--bg2);
 }
 
 .rowMap:hover{
-  background-color: var(--bg2);
+  background-color: var(--bg3);
 }
 
 .rowMap h1{

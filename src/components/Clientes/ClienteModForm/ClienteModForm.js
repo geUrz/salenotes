@@ -15,12 +15,6 @@ export function ClienteModForm(props) {
   const [email, setEmail] = useState('')
 
   useEffect(() => {
-    if (Notification.permission !== 'granted') {
-      Notification.requestPermission()
-    }
-  }, [])
-
-  useEffect(() => {
     if (clienteId) {
       setCliente(clienteId.cliente)
       setContacto(clienteId.contacto)
@@ -37,15 +31,6 @@ export function ClienteModForm(props) {
       onOpenCloseEdit()
       onToastSuccess()
       onReload()
-
-      if (Notification.permission === 'granted') {
-        new Notification('Cliente Modificado', {
-          body: `El cliente "${cliente}" ha sido modificado exitosamente.`,
-          icon: '/img/icon.png',  // Asegúrate de tener un icono en esta ruta
-          //tag: 'cliente-creado'  // Opcional, para agrupar notificaciones relacionadas
-        })
-      }
-
     } catch (error) {
       console.error('Error al actualizar el cliente:', error)
     }

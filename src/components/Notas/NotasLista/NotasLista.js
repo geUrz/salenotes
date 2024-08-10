@@ -57,6 +57,12 @@ export function NotasLista(props) {
         console.error('Error al obtener las notas:', error)
       }
     }
+
+    useEffect(() => {
+      if (Notification.permission !== 'granted') {
+        Notification.requestPermission()
+      }
+    }, [])
  
 
   const onOpenClose = async (nota) => {
@@ -80,6 +86,15 @@ export function NotasLista(props) {
         setShow(false)
         onShowConfirm()
         onToastSuccessConfirm()
+
+        if (Notification.permission === 'granted') {
+          new Notification('Nota Eliminada', {
+            body: `La nota para el cliente "${cliente}" ha sido eliminada exitosamente.`,
+            icon: '/img/icon.png',  // Asegúrate de tener un icono en esta ruta
+            //tag: 'nota-creada'  // Opcional, para agrupar notificaciones relacionadas
+          })
+        }
+
       } else {
         console.error('Error al eliminar la nota: Respuesta del servidor no fue exitosa', response)
       }
