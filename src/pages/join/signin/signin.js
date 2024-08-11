@@ -55,13 +55,11 @@ export default function Signin() {
       await login(credentials.emailOrUsuario, credentials.password)
     } catch (error) {
       console.error('Error capturado:', error);
-
-      if (error.response && error.response.data && error.response.data.error) {
-         setError(error.response.data.error); // Error específico del backend
-      } else if (error.message) {
-         setError(error.message); // Error general de JS (por ejemplo, error de red)
+      
+      if (error?.status === 401) {
+        setError(error.data.error || '¡ Correo o contraseña no existe !');
       } else {
-         setError('Ocurrió un error inesperado'); // Fallback para cualquier otro tipo de error
+        setError(error?.data?.error || '¡ Ocurrió un error inesperado !');
       }
    }
   }

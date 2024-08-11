@@ -56,9 +56,12 @@ export default function Cliente() {
           count={{ countAll }}
         />
 
-        <ClientesRowHeadMain rowMain />
-
-        <ClientesLista reload={reload} onReload={onReload} />
+        <div className={styles.main}>
+          <div className={styles.section}>
+            <ClientesRowHeadMain rowMain />
+            <ClientesLista reload={reload} onReload={onReload} />
+          </div>
+        </div>
 
         <Add onOpenClose={onOpenClose} />
 

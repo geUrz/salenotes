@@ -90,7 +90,7 @@ export default function Signup() {
       } else if (error.message) {
          setError(error.message); // Error general de JS (por ejemplo, error de red)
       } else {
-         setError('Ocurrió un error inesperado'); // Fallback para cualquier otro tipo de error
+         setError('¡ Ocurrió un error inesperado !'); // Fallback para cualquier otro tipo de error
       }
     }
   };

@@ -1,15 +1,17 @@
 import { FaEdit } from 'react-icons/fa'
 import { IconCloseModal, ToastSuccess } from '@/components/Layouts'
-import { IconClose } from '@/components/Layouts'
-import styles from './ClienteDetalles.module.css'
 import { useState } from 'react'
 import { formatClientId } from '@/helpers'
 import { BasicModal } from '@/layouts'
 import { ClienteModForm } from '../ClienteModForm'
+import { useAuth } from '@/context/AuthContext'
+import styles from './ClienteDetalles.module.css'
 
 export function ClienteDetalles(props) {
 
   const { reload, onReload, cliente, onOpenClose } = props
+
+  const {user} = useAuth()
 
   const [showEdit, setShowEdit] = useState(false)
   const [clienteSeleccionado, setClienteSeleccionado] = useState(cliente)
@@ -72,6 +74,18 @@ export function ClienteDetalles(props) {
         <div className={styles.iconEdit}>
           <div onClick={() => onOpenCloseEdit(cliente)}>
             <FaEdit />
+          </div>
+        </div>
+
+        <div className={styles.footerDetalles}>
+          <div>
+            <h1>Cliente creado por:
+              {!user ? (
+                <span> - no disponible -</span>
+              ) : (
+                <span> {user.usuario}</span>
+              )}
+            </h1>
           </div>
         </div>
 

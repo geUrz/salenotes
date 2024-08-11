@@ -4,27 +4,29 @@ import { NotasRowHeadModal } from '../NotasRowHead'
 import { useEffect, useState } from 'react'
 import { BiToggleLeft, BiToggleRight } from 'react-icons/bi'
 import { FaCheck, FaInfoCircle, FaPlus, FaTimes, FaTrash } from 'react-icons/fa'
-import { map, sumBy } from 'lodash'
 import { NotaConceptos } from '../NotaConceptos'
 import { BasicModal, ModalForm } from '@/layouts'
 import { NotaConceptosForm } from '../NotaConceptosForm'
 import { Confirm } from 'semantic-ui-react'
 import { NotaPDF } from '../NotaPDF'
-import styles from './NotaDetalles.module.css'
 import { NotaClienteDetalles } from '../NotaClienteDetalles'
 import axios from 'axios'
+import { useAuth } from '@/context/AuthContext'
+import styles from './NotaDetalles.module.css'
 
 export function NotaDetalles(props) {
 
-  const {notas, notaId, reload, onReload, onOpenClose, onAddConcept, onDeleteConcept, onShowConfirm } = props
-  
+  const { notas, notaId, reload, onReload, onOpenClose, onAddConcept, onDeleteConcept, onShowConfirm } = props
+
+  const { user } = useAuth()
+
   const [showForm, setShowForm] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [currentConcept, setCurrentConcept] = useState(null)
-  const[infoCliente, setInfoCliente] = useState(false)
+  const [infoCliente, setInfoCliente] = useState(false)
   const [cliente, setCliente] = useState(null)
-  const[toastSuccess, setToastSuccess] = useState(false)
-  const[toastSuccessPDF, setToastSuccessPDF] = useState(false)
+  const [toastSuccess, setToastSuccess] = useState(false)
+  const [toastSuccessPDF, setToastSuccessPDF] = useState(false)
 
   const onToastSuccess = () => {
     setToastSuccess(true)
@@ -53,7 +55,7 @@ export function NotaDetalles(props) {
     if (notas && notas.cliente) {
       obtenerCliente();
     }
-  }, [notas]) 
+  }, [notas])
 
   const onOpenCloseConfirm = (concepto) => {
     setShowConfirm((prevState) => !prevState)
@@ -63,7 +65,7 @@ export function NotaDetalles(props) {
   const onOpenCloseForm = (concepto) => {
     setShowForm((prevState) => !prevState)
     setCurrentConcept(concepto.id)
-  } 
+  }
 
   const handleDeleteConcept = () => {
     onDeleteConcept(currentConcept)
@@ -96,7 +98,7 @@ export function NotaDetalles(props) {
   }
 
   return (
-    
+
     <>
 
       <IconCloseModal onOpenClose={onOpenClose} />
@@ -128,9 +130,9 @@ export function NotaDetalles(props) {
               <h1>{formatDate(notas.createdAt)}</h1>
             </div>
           </div>
-        </div> 
+        </div>
 
-        <NotasRowHeadModal rowMain/>
+        <NotasRowHeadModal rowMain />
 
         <NotaConceptos conceptos={notas.conceptos} onOpenCloseConfirm={onOpenCloseConfirm} handleDeleteConcept={handleDeleteConcept} />
 
@@ -139,20 +141,20 @@ export function NotaDetalles(props) {
             <FaPlus />
           </div>
         </div>
-        
+
         <div className={styles.box3}>
           <div className={styles.box3_1}>
             <h1>Subtotal:</h1>
-            
+
             {!toggleIVA ? (
-              
+
               <div className={styles.toggleOFF} onClick={onIVA}>
                 <BiToggleLeft />
                 <h1>IVA:</h1>
               </div>
 
             ) : (
-              
+
               <div className={styles.toggleON} onClick={onIVA}>
                 <BiToggleRight />
                 <h1>IVA:</h1>
@@ -164,20 +166,20 @@ export function NotaDetalles(props) {
           </div>
 
           <div className={styles.box3_2}>
-            
+
             {!toggleIVA ? (
               <>
-              
-                <h1>-</h1>   
-                <h1>-</h1> 
-              
-              </>  
+
+                <h1>-</h1>
+                <h1>-</h1>
+
+              </>
             ) : (
               <>
 
                 <h1>${formatCurrency(subtotal)}</h1>
                 <h1>${formatCurrency(iva)}</h1>
-              
+
               </>
             )}
 
@@ -192,12 +194,20 @@ export function NotaDetalles(props) {
 
         <NotaPDF notas={notas} conceptos={notas.conceptos} onToastSuccessPDF={onToastSuccessPDF} />
 
-        <div className={styles.iconTrash}>
+        <div className={styles.footerDetalles}>
+          <div>
+            <h1>Nota creada por:
+              {!user ? (
+                <span> - no disponible -</span>
+              ) : (
+                <span> {user.usuario}</span>
+              )}
+            </h1>
+          </div>
           <div onClick={onShowConfirm}>
             <FaTrash />
           </div>
         </div>
-
       </div>
 
       <BasicModal title='Detalles del cliente' show={infoCliente} onClose={onOpenCliente}>
@@ -224,7 +234,7 @@ export function NotaDetalles(props) {
         onCancel={onOpenCloseConfirm}
         content='¿ Estas seguro de eliminar el concepto ?'
       />
-    
+
     </>
 
   )

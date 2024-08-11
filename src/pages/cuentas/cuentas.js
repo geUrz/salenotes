@@ -37,8 +37,8 @@ export default function Cuentas() {
 
       <BasicLayout title='Ingresos totales' categorie='cuentas' onReload={onReload}>
 
-        <div className={styles.section}>
-          <div className={styles.container}>
+        <div className={styles.main}>
+          <div className={styles.section}>
             <BiTrendingUp />
             {!counts ? (
               <Loading size={40} loading={2} />

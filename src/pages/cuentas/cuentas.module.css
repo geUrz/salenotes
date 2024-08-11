@@ -1,13 +1,13 @@
-.section{
+.main{
   padding: 10% 0 35% 0;
   width: 100%;
-  height: auto;
+  height: 60vh;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.container{
+.section{
   padding: 50px 10px;
   width: 320px;
   height: auto;
@@ -19,17 +19,17 @@
   position: relative;
 }
 
-.container svg, .container path{
+.section svg, .section path{
   font-size: 80px;
   color: var(--clrBL2);
 }
 
-.container h1{
+.section h1{
   font-size: 32px;
   color: var(--clrBL2);
 }
 
-.container h2{
+.section h2{
   margin-top: 20px;
   font-size: 25px;
 }

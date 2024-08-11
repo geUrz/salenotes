@@ -7,9 +7,11 @@ export function IconCloseModal(props) {
 
   return (
     
-    <div className={styles.iconClose} onClick={onOpenClose}>
+    <div className={styles.iconClose}>
+      <div onClick={onOpenClose}>
         <FaTimes />
       </div>
+    </div>
 
   )
 }

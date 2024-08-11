@@ -5,11 +5,19 @@ export default async function registerHandler(req, res) {
   const { usuario, email, password } = req.body;
 
   try {
-    // Verificar si el email ya está registrado
-    const [existingUser] = await pool.query('SELECT * FROM usuarios WHERE email = ?', [email]);
+    // Verificar si el usuario o el correo ya están registrados
+    const [existingUser] = await pool.query(
+      'SELECT * FROM usuarios WHERE email = ? OR usuario = ?', 
+      [email, usuario]
+    );
 
     if (existingUser.length > 0) {
-      return res.status(400).json({ error: 'El correo ya está registrado' });
+      if (existingUser[0].email === email) {
+        return res.status(400).json({ error: '¡ El correo ya está registrado !' });
+      }
+      if (existingUser[0].usuario === usuario) {
+        return res.status(400).json({ error: '¡ El usuario ya está registrado !' });
+      }
     }
 
     // Hashear la contraseña

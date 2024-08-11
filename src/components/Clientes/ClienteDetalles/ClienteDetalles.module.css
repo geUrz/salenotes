@@ -40,7 +40,7 @@
 }
 
 .iconEdit{
-  margin-top: 20px;
+  padding: 20px 0;
   width: 100%;
   height: auto;
   display: flex;
@@ -109,4 +109,24 @@
 .iconClose svg, .iconClose path{
   font-size: 18px;
   cursor: pointer;
+}
+
+.footerDetalles{
+  padding: 10px 0;
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+}
+
+.footerDetalles h1{
+  font-size: 10.5px;
+}
+
+.footerDetalles span{
+  color: var(--clrBL2);
 }

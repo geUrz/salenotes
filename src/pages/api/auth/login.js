@@ -13,24 +13,25 @@ export default async function loginHandler(req, res) {
     );
 
     if (rows.length === 0) {
-      return res.status(401).json({ error: 'Correo o contraseña inválida' });
+      return res.status(401).json({ error: '¡ Correo o contraseña no existe !' });
     }
 
     const user = rows[0];
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
-      return res.status(401).json({ error: 'Correo o contraseña inválida' });
+      return res.status(401).json({ error: '¡ Correo o contraseña no existe !' });
     }
 
     const token = jwt.sign(
       {
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30,
+        id: user.id,
         usuario: user.usuario,
         email: user.email,
       },
       'secret'
-    );
+    )
 
     const serialized = serialize('myToken', token, {
       httpOnly: true,

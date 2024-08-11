@@ -12,28 +12,34 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     async function loadUserFromCookies() {
       try {
-        const response = await axios.get('/api/auth/me') // Endpoint para verificar el token y obtener el usuario
-        setUser(response.data.user)
+        const response = await axios.get('/api/auth/me')
+        setUser(response.data.user) // Asegúrate de que `user` incluya el `id`
       } catch (error) {
         setUser(null)
       } finally {
         setLoading(false)
       }
     }
-
-    loadUserFromCookies();
-  }, [])
+  
+    if (!user) {
+      loadUserFromCookies() // Forzar la recarga del usuario si no está disponible
+    }
+  }, [user])
 
   const login = async (emailOrUsuario, password) => {
     try {
-      const response = await axios.post('/api/auth/login', { emailOrUsuario, password })
-      setUser(response.data.user)
-      router.push('/') // Redirigir después de iniciar sesión
+      const response = await axios.post('/api/auth/login', { emailOrUsuario, password });
+      const userResponse = await axios.get('/api/auth/me'); // Obtener el usuario actualizado
+      setUser(userResponse.data.user); // Asegúrate de que `user` incluya el `id`
+      router.push('/'); // Redirigir después de iniciar sesión
     } catch (error) {
-      
-      throw error.response?.data?.error || 'Error inesperado al iniciar sesión';
+      if (error.response) {
+        throw error.response;
+      } else {
+        throw error;
+      }
     }
-  }
+  };
 
   const logout = async () => {
     try {

@@ -89,7 +89,7 @@ export function ClienteModForm(props) {
             </FormField>
           </FormGroup>
         </Form>
-        <Button primary onClick={handleSubmit}>Actualizar</Button>
+        <Button primary onClick={handleSubmit}>Guardar</Button>
       </div>
 
     </>

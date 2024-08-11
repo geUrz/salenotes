@@ -4,7 +4,21 @@
   right: 16px;
 }
 
-.iconClose svg, .iconClose path{
-  font-size: 22.5px;
+.iconClose{
   cursor: pointer;
+}
+
+.iconClose svg, .iconClose path{
+  padding: 8px;
+  font-size: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.iconClose svg:hover,.iconClose path:hover{
+  background-color: var(--bg3);
+}
+
+.iconClose svg:active,.iconClose path:active{
+  background-color: var(--bg4);
 }

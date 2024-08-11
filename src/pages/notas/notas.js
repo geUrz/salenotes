@@ -58,9 +58,12 @@ export default function Notas(props) {
           count={{ countAll }}
         />
 
-        <NotasRowHeadMain rowMain />
-
-        <NotasLista reload={reload} onReload={onReload} />
+        <div className={styles.main}>
+          <div className={styles.section}>
+            <NotasRowHeadMain rowMain />
+            <NotasLista reload={reload} onReload={onReload} />
+          </div>
+        </div>
 
         <Add onOpenClose={onOpenClose} />
 
