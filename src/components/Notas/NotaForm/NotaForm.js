@@ -14,8 +14,7 @@ export function NotaForm(props) {
 
   const [showConfirm, setShowConfirm] = useState(false)
   const [cliente, setCliente] = useState('')
-  const [clientes, setClientes] = useState([]);
-  const [descripcion, setDescripcion] = useState('')
+  const [marca, setMarca] = useState('')
   const [conceptos, setConceptos] = useState([])
   const [nuevoConcepto, setNuevoConcepto] = useState({ tipo: '', concepto: '', cantidad: '', precio: '' })
   const [errors, setErrors] = useState({})
@@ -32,18 +31,6 @@ export function NotaForm(props) {
     setShowConfirm(false)
   }
 
-  useEffect(() => {
-    const fetchClientes = async () => {
-      try {
-        const response = await axios.get('/api/clientes')
-        setClientes(response.data)
-      } catch (error) {
-        console.error('Error al obtener clientes:', error)
-      }
-    };
-    fetchClientes()
-  }, [])
-
   const validarFormCliente = () => {
     const newErrors = {}
 
@@ -51,8 +38,8 @@ export function NotaForm(props) {
       newErrors.cliente = 'El campo es requerido'
     }
 
-    if (!descripcion) {
-      newErrors.descripcion = 'El campo es requerido'
+    if (!marca) {
+      newErrors.marca = 'El campo es requerido'
     }
 
     setErrors(newErrors)
@@ -96,14 +83,14 @@ export function NotaForm(props) {
     }
 
     try {
-      const response = await axios.post('/api/notas', { cliente_id: cliente, descripcion })
+      const response = await axios.post('/api/notas', { cliente, marca })
       const notaId = response.data.id
       await Promise.all(conceptos.map(concepto =>
         axios.post('/api/conceptos', { nota_id: notaId, ...concepto })
       ))
       onToastSuccess()
       setCliente('');
-      setDescripcion('')
+      setMarca('')
       setConceptos([])
       onOpenClose()
       onReload()
@@ -164,27 +151,23 @@ export function NotaForm(props) {
           <FormGroup widths='equal'>
             <FormField error={!!errors.cliente}>
               <Label>Cliente</Label>
-              <select value={cliente} onChange={(e) => setCliente(e.target.value)}>
-                <option value=""></option>
-                {clientes.map((cliente) => (
-                  <option key={cliente.id} value={cliente.id}>
-                    {cliente.cliente}
-                  </option>
-                ))}
-              </select>
+              <Input  
+                type="text"
+                value={cliente}
+                onChange={(e) => setCliente(e.target.value)}
+              />
               {errors.cliente && <span className={styles.error}>{errors.cliente}</span>}
             </FormField>
           </FormGroup>
           <FormGroup widths='equal'>
-            <FormField error={!!errors.descripcion}>
-              <Label>Descripción</Label>
-              <TextArea
+            <FormField error={!!errors.marca}>
+              <Label>Marca / Modelo</Label>
+              <Input  
                 type="text"
-                value={descripcion}
-                onChange={(e) => setDescripcion(e.target.value)}
-              >
-              </TextArea>
-              {errors.descripcion && <span className={styles.error}>{errors.descripcion}</span>}
+                value={marca}
+                onChange={(e) => setMarca(e.target.value)}
+              />
+              {errors.marca && <span className={styles.error}>{errors.marca}</span>}
             </FormField>
           </FormGroup>
         </Form>
@@ -283,16 +266,16 @@ export function NotaForm(props) {
               ) : (
                 <>
 
-                  <h1>${formatCurrency(subtotal)}</h1>
-                  <h1>${formatCurrency(iva)}</h1>
+                  <h1>{formatCurrency(subtotal)}</h1>
+                  <h1>{formatCurrency(iva)}</h1>
 
                 </>
               )}
 
               {!toggleIVA ? (
-                <h1>${formatCurrency(subtotal)}</h1>
+                <h1>{formatCurrency(subtotal)}</h1>
               ) : (
-                <h1>${formatCurrency(total)}</h1>
+                <h1>{formatCurrency(total)}</h1>
               )}
 
             </div>
@@ -300,7 +283,7 @@ export function NotaForm(props) {
 
         </div>
 
-        <Button primary onClick={crearNota}>Crear Nota</Button>
+        <Button primary onClick={crearNota}>Crear</Button>
 
       </div>
 

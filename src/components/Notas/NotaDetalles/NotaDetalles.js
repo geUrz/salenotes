@@ -3,14 +3,12 @@ import { formatCurrency, formatDate, formatId } from '@/helpers'
 import { NotasRowHeadModal } from '../NotasRowHead'
 import { useEffect, useState } from 'react'
 import { BiToggleLeft, BiToggleRight } from 'react-icons/bi'
-import { FaCheck, FaInfoCircle, FaPlus, FaTimes, FaTrash } from 'react-icons/fa'
+import { FaCheck, FaPlus, FaTimes, FaTrash } from 'react-icons/fa'
 import { NotaConceptos } from '../NotaConceptos'
-import { BasicModal, ModalForm } from '@/layouts'
+import { ModalForm } from '@/layouts'
 import { NotaConceptosForm } from '../NotaConceptosForm'
 import { Confirm } from 'semantic-ui-react'
 import { NotaPDF } from '../NotaPDF'
-import { NotaClienteDetalles } from '../NotaClienteDetalles'
-import axios from 'axios'
 import { useAuth } from '@/context/AuthContext'
 import styles from './NotaDetalles.module.css'
 
@@ -23,8 +21,6 @@ export function NotaDetalles(props) {
   const [showForm, setShowForm] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [currentConcept, setCurrentConcept] = useState(null)
-  const [infoCliente, setInfoCliente] = useState(false)
-  const [cliente, setCliente] = useState(null)
   const [toastSuccess, setToastSuccess] = useState(false)
   const [toastSuccessPDF, setToastSuccessPDF] = useState(false)
 
@@ -41,21 +37,6 @@ export function NotaDetalles(props) {
       setToastSuccessPDF(false)
     }, 3000)
   }
-
-  useEffect(() => {
-    const obtenerCliente = async () => {
-      try {
-        const response = await axios.get(`/api/clientes?cliente=${notas.cliente}`);
-        setCliente(response.data[0]);
-      } catch (error) {
-        console.error('Error al obtener los clientes:', error);
-      }
-    }
-
-    if (notas && notas.cliente) {
-      obtenerCliente();
-    }
-  }, [notas])
 
   const onOpenCloseConfirm = (concepto) => {
     setShowConfirm((prevState) => !prevState)
@@ -93,10 +74,6 @@ export function NotaDetalles(props) {
   const iva = subtotal * 0.16
   const total = subtotal + iva
 
-  const onOpenCliente = () => {
-    setInfoCliente((prevState) => !prevState)
-  }
-
   return (
 
     <>
@@ -113,17 +90,17 @@ export function NotaDetalles(props) {
           <div className={styles.box1_1}>
             <div>
               <h1>Cliente</h1>
-              <h1 onClick={onOpenCliente}>{notas.cliente} <FaInfoCircle /></h1>
+              <h1>{notas.cliente}</h1>
             </div>
             <div>
               <h1>Folio</h1>
-              <h1>#{formatId(notas.id)}</h1>
+              <h1>{formatId(notas.id)}</h1>
             </div>
           </div>
           <div className={styles.box1_2}>
             <div>
-              <h1>Descripción</h1>
-              <h1>{notas.descripcion}</h1>
+              <h1>Marca / Modelo</h1>
+              <h1>{notas.marca}</h1>
             </div>
             <div>
               <h1>Fecha</h1>
@@ -177,16 +154,16 @@ export function NotaDetalles(props) {
             ) : (
               <>
 
-                <h1>${formatCurrency(subtotal)}</h1>
-                <h1>${formatCurrency(iva)}</h1>
+                <h1>{formatCurrency(subtotal)}</h1>
+                <h1>{formatCurrency(iva)}</h1>
 
               </>
             )}
 
             {!toggleIVA ? (
-              <h1>${formatCurrency(subtotal)}</h1>
+              <h1>{formatCurrency(subtotal)}</h1>
             ) : (
-              <h1>${formatCurrency(total)}</h1>
+              <h1>{formatCurrency(total)}</h1>
             )}
 
           </div>
@@ -196,7 +173,7 @@ export function NotaDetalles(props) {
 
         <div className={styles.footerDetalles}>
           <div>
-            <h1>Nota creada por:
+            <h1>creada por:
               {!user ? (
                 <span> - no disponible -</span>
               ) : (
@@ -209,10 +186,6 @@ export function NotaDetalles(props) {
           </div>
         </div>
       </div>
-
-      <BasicModal title='Detalles del cliente' show={infoCliente} onClose={onOpenCliente}>
-        <NotaClienteDetalles cliente={cliente} onOpenClose={onOpenCliente} />
-      </BasicModal>
 
       <ModalForm title='Agregar concepto' showForm={showForm} onClose={onOpenCloseForm}>
         <NotaConceptosForm reload={reload} onReload={onReload} onOpenCloseForm={onOpenCloseForm} onAddConcept={onAddConcept} notaId={notaId.id} onToastSuccess={onToastSuccess} />

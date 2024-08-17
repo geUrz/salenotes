@@ -9,7 +9,6 @@ export function BottomMenu(props) {
   const { categorie } = props
 
   const [borderNote, setBorderNote] = useState(false)
-  const [borderClient, setBorderClient] = useState(false)
   const [borderCount, setBorderCount] = useState(false)
   const [borderUsuario, setBorderUsuario] = useState(false)
 
@@ -17,28 +16,18 @@ export function BottomMenu(props) {
 
     if (categorie == 'notas') {
       setBorderNote(true)
-      setBorderClient(false)
-      setBorderCount(false)
-      setBorderUsuario(false)
-    }
-
-    if (categorie == 'clientes') {
-      setBorderNote(false)
-      setBorderClient(true)
       setBorderCount(false)
       setBorderUsuario(false)
     }
 
     else if (categorie == 'cuentas') {
       setBorderNote(false)
-      setBorderClient(false)
       setBorderCount(true)
       setBorderUsuario(false)
     }
 
     else if (categorie == 'usuario') {
       setBorderNote(false)
-      setBorderClient(false)
       setBorderCount(false)
       setBorderUsuario(true)
     }
@@ -59,15 +48,6 @@ export function BottomMenu(props) {
               `${styles.noActive}`}
           >
             <FaFileAlt />
-          </div>
-        </Link>
-        <Link href='clientes' className={styles.tab}>
-          <div
-            className={borderClient ?
-              `${styles.isActive}` :
-              `${styles.noActive}`}
-          >
-            <FaUsers />
           </div>
         </Link>
         <Link href='cuentas' className={styles.tab}>

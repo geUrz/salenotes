@@ -49,7 +49,7 @@ export function NotaConceptosForm(props) {
     if (newConcept.tipo && newConcept.concepto && newConcept.precio && newConcept.cantidad) {
       try {
         const response = await axios.post(`/api/conceptos`, {
-          recibo_id: notaId,
+          nota_id: notaId,
           ...newConcept,
         })
   
@@ -134,7 +134,7 @@ export function NotaConceptosForm(props) {
         </Form>
 
         <Button primary onClick={handleAddConcept}>
-          Agregar Concepto
+          Guardar
         </Button>
 
       </div>

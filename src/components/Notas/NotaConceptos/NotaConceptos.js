@@ -19,9 +19,9 @@ export function NotaConceptos(props) {
             <div key={concepto.id} className={styles.rowMap} onClick={() => onOpenCloseConfirm(concepto)}>
               <h1>{concepto.tipo}</h1>
               <h1>{concepto.concepto}</h1>
-              <h1>${formatCurrency(concepto.precio * 1)}</h1>
+              <h1>{formatCurrency(concepto.precio * 1)}</h1>
               <h1>{concepto.cantidad}</h1>
-              <h1>${formatCurrency(concepto.precio * concepto.cantidad)}</h1>
+              <h1>{formatCurrency(concepto.precio * concepto.cantidad)}</h1>
             </div>
           ))}
         </div>

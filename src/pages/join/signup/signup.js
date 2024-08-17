@@ -153,7 +153,7 @@ export default function Signup() {
 
       <div className={styles.link}>
         <Link href='/join/signin'>
-          ¡ Iniciar sesión ! 
+          Iniciar sesión 
         </Link>
       </div>
 

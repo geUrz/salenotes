@@ -31,14 +31,13 @@
 .box1_1 div:nth-child(1) h1:nth-child(2){
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .box1_1 div:nth-child(1) svg, .box1_1 div:nth-child(1) path{
   margin-left: 5px;
   font-size: 14.5px;
   color: var(--clrBL2);
-  cursor: pointer;
 }
 
 .box1_1 h1:nth-child(1), .box1_2 h1:nth-child(1){

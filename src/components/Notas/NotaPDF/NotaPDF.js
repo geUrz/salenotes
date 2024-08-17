@@ -7,13 +7,13 @@ import styles from './NotaPDF.module.css'
 
 export function NotaPDF(props) {
 
-  const {notas, conceptos, onToastSuccessPDF} = props
-
+  const {notas, notasNota, conceptos, onToastSuccessPDF} = props
+  
   const generarPDF = async () => {
 
     if (!notas) return
 
-    const toggleIVA = JSON.parse(localStorage.getItem('ontoggleIVA') || 'true');
+    const toggleIVA = JSON.parse(localStorage.getItem('ontoggleIVA') || 'true')
 
     const doc = new jsPDF(
       {
@@ -24,66 +24,85 @@ export function NotaPDF(props) {
     )
 
     const logoImg = 'img/logo.png'
-    const logoWidth = 30
-    const logoHeight = 8
-    doc.addImage(logoImg, 'PNG', 4.2, 14, logoWidth, logoHeight)
+    const logoWidth = 36
+    const logoHeight = 10
+    const marginRightLogo = 4.5
+
+    const pageWidth = doc.internal.pageSize.getWidth()
+
+    const xPosition = pageWidth - logoWidth - marginRightLogo
+
+    doc.addImage(logoImg, 'PNG', xPosition, 12, logoWidth, logoHeight)
+    
+    doc.addImage(logoImg, 'PNG', xPosition, 12, logoWidth, logoHeight)
 
     doc.setFont('helvetica')
 
-    doc.setFontSize(9)
-    doc.setTextColor(0, 0, 0)
-    doc.text('CLICKNET', 84.5, 10)
-    doc.setFontSize(8)
-    doc.setTextColor(120, 120, 120)
-    doc.text('Punta Este Corporativo', 70.8, 14)
-    doc.text('Calzada Carranza 951', 72, 18)
-    doc.text('Piso 10 Suite 304, Interior "E"', 63, 22)
-    doc.setFontSize(7)
-    doc.text('C.P. 2125', 89, 26)
-    doc.setFontSize(8)
-    doc.setTextColor(0, 0, 0)
-    doc.text('Juan Roberto Espinoza Espinoza', 58, 30)
-    doc.setFontSize(7)
-    doc.setTextColor(120, 120, 120)
-    doc.text('RFC: EIEJ8906244J3', 76, 34)
+    const marginRight = 4.5
+    const font1 = 10
+    const font2 = 9
+    const font3 = 8
 
-    doc.setFontSize(9)
+    doc.setFontSize(`${font1}`)
+    doc.setTextColor(0, 0, 0)
+    doc.text('CLICKNET', 4.5, 10)
+    doc.setFontSize(`${font2}`)
+    doc.setTextColor(120, 120, 120)
+    doc.text('Punta Este Corporativo', 4.5, 14)
+    doc.text('Calzada Carranza 951', 4.5, 18)
+    doc.text('Piso 10 Suite 304, Interior "E"', 4.5, 22)
+    doc.text('C.P. 2125', 4.5, 26)
+    doc.setFontSize(`${font2}`)
+    doc.setTextColor(0, 0, 0)
+    doc.text('Juan Roberto Espinoza Espinoza', 4.5, 30)
+    doc.setFontSize(`${font2}`)
+    doc.setTextColor(120, 120, 120)
+    doc.text('RFC: EIEJ8906244J3', 4.5, 34)
+
+    doc.setFontSize(`${font1}`)
     doc.setTextColor(0, 0, 0)
     doc.text('Cliente', 4.5, 40)
-    doc.setFontSize(8)
+    doc.setFontSize(`${font2}`)
     doc.setTextColor(120, 120, 120)
     doc.text(`${notas.cliente}`, 4.5, 44)
 
-    doc.setFontSize(9)
+    doc.setFontSize(12)
     doc.setTextColor(0, 0, 0)
-    doc.text('Folio', 93, 40)
-    doc.setFontSize(8)
+    doc.text('INVOICE', doc.internal.pageSize.width - marginRight - doc.getTextWidth('INVOICE'), 34)
+    doc.setFontSize(`${font2}`)
+    doc.setTextColor(0, 0, 0)
+    doc.text('Folio', doc.internal.pageSize.width - marginRight - doc.getTextWidth('Folio'), 40)
+    doc.setFontSize(`${font2}`)
     doc.setTextColor(120, 120, 120)
-    doc.text(`# ${formatId(notas.id)}`, 89.8, 44)
+    doc.text(`${formatId(notas.id)}`, doc.internal.pageSize.width - marginRight - doc.getTextWidth(`${formatId(notas.id)}`), 44)
 
-    doc.setFontSize(9)
+    doc.setFontSize(`${font1}`)
     doc.setTextColor(0, 0, 0)
-    doc.text('Contacto', 4.5, 50)
-    doc.setFontSize(8)
+    doc.text('Marca / Modelo', 4.5, 49)
+    doc.setFontSize(`${font2}`)
     doc.setTextColor(120, 120, 120)
-    doc.text(`${notas.descripcion}`, 4.5, 54)
+    doc.text(`${notas.marca}`, 4.5, 53)
 
-    doc.setFontSize(9)
+    doc.setFontSize(`${font2}`)
     doc.setTextColor(0, 0, 0)
-    doc.text('Fecha/Hora', 83.6, 50)
-    doc.setFontSize(8)
+    doc.text('Fecha/Hora', doc.internal.pageSize.width - marginRight - doc.getTextWidth('Fecha/Hora'), 49)
+    doc.setFontSize(`${font2}`)
     doc.setTextColor(120, 120, 120)
-    doc.text(`${formatDate(notas.createdAt)}`, 71, 54)
+    doc.text(
+      `${formatDate(notas.createdAt)}`,
+      doc.internal.pageSize.width - 3.9 - doc.getTextWidth(`${formatDate(notas.createdAt)}`),
+      53
+    )
 
     doc.autoTable({
       startY: 58,
       head: [
         [
-          { content: 'Tipo', styles: { halign: 'center' }, cellWidth: 12 },
-          { content: 'Concepto', styles: { halign: 'left' }, cellWidth: 44 },
-          { content: 'Precio', styles: { halign: 'right' }, cellWidth: 15 },
-          { content: 'Qty', styles: { halign: 'center' }, cellWidth: 10 },
-          { content: 'Total', styles: { halign: 'right' }, cellWidth: 12 },         
+          { content: 'Tipo', styles: { halign: 'center' } },
+          { content: 'Concepto', styles: { halign: 'left' } },
+          { content: 'Precio', styles: { halign: 'right' } },
+          { content: 'Qty', styles: { halign: 'center' } },
+          { content: 'Total', styles: { halign: 'right' } },         
         ]
       ],
       styles: {
@@ -93,82 +112,114 @@ export function NotaPDF(props) {
       body: conceptos.map(concepto => [
         { content: `${concepto.tipo}`, styles: { halign: 'center' } }, 
         { content: `${concepto.concepto}`, styles: { halign: 'left' } }, 
-        { content: `$${formatCurrency(concepto.precio)}`, styles: { halign: 'right' } },  
+        { content: `${formatCurrency(concepto.precio * 1)}`, styles: { halign: 'right' } },  
         { content: `${concepto.cantidad}`, styles: { halign: 'center' } },  
-        { content: `$${formatCurrency(concepto.precio * concepto.cantidad)}`, styles: { halign: 'right' } },  
+        { content: `${formatCurrency(concepto.precio * concepto.cantidad)}`, styles: { halign: 'right' } },  
         ]),
-      headStyles: { fillColor: [0, 150, 170], fontSize: 6.8 },
-      bodyStyles: { fontSize: 6.2 },
+      headStyles: { fillColor: [0, 150, 170], fontSize: `${font3}`},
+      bodyStyles: { fontSize: 7},
       columnStyles: {
-        0: {
-          cellPadding: 1,
-          cellWidth: 15, 
-          valign: 'middle'
-        },
-        1: {
-          cellPadding: 1,
-          cellWidth: 44, 
-          valign: 'middle'
-        },
-        2: {
-          cellPadding: 1,
-          cellWidth: 15, 
-          valign: 'middle'
-        },
-        3: {
-          cellPadding: 1,
-          cellWidth: 10, 
-          valign: 'middle'
-        },
-        4: {
-          cellPadding: 1,
-          cellWidth: 12, 
-          valign: 'middle'
-        }
-      },
+        0: { cellWidth: 16 },  
+        1: { cellWidth: 40 },  
+        2: { cellWidth: 14 }, 
+        3: { cellWidth: 12 },  
+        4: { cellWidth: 14 },  
+
+        cellPadding: 1,      
+        valign: 'middle'    
+    },
 
       margin: { top: 0, left: 4.5, bottom: 0, right: 4.5 },
 
     })
 
     const calcularTotales = () => {
-      const subtotal = conceptos.reduce((acc, curr) => acc + curr.cantidad * curr.precio, 0);
-      const iva = subtotal * 0.16;
-      const total = toggleIVA ? subtotal + iva : subtotal;
-      return { subtotal, iva, total };
-    };
+      const subtotal = conceptos.reduce((acc, curr) => acc + curr.cantidad * curr.precio, 0)
+      const iva = subtotal * 0.16
+      const total = toggleIVA ? subtotal + iva : subtotal
+      return { subtotal, iva, total }
+    }
   
-    const { subtotal, iva, total } = calcularTotales();
+    const { subtotal, iva, total } = calcularTotales()
+
+    const margin = 4.5
+    const top = 108
+    const boxWidth = 65
+    const boxHeight = 8
+
+    doc.setDrawColor(255, 255, 255)
+    doc.rect(margin, top, boxWidth, boxHeight)
+
+    doc.setFontSize(6.8);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Nota:', margin, top + 1)
+
+    doc.setFontSize(6.5)
+    doc.setTextColor(120, 120, 120)
+    const content = notasNota === undefined ? (
+      `${notas.nota}`
+    ) : (
+      `${notasNota}`
+    )
+      
+
+    const textX = margin
+    const textY = top + 4
+    const txtWidth = boxWidth - 4
+
+    doc.text(content, textX, textY, { maxWidth: txtWidth })
 
     const verticalData = [
       ...toggleIVA ? [
-        ['Subtotal:', `$${formatCurrency(subtotal)}`],
-        ['IVA:', `$${formatCurrency(iva)}`],
+        ['Subtotal:', `${formatCurrency(subtotal)}`],
+        ['IVA:', `${formatCurrency(iva)}`],
       ] : [],
-      ['Total:', `$${formatCurrency(total)}`]
-    ];
+      ['Total:', `${formatCurrency(total)}`]
+    ]
     
+    const pWidth = doc.internal.pageSize.getWidth()
+    const mRight = 4.5
+    const tableWidth = 33
+    const marginLeft = pWidth - mRight - tableWidth
+
     doc.autoTable({
-      startY: 124,
-      margin: { left: 72.5, bottom: 0, right: 4.5 },
-      body: verticalData, 
+      startY: 122,
+      margin: { left: marginLeft, bottom: 0, right: marginRight },
+      body: verticalData,
       styles: {
         cellPadding: 1,
         valign: 'middle',
-        fontSize: 7,
+        fontSize: `${font3}`,
       },
       columnStyles: {
         0: { cellWidth: 15, fontStyle: 'bold', halign: 'right' },
-        1: { cellWidth: 13, halign: 'right' }  
+        1: { cellWidth: 18, halign: 'right' }  
       }
     })
 
+    doc.setFontSize(6)
+    doc.setTextColor(120, 120, 120)
+    doc.text('• Pago en dolares.', 27, 124)
+    doc.text('• Todos nuestros equipos cuentan con', 27, 127)
+    doc.text('  1 año de garantia en defecto de fabrica.', 27, 130)
+    doc.text('• Este documento no es un comprobante', 27, 133)
+    doc.text('  fiscal.', 27, 136)
 
-    const qrCodeText = `Nota ID: ${notas.id}, Cliente: ${notas.titulo}, Descripción: ${notas.descripcion}`
+    const qrCodeText = 'https://www.facebook.com/clicknet.mx'
     const qrCodeDataUrl = await QRCode.toDataURL(qrCodeText)
-    doc.addImage(qrCodeDataUrl, 'PNG', 2, 118, 25, 25)
+    doc.addImage(qrCodeDataUrl, 'PNG', 2, 116, 25, 25)
 
-    doc.save(`Nota_${formatId(notas.id)}.pdf`)
+    doc.setFontSize(6);
+    doc.setTextColor(120, 120, 120)
+
+    const text = 'www.clicknetmx.com';
+    const textWidth = doc.getTextWidth(text);
+    const pagWidth = doc.internal.pageSize.width
+    const x = (pagWidth - textWidth) / 2
+    const y = 145
+    doc.text(text, x, y)
+
+    doc.save(`nota_${formatId(notas.id)}.pdf`)
 
     onToastSuccessPDF()
 

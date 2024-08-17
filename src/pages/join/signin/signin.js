@@ -102,7 +102,7 @@ export default function Signin() {
 
       <div className={styles.link}>
         <Link href='/join/signup'>
-          ¿No tienes un usuario? ¡Crea uno aquí!
+          ¿No tienes un usuario?, Crea uno aquí
         </Link>
       </div>
 

@@ -1,11 +1,10 @@
-import { useState } from 'react';
-import axios from 'axios';
-import { useAuth } from '@/context/AuthContext';
-import { Form, Button, Input, Label, FormGroup, FormField } from 'semantic-ui-react';
-import styles from './ModUsuarioForm.module.css';
-import { IconCloseModal } from '@/components/Layouts';
-import { Confirm } from '@/components/Layouts/Confirm';
-import { FaCheck, FaTimes } from 'react-icons/fa';
+import { useState } from 'react'
+import axios from 'axios'
+import { useAuth } from '@/context/AuthContext'
+import { Form, Button, Input, Label, FormGroup, FormField } from 'semantic-ui-react'
+import styles from './ModUsuarioForm.module.css'
+import { IconCloseModal, Confirm } from '@/components/Layouts'
+import { FaCheck, FaTimes } from 'react-icons/fa'
 
 export function ModUsuarioForm(props) {
 

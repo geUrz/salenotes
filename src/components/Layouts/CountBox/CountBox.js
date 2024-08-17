@@ -16,7 +16,7 @@ export function CountBox(props) {
           {icon}
         </div>
         <div className={styles.count}>
-          {countAll === undefined || countAll === 0 ? (
+          {countAll === undefined ? (
             <Loading size={20} loading={3} />
           ) : (
             countAll === 0 ? (
