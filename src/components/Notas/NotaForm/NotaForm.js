@@ -5,8 +5,8 @@ import { NotasRowHeadModal } from '../NotasRowHead'
 import { FaCheck, FaTimes } from 'react-icons/fa'
 import { BiToggleLeft, BiToggleRight } from 'react-icons/bi'
 import axios from 'axios'
-import styles from './NotaForm.module.css'
 import { formatCurrency } from '@/helpers'
+import styles from './NotaForm.module.css'
 
 export function NotaForm(props) {
 

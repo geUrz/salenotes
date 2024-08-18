@@ -28,10 +28,8 @@
   justify-content: space-between;
 }
 
-.box1_1 div:nth-child(1) h1:nth-child(2){
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+.box1_1 div:nth-child(1) h1:nth-child(2), .box1_2 div:nth-child(1) h1:nth-child(2){
+  text-transform: capitalize;
 }
 
 .box1_1 div:nth-child(1) svg, .box1_1 div:nth-child(1) path{
@@ -54,13 +52,86 @@
 }
 
 .box1_2{
-  
   padding: 10px 0 ;
+}
+
+.boxMain{
+  margin-top: 30px;
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.box3_0{
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.iconFirmaPlus{
+  margin-bottom: 20px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg1);
+  cursor: pointer;
+}
+
+.iconFirmaPlus:hover{
+  background-color: var(--bg2);
+}
+
+.iconFirmaPlus:active{
+  background-color: var(--bg3);
+}
+
+.iconFirmaPlus svg, .iconFirmaPlus path{
+  cursor: pointer;
+}
+
+.linea{
+  margin: 10px 0 5px 0;
+  width: 100%;
+  height: 1px;
+  background-color: azure;
+}
+
+.activateTrash{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 86, 88, .9);
+  cursor: pointer;
+}
+
+.activateTrash:hover{
+  background-color: rgba(0, 94, 95, 0.9);
+}
+
+.activateTrash svg, .activateTrash path{
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.box3_0 h1{
+  font-size: 12px;
 }
 
 .box3{
   padding-right: 3.5px !important;
-  margin-top: 30px;
   width: 100%;
   height: auto;
   display: flex;
@@ -112,6 +183,10 @@
 .iconPlus svg, .iconPlus path{
   font-size: 18px;
   cursor: pointer;
+}
+
+.formNota{
+  margin-top: 20px;
 }
 
 .toggleOFF, .toggleON{

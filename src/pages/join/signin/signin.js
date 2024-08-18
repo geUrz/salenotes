@@ -9,6 +9,9 @@ import styles from './signin.module.css'
 
 export default function Signin() {
 
+  const [activate, setActivate] = useState(false)
+  const [touchTimer, setTouchTimer] = useState(null)
+
   const [errors, setErrors] = useState({})
 
   const [credentials, setCredentials] = useState({
@@ -17,6 +20,36 @@ export default function Signin() {
   })
 
   useRedirectIfAuthenticated()
+
+  const handleTouchStart = () => {
+    const timer = setTimeout(() => {
+      setActivate((prevState) => !prevState)
+    }, 2000) 
+
+    setTouchTimer(timer)
+  }
+
+  const handleTouchEnd = () => {
+    if (touchTimer) {
+      clearTimeout(touchTimer)
+      setTouchTimer(null)
+    }
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.ctrlKey && e.key === 'l') {
+      e.preventDefault()
+      setActivate((prevState) => !prevState)
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+  
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
 
   const { login } = useAuth()
   const [error, setError] = useState(null)
@@ -69,7 +102,7 @@ export default function Signin() {
     <BasicJoin relative>
 
       <div className={styles.user}>
-        <FaUser />
+        <FaUser onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} />
         <h1>Iniciar sesión</h1>
       </div>
 
@@ -100,11 +133,15 @@ export default function Signin() {
         <Button primary type='submit'>Iniciar sesión</Button>
       </Form>
 
-      <div className={styles.link}>
-        <Link href='/join/signup'>
-          ¿No tienes un usuario?, Crea uno aquí
-        </Link>
-      </div>
+      {activate ? (
+        <div className={styles.link}>
+          <Link href='/join/signup'>
+            ¿No tienes un usuario?, Crea uno aquí
+          </Link>
+        </div>
+      ) : (
+        ''
+      )}
 
     </BasicJoin>
 

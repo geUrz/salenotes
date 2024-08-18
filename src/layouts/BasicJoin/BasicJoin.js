@@ -14,7 +14,7 @@ export function BasicJoin(props) {
     <>
 
       <div className={styles.logo}>
-        <Image src='/img/tulogo.png' />
+        <Image src='/img/devcactus.png' />
       </div>
     
       <div className={classNames({[styles.relative] : relative})}>

@@ -7,7 +7,7 @@ import styles from './NotaPDF.module.css'
 
 export function NotaPDF(props) {
 
-  const {notas, notasNota, conceptos, onToastSuccessPDF} = props
+  const {notas, notaNota, conceptos} = props
   
   const generarPDF = async () => {
 
@@ -156,10 +156,10 @@ export function NotaPDF(props) {
 
     doc.setFontSize(6.5)
     doc.setTextColor(120, 120, 120)
-    const content = notasNota === undefined ? (
+    const content = notaNota === undefined ? (
       `${notas.nota}`
     ) : (
-      `${notasNota}`
+      `${notaNota}`
     )
       
 
@@ -221,7 +221,7 @@ export function NotaPDF(props) {
 
     doc.save(`nota_${formatId(notas.id)}.pdf`)
 
-    onToastSuccessPDF()
+    //onToastSuccessPDF()
 
   }
 

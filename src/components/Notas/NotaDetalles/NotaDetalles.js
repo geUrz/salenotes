@@ -1,28 +1,58 @@
-import { IconCloseModal, ToastSuccess } from '@/components/Layouts'
+import { FirmaDigital, IconCloseModal, ToastSuccess } from '@/components/Layouts'
 import { formatCurrency, formatDate, formatId } from '@/helpers'
 import { NotasRowHeadModal } from '../NotasRowHead'
 import { useEffect, useState } from 'react'
 import { BiToggleLeft, BiToggleRight } from 'react-icons/bi'
 import { FaCheck, FaPlus, FaTimes, FaTrash } from 'react-icons/fa'
 import { NotaConceptos } from '../NotaConceptos'
-import { ModalForm } from '@/layouts'
+import { BasicModal, ModalForm } from '@/layouts'
 import { NotaConceptosForm } from '../NotaConceptosForm'
-import { Confirm } from 'semantic-ui-react'
+import { Button, Confirm, Form, FormField, FormGroup, Image, Label, TextArea } from 'semantic-ui-react'
 import { NotaPDF } from '../NotaPDF'
 import { useAuth } from '@/context/AuthContext'
 import styles from './NotaDetalles.module.css'
+import axios from 'axios'
 
 export function NotaDetalles(props) {
 
   const { notas, notaId, reload, onReload, onOpenClose, onAddConcept, onDeleteConcept, onShowConfirm } = props
-
+  
   const { user } = useAuth()
 
   const [showForm, setShowForm] = useState(false)
+  const [showFirma, setShowFirma] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [currentConcept, setCurrentConcept] = useState(null)
   const [toastSuccess, setToastSuccess] = useState(false)
   const [toastSuccessPDF, setToastSuccessPDF] = useState(false)
+
+  const [nota, setNota] = useState(notas.nota || '')
+  const [notaNota, setnotaNota] = useState('')
+  const [editNota, setEditNota] = useState(!!notas.nota)
+
+  const onOpenCloseFirma = () => setShowFirma((prevState) => !prevState)
+
+  const [activate, setActivate] = useState(false)
+  const [touchTimer, setTouchTimer] = useState(null)
+
+  const handleTouchStart = () => {
+    const timer = setTimeout(() => {
+      setActivate((prevState) => !prevState)
+    }, 2000) 
+
+    setTouchTimer(timer)
+  }
+
+  const handleTouchEnd = () => {
+    if (touchTimer) {
+      clearTimeout(touchTimer)
+      setTouchTimer(null)
+    }
+  }
+
+  useEffect(() => {
+    setEditNota(!!notas.nota)
+  }, [notas.nota])
 
   const onToastSuccess = () => {
     setToastSuccess(true)
@@ -74,6 +104,28 @@ export function NotaDetalles(props) {
   const iva = subtotal * 0.16
   const total = subtotal + iva
 
+  const handleNotaChange = (e) => {
+    setNota(e.target.value);
+  }
+
+  const handleAddNota = async () => {
+    try {
+
+      const response = await axios.put(`/api/notas?id=${notaId.id}`, { nota })
+
+      if (response.status === 200) {
+        setEditNota(!!nota)
+
+        const updateNota = { ...notas, nota }
+        setnotaNota(updateNota)
+        onReload()
+        onToastSuccess()
+      }
+    } catch (error) {
+      console.error('Error al actualizar la nota:', error.response?.data || error.message);
+    }
+  }
+
   return (
 
     <>
@@ -117,6 +169,40 @@ export function NotaDetalles(props) {
           <div onClick={onOpenCloseForm}>
             <FaPlus />
           </div>
+        </div>
+
+        <div className={styles.boxMain}>
+        <div className={styles.box3_0}>
+
+          {notas.firma ? (
+            <>
+            
+              <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+                <Image src={notas.firma} />
+
+                {activate ? (
+                  <div className={styles.activateTrash}>
+                    <FaTrash />
+                  </div>
+                ) : (
+                  ''
+                )}
+
+              </div>
+            
+            </>
+          ) : (
+            <>
+            
+              <div className={styles.iconFirmaPlus} onClick={onOpenCloseFirma}>
+                <FaPlus />
+              </div>
+            
+            </>
+          )}
+
+          <div className={styles.linea}></div>
+          <h1>Firma</h1> 
         </div>
 
         <div className={styles.box3}>
@@ -168,8 +254,29 @@ export function NotaDetalles(props) {
 
           </div>
         </div>
+        </div>
 
-        <NotaPDF notas={notas} conceptos={notas.conceptos} onToastSuccessPDF={onToastSuccessPDF} />
+        <div className={styles.formNota}>
+          <Form>
+            <FormGroup>
+              <FormField>
+                <Label>
+                  Nota:
+                </Label>
+                <TextArea
+                  value={nota}
+                  onChange={handleNotaChange}
+                  placeholder="Escribe una nota aquí..."
+                />
+              </FormField>
+            </FormGroup>
+            <Button secondary onClick={handleAddNota}>
+              {editNota ? 'Modificar nota' : 'Añadir nota'}
+            </Button>
+          </Form>
+        </div>
+
+        <NotaPDF notas={notas} conceptos={notas.conceptos} notaNota={notaNota.nota} onToastSuccessPDF={onToastSuccessPDF} />
 
         <div className={styles.footerDetalles}>
           <div>
@@ -190,6 +297,10 @@ export function NotaDetalles(props) {
       <ModalForm title='Agregar concepto' showForm={showForm} onClose={onOpenCloseForm}>
         <NotaConceptosForm reload={reload} onReload={onReload} onOpenCloseForm={onOpenCloseForm} onAddConcept={onAddConcept} notaId={notaId.id} onToastSuccess={onToastSuccess} />
       </ModalForm>
+
+      <BasicModal show={showFirma} onClose={onOpenCloseFirma}>
+        <FirmaDigital reload={reload} onReload={onReload} notaId={notaId.id} onOpenCloseFirma={onOpenCloseFirma} />
+      </BasicModal>
 
       <Confirm
         open={showConfirm}

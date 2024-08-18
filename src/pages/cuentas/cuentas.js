@@ -46,7 +46,7 @@ export default function Cuentas() {
               <>
 
                 <h2>Total</h2>
-                <h1>$
+                <h1>
                   {!counts.length ?
                     '0' :
                     formatCurrency(total)

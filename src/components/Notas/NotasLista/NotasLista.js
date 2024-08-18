@@ -21,7 +21,7 @@ export function NotasLista(props) {
   const[toastSuccess, setToastSuccess] = useState(false)
   const[toastSuccessConfirm, setToastSuccessConfirm] = useState(false)
   const[toastSuccessDelete, setToastSuccessDelete] = useState(false)
-
+  
   const onToastSuccess = () => {
     setToastSuccess(true)
     setTimeout(() => {
@@ -47,7 +47,7 @@ export function NotasLista(props) {
 
   useEffect(() => {
     fetchNotas()
-  }, [])
+  }, [reload])
 
     const fetchNotas = async () => {
       try {
