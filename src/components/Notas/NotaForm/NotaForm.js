@@ -18,7 +18,7 @@ export function NotaForm(props) {
   const [conceptos, setConceptos] = useState([])
   const [nuevoConcepto, setNuevoConcepto] = useState({ tipo: '', concepto: '', cantidad: '', precio: '' })
   const [errors, setErrors] = useState({})
-  const [toggleIVA, setToggleIVA] = useState()
+  const [toggleIVA, setToggleIVA] = useState(false)
   const [conceptoAEliminar, setConceptoAEliminar] = useState(null)
 
   const onShowConfirm = (index) => {

@@ -32,21 +32,42 @@ export function NotaDetalles(props) {
 
   const onOpenCloseFirma = () => setShowFirma((prevState) => !prevState)
 
-  const [activate, setActivate] = useState(false)
-  const [touchTimer, setTouchTimer] = useState(null)
+  const [isMobile, setIsMobile] = useState(false);
 
-  const handleTouchStart = () => {
-    const timer = setTimeout(() => {
-      setActivate((prevState) => !prevState)
-    }, 2000) 
+  useEffect(() => {
+    const userAgent = navigator.userAgent || '';
+    const mobile = /Mobile|Android|iP(hone|od|ad)|IEMobile|Opera Mini/i.test(userAgent);
+    setIsMobile(mobile);
+  }, []);
 
-    setTouchTimer(timer)
-  }
+  const SWIPE_THRESHOLD = 150;
 
-  const handleTouchEnd = () => {
-    if (touchTimer) {
-      clearTimeout(touchTimer)
-      setTouchTimer(null)
+  const [startCoords, setStartCoords] = useState(null);
+  const [isSwiping, setIsSwiping] = useState(false);
+  const [activate, setActivate] = useState(false);
+
+  // Maneja el inicio del deslizamiento
+  const handleTouchStart = (e) => {
+    const touch = e.touches[0];
+    setStartCoords({ x: touch.clientX, y: touch.clientY });
+    setIsSwiping(true);
+  };
+
+  // Maneja el movimiento del deslizamiento
+  const handleTouchMove = (e) => {
+    if (!isSwiping) return;
+
+    const touch = e.touches[0];
+    const endCoords = { x: touch.clientX, y: touch.clientY };
+
+    // Calcula la distancia del deslizamiento
+    const deltaX = endCoords.x - startCoords.x;
+    const deltaY = endCoords.y - startCoords.y;
+    const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+
+    // Si el deslizamiento supera el umbral, activa la acción
+    if (distance > SWIPE_THRESHOLD) {
+      setActivate(true)
     }
   }
 
@@ -177,12 +198,17 @@ export function NotaDetalles(props) {
           {notas.firma ? (
             <>
             
-              <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+              <div onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
                 <Image src={notas.firma} />
 
                 {activate ? (
                   <div className={styles.activateTrash}>
-                    <FaTrash />
+                    <div onClick={() => setActivate(false)}>
+                      <FaTimes />
+                    </div>
+                    <div>
+                      <FaTrash />
+                    </div>
                   </div>
                 ) : (
                   ''
@@ -202,8 +228,15 @@ export function NotaDetalles(props) {
           )}
 
           <div className={styles.linea}></div>
-          <h1>Firma</h1> 
-        </div>
+            <div className={styles.firmaIsMobile}>
+              <h1>Firma</h1> 
+              {isMobile && notas.firma ? (
+                ''
+              ) : (
+                <FaTrash />
+              )}
+            </div>
+          </div>
 
         <div className={styles.box3}>
           <div className={styles.box3_1}>

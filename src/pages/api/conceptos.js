@@ -11,7 +11,7 @@ export default async function handler(req, res) {
             const [result] = await pool.query(
                 'INSERT INTO conceptos (nota_id, tipo, concepto, cantidad, precio) VALUES (?, ?, ?, ?, ?)',
                 [nota_id, tipo, concepto, cantidad, precio]
-            );
+            )
             res.status(201).json({ id: result.insertId })
         } catch (error) {
             res.status(500).json({ error: error.message })
@@ -34,10 +34,10 @@ export default async function handler(req, res) {
             res.status(500).json({ error: error.message })
         }
     } else if (req.method === 'DELETE') {
-        const { concept_id } = req.query
+        const { concepto_id } = req.query
 
         try {
-            const [result] = await pool.query('DELETE FROM conceptos WHERE id = ?', [concept_id])
+            const [result] = await pool.query('DELETE FROM conceptos WHERE id = ?', [concepto_id])
             if (result.affectedRows === 0) {
                 return res.status(404).json({ error: 'Concepto no encontrado' })
             }
