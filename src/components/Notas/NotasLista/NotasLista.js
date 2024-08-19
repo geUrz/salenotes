@@ -6,7 +6,7 @@ import { formatId } from '@/helpers'
 import { Loading, ListEmpty, ToastSuccess } from '@/components/Layouts'
 import { BasicModal } from '@/layouts'
 import { NotaDetalles } from '../NotaDetalles'
-import { Confirm } from 'semantic-ui-react'
+import { Confirm, Image } from 'semantic-ui-react'
 import styles from './NotasLista.module.css'
 
 export function NotasLista(props) {
@@ -43,20 +43,20 @@ export function NotasLista(props) {
     }, 3000)
   }
 
-  const onShowConfirm = () => setShowConfirm((prevState) => !prevState)
-
-  useEffect(() => {
-    fetchNotas()
-  }, [reload])
-
-    const fetchNotas = async () => {
-      try {
-        const response = await axios.get('/api/notas')
-        setNotas(response.data);
-      } catch (error) {
-        console.error('Error al obtener las notas:', error)
-      }
+  const fetchNotas = async () => {
+    try {
+        const response = await axios.get('/api/notas');
+        setNotas(response.data)
+    } catch (error) {
+        console.error('Error fetching notas:', error);
     }
+}
+
+useEffect(() => {
+    fetchNotas()
+}, [reload])
+
+  const onShowConfirm = () => setShowConfirm((prevState) => !prevState)
  
   const onOpenClose = async (nota) => {
     try {

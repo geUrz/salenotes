@@ -10,14 +10,15 @@ export function Loading(props) {
     [styles.loadingMain]: loading === 0,
     [styles.loadingLarge]: loading === 1, 
     [styles.loadingMiddle]: loading === 2, 
-    [styles.loadingMini]: loading === 3  
-  });
+    [styles.loadingMini]: loading === 3,  
+    [styles.loadingFirma]: loading === 4  
+  })
 
   return (
     
     <div className={loadingClass}>
       <MoonLoader
-        color='azure'
+        color='cyan'
         size={size}
         speedMultiplier={.8}
       />

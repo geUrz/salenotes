@@ -114,48 +114,19 @@
   top: 0;
   left: 0;
   background-color: rgba(155, 0, 0, 0.9);
+  z-index: 1;
   cursor: pointer;
 }
 
 .activateTrash:hover{
-  background-color: rgba(175, 0, 0, 0.9);
-}
-
-.activateTrash:active{
   background-color: rgba(196, 0, 0, 0.9);
 }
 
-.activateTrash div:nth-child(1){
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  border-radius: 50%;
+.activateTrash div{
   cursor: pointer;
 }
 
-.activateTrash div:nth-child(1):hover{
-  background-color: var(--bg1);
-}
-
-.activateTrash div:nth-child(1):active{
-  background-color: var(--bg4);
-}
-
-.activateTrash div:nth-child(1) svg, .activateTrash div:nth-child(1) path{
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.activateTrash div:nth-child(2){
-  cursor: pointer;
-}
-
-.activateTrash div:nth-child(2) svg, .activateTrash div:nth-child(2) path{
+.activateTrash svg, .activateTrash path{
   font-size: 28px;
   cursor: pointer;
 }
@@ -194,7 +165,7 @@
 }
 
 .box3 h1{
-  font-size: 11.5px;
+  font-size: 12.5px;
 }
 
 .box3_1{
@@ -207,7 +178,7 @@
 
 .box3_2 h1{
   padding: 3.5px 0 !important;
-  font-size: 11px;
+  font-size: 12px;
   text-align: right;
 }
 
@@ -261,14 +232,14 @@
 }
 
 .footerDetalles{
-  padding: 0 10px;
+  padding: 0 10px 0 20px;
   width: 100%;
   height: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: absolute;
-  bottom: 0px;
+  bottom: 10px;
   right: 0px;
 }
 

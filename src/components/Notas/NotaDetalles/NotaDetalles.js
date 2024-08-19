@@ -1,4 +1,4 @@
-import { FirmaDigital, IconCloseModal, ToastSuccess } from '@/components/Layouts'
+import { FirmaDigital, IconCloseModal, Loading, ToastSuccess } from '@/components/Layouts'
 import { formatCurrency, formatDate, formatId } from '@/helpers'
 import { NotasRowHeadModal } from '../NotasRowHead'
 import { useEffect, useState } from 'react'
@@ -12,63 +12,72 @@ import { NotaPDF } from '../NotaPDF'
 import { useAuth } from '@/context/AuthContext'
 import styles from './NotaDetalles.module.css'
 import axios from 'axios'
+import { size } from 'lodash'
 
 export function NotaDetalles(props) {
 
   const { notas, notaId, reload, onReload, onOpenClose, onAddConcept, onDeleteConcept, onShowConfirm } = props
-  
+
   const { user } = useAuth()
 
   const [showForm, setShowForm] = useState(false)
-  const [showFirma, setShowFirma] = useState(false)
+  const [showModalFirma, setShowModalFirma] = useState(false)
+  const [showConfirmFirma, setShowConfirmFirma] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [currentConcept, setCurrentConcept] = useState(null)
   const [toastSuccess, setToastSuccess] = useState(false)
   const [toastSuccessPDF, setToastSuccessPDF] = useState(false)
 
   const [nota, setNota] = useState(notas.nota || '')
+  const [firma, setFirma] = useState(null)
   const [notaNota, setnotaNota] = useState('')
   const [editNota, setEditNota] = useState(!!notas.nota)
+  const onOpenCloseFirma = () => setShowModalFirma((prevState) => !prevState)
+  const onOpenCloseConfirmFirma = () => setShowConfirmFirma((prevState) => !prevState)
+  const [showFirma, setShowFirma] = useState(false)
 
-  const onOpenCloseFirma = () => setShowFirma((prevState) => !prevState)
-
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
-    const userAgent = navigator.userAgent || '';
-    const mobile = /Mobile|Android|iP(hone|od|ad)|IEMobile|Opera Mini/i.test(userAgent);
-    setIsMobile(mobile);
-  }, []);
+    const userAgent = navigator.userAgent || ''
+    const mobile = /Mobile|Android|iP(hone|od|ad)|IEMobile|Opera Mini/i.test(userAgent)
+    setIsMobile(mobile)
+  }, [])
 
-  const SWIPE_THRESHOLD = 150;
+  const SWIPE_THRESHOLD = 150
 
-  const [startCoords, setStartCoords] = useState(null);
-  const [isSwiping, setIsSwiping] = useState(false);
-  const [activate, setActivate] = useState(false);
+  const [startCoords, setStartCoords] = useState(null)
+  const [isSwiping, setIsSwiping] = useState(false)
+
+  const [activate, setActivate] = useState(false)
 
   // Maneja el inicio del deslizamiento
   const handleTouchStart = (e) => {
-    const touch = e.touches[0];
-    setStartCoords({ x: touch.clientX, y: touch.clientY });
-    setIsSwiping(true);
-  };
+    const touch = e.touches[0]
+    setStartCoords({ x: touch.clientX, y: touch.clientY })
+    setIsSwiping(true)
+  }
 
   // Maneja el movimiento del deslizamiento
   const handleTouchMove = (e) => {
-    if (!isSwiping) return;
+    if (!isSwiping) return
 
-    const touch = e.touches[0];
-    const endCoords = { x: touch.clientX, y: touch.clientY };
+    const touch = e.touches[0]
+    const endCoords = { x: touch.clientX, y: touch.clientY }
 
     // Calcula la distancia del deslizamiento
-    const deltaX = endCoords.x - startCoords.x;
-    const deltaY = endCoords.y - startCoords.y;
-    const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+    const deltaX = endCoords.x - startCoords.x
+    const deltaY = endCoords.y - startCoords.y
+    const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2)
 
     // Si el deslizamiento supera el umbral, activa la acción
     if (distance > SWIPE_THRESHOLD) {
       setActivate(true)
     }
+  }
+
+  const handleTouchClick = () => {
+    setActivate(false)
   }
 
   useEffect(() => {
@@ -147,6 +156,46 @@ export function NotaDetalles(props) {
     }
   }
 
+  useEffect(() => {
+    if (notas) {
+      fetchFirma()
+    }
+  }, [notas])
+
+
+
+  const fetchFirma = async () => {
+    try {
+      const response = await axios.get(`/api/notas?id=${notaId.id}&firma=true`);
+      if (response.status === 200) {
+        setFirma(response.data.firma)
+
+        setTimeout(() => {
+          setShowFirma(true)
+        }, 1500)
+      }
+    } catch (error) {
+      console.error('Error al obtener la firma:', error)
+    }
+  }
+
+  const removeSignature = async () => {
+    try {
+      const response = await axios.put(`/api/notas?id=${notaId.id}`, {
+        firma: null
+      })
+
+      if (response.status === 200) {
+        console.log('Firma eliminada exitosamente')
+        fetchFirma()
+        onReload()
+        onOpenCloseConfirmFirma();
+      }
+    } catch (error) {
+      console.error('Error al eliminar la firma:', error)
+    }
+  }
+
   return (
 
     <>
@@ -157,7 +206,7 @@ export function NotaDetalles(props) {
 
       {toastSuccessPDF && <ToastSuccess contain='PDF creado exitosamente' onClose={() => setToastSuccessPDF(false)} />}
 
-      <div className={styles.section}>
+      <div className={styles.section} onClick={handleTouchClick}>
 
         <div className={styles.box1}>
           <div className={styles.box1_1}>
@@ -193,100 +242,93 @@ export function NotaDetalles(props) {
         </div>
 
         <div className={styles.boxMain}>
-        <div className={styles.box3_0}>
+          <div className={styles.box3_0}>
 
-          {notas.firma ? (
-            <>
-            
-              <div onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
-                <Image src={notas.firma} />
-
-                {activate ? (
-                  <div className={styles.activateTrash}>
-                    <div onClick={() => setActivate(false)}>
-                      <FaTimes />
+            {firma ? (
+              showFirma ? (
+                <div onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
+                  <Image src={firma} alt="Firma" />
+                  {activate && (
+                    <div className={styles.activateTrash}>
+                      <div onClick={onOpenCloseConfirmFirma}>
+                        <FaTrash />
+                      </div>
                     </div>
-                    <div>
-                      <FaTrash />
-                    </div>
-                  </div>
-                ) : (
-                  ''
-                )}
-
-              </div>
-            
-            </>
-          ) : (
-            <>
-            
+                  )}
+                </div>
+              ) : (
+                <Loading size={25} loading={4} />
+              )
+            ) : (
               <div className={styles.iconFirmaPlus} onClick={onOpenCloseFirma}>
                 <FaPlus />
               </div>
-            
-            </>
-          )}
+            )}
 
-          <div className={styles.linea}></div>
+            <div className={styles.linea}></div>
             <div className={styles.firmaIsMobile}>
-              <h1>Firma</h1> 
-              {isMobile && notas.firma ? (
+              <h1>Firma</h1>
+              {isMobile ? (
                 ''
               ) : (
-                <FaTrash />
+                notas.firma ? (
+                  <FaTrash onClick={onOpenCloseConfirmFirma} />
+                ) : (
+                  ''
+                )
               )}
             </div>
           </div>
 
-        <div className={styles.box3}>
-          <div className={styles.box3_1}>
-            <h1>Subtotal:</h1>
+          <div className={styles.box3}>
+            <div className={styles.box3_1}>
+              <h1>Subtotal:</h1>
 
-            {!toggleIVA ? (
+              {!toggleIVA ? (
 
-              <div className={styles.toggleOFF} onClick={onIVA}>
-                <BiToggleLeft />
-                <h1>IVA:</h1>
-              </div>
+                <div className={styles.toggleOFF} onClick={onIVA}>
+                  <BiToggleLeft />
+                  <h1>IVA:</h1>
+                </div>
 
-            ) : (
+              ) : (
 
-              <div className={styles.toggleON} onClick={onIVA}>
-                <BiToggleRight />
-                <h1>IVA:</h1>
-              </div>
+                <div className={styles.toggleON} onClick={onIVA}>
+                  <BiToggleRight />
+                  <h1>IVA:</h1>
+                </div>
 
-            )}
+              )}
 
-            <h1>Total:</h1>
-          </div>
+              <h1>Total:</h1>
+            </div>
 
-          <div className={styles.box3_2}>
+            <div className={styles.box3_2}>
 
-            {!toggleIVA ? (
-              <>
+              {!toggleIVA ? (
+                <>
 
-                <h1>-</h1>
-                <h1>-</h1>
+                  <h1>-</h1>
+                  <h1>-</h1>
 
-              </>
-            ) : (
-              <>
+                </>
+              ) : (
+                <>
 
+                  <h1>{formatCurrency(subtotal)}</h1>
+                  <h1>{formatCurrency(iva)}</h1>
+
+                </>
+              )}
+
+              {!toggleIVA ? (
                 <h1>{formatCurrency(subtotal)}</h1>
-                <h1>{formatCurrency(iva)}</h1>
+              ) : (
+                <h1>{formatCurrency(total)}</h1>
+              )}
 
-              </>
-            )}
-
-            {!toggleIVA ? (
-              <h1>{formatCurrency(subtotal)}</h1>
-            ) : (
-              <h1>{formatCurrency(total)}</h1>
-            )}
-
+            </div>
           </div>
-        </div>
         </div>
 
         <div className={styles.formNota}>
@@ -309,7 +351,7 @@ export function NotaDetalles(props) {
           </Form>
         </div>
 
-        <NotaPDF notas={notas} conceptos={notas.conceptos} notaNota={notaNota.nota} onToastSuccessPDF={onToastSuccessPDF} />
+        <NotaPDF notas={notas} conceptos={notas.conceptos} notaNota={notaNota.nota} firma={firma} onToastSuccessPDF={onToastSuccessPDF} />
 
         <div className={styles.footerDetalles}>
           <div>
@@ -331,8 +373,8 @@ export function NotaDetalles(props) {
         <NotaConceptosForm reload={reload} onReload={onReload} onOpenCloseForm={onOpenCloseForm} onAddConcept={onAddConcept} notaId={notaId.id} onToastSuccess={onToastSuccess} />
       </ModalForm>
 
-      <BasicModal show={showFirma} onClose={onOpenCloseFirma}>
-        <FirmaDigital reload={reload} onReload={onReload} notaId={notaId.id} onOpenCloseFirma={onOpenCloseFirma} />
+      <BasicModal show={showModalFirma} onClose={onOpenCloseFirma}>
+        <FirmaDigital reload={reload} onReload={onReload} fetchFirma={fetchFirma} notaId={notaId.id} onOpenCloseFirma={onOpenCloseFirma} />
       </BasicModal>
 
       <Confirm
@@ -352,7 +394,24 @@ export function NotaDetalles(props) {
         content='¿ Estas seguro de eliminar el concepto ?'
       />
 
+      <Confirm
+        open={showConfirmFirma}
+        cancelButton={
+          <div className={styles.iconClose}>
+            <FaTimes />
+          </div>
+        }
+        confirmButton={
+          <div className={styles.iconCheck}>
+            <FaCheck />
+          </div>
+        }
+        onConfirm={removeSignature}
+        onCancel={onOpenCloseConfirmFirma}
+        content='¿ Estas seguro de eliminar la firma ?'
+      />
+
     </>
 
   )
-}
+} 

@@ -70,9 +70,13 @@
   border: none !important;
 } */
 
-.ui.page.modals{
+/* .ui.page{
+  padding: 100px 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   background-color: rgba(0, 0, 0, .65 );
-}
+}  */
 
 .field.error input, .field.error select, .field.error textarea{
   border: 1px solid rgb(167, 0, 0) !important;

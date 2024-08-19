@@ -7,7 +7,7 @@ import styles from './NotaPDF.module.css'
 
 export function NotaPDF(props) {
 
-  const {notas, notaNota, conceptos} = props
+  const {notas, notaNota, conceptos, firma} = props
   
   const generarPDF = async () => {
 
@@ -31,8 +31,6 @@ export function NotaPDF(props) {
     const pageWidth = doc.internal.pageSize.getWidth()
 
     const xPosition = pageWidth - logoWidth - marginRightLogo
-
-    doc.addImage(logoImg, 'PNG', xPosition, 12, logoWidth, logoHeight)
     
     doc.addImage(logoImg, 'PNG', xPosition, 12, logoWidth, logoHeight)
 
@@ -183,7 +181,7 @@ export function NotaPDF(props) {
     const marginLeft = pWidth - mRight - tableWidth
 
     doc.autoTable({
-      startY: 122,
+      startY: 112,
       margin: { left: marginLeft, bottom: 0, right: marginRight },
       body: verticalData,
       styles: {
@@ -196,6 +194,22 @@ export function NotaPDF(props) {
         1: { cellWidth: 18, halign: 'right' }  
       }
     })
+
+    const firmaWidth = 20
+    const firmaHeight = 10
+    const marginRightFirma = 8
+
+    const pgWidth = doc.internal.pageSize.getWidth()
+
+    const xPos = pgWidth - firmaWidth - marginRightFirma
+
+    if (firma) {
+      doc.addImage(firma, 'PNG', xPos, 125, firmaWidth, firmaHeight) 
+      doc.setFontSize(6)
+      doc.setTextColor(50, 50, 50)
+      doc.text('_________________________', doc.internal.pageSize.width - 28 - doc.getTextWidth('Firma'), 136.5)  
+      doc.text('Firma', doc.internal.pageSize.width - 16 - doc.getTextWidth('Firma'), 140)  
+    } 
 
     doc.setFontSize(6)
     doc.setTextColor(120, 120, 120)
@@ -216,7 +230,7 @@ export function NotaPDF(props) {
     const textWidth = doc.getTextWidth(text);
     const pagWidth = doc.internal.pageSize.width
     const x = (pagWidth - textWidth) / 2
-    const y = 145
+    const y = 144
     doc.text(text, x, y)
 
     doc.save(`nota_${formatId(notas.id)}.pdf`)

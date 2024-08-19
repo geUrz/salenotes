@@ -1,7 +1,7 @@
 import { BasicLayout, BasicModal } from '@/layouts'
 import { NotaForm, NotasLista, NotasRowHeadMain } from '@/components/Notas'
 import { useEffect, useState } from 'react'
-import { Add, CountBox, ToastSuccess } from '@/components/Layouts'
+import { Add, CountBox, ToastSuccess, ToastWarning } from '@/components/Layouts'
 import axios from 'axios'
 import { FaFileAlt } from 'react-icons/fa'
 import { size } from 'lodash'
@@ -21,6 +21,7 @@ export default function Notas(props) {
   const onOpenClose = () => setShow((prevState) => !prevState)
 
   const [toastSuccess, setToastSuccess] = useState(false)
+  const [toastCountNotas, setToastCountNotas] = useState(false)
 
   const [notas, setNotas] = useState([])
 
@@ -32,6 +33,10 @@ export default function Notas(props) {
       setToastSuccess(false)
     }, 3000)
   }
+  
+  const onOpenToastCountNotas = () => {
+    setToastCountNotas(true)    
+  }
 
   useEffect(() => {
     (async () => {
@@ -42,7 +47,7 @@ export default function Notas(props) {
         console.error(error)
       }
     })()
-  }, [notas])
+  }, [reload])
 
   return (
 
@@ -50,8 +55,10 @@ export default function Notas(props) {
 
       <BasicLayout title='Notas' categorie='notas' onReload={onReload}>
 
-        {toastSuccess && <ToastSuccess contain='Nota creado exitosamente' onClose={() => setToast(false)} />}
+        {toastSuccess && <ToastSuccess contain='Nota creado exitosamente' onClose={() => setToastSuccess(false)} />}
 
+        {toastCountNotas && <ToastWarning onClose={() => setToastCountNotas(false)} />}
+ 
         <CountBox
           title='Notas'
           icon={<FaFileAlt />}
@@ -61,11 +68,17 @@ export default function Notas(props) {
         <div className={styles.main}>
           <div className={styles.section}>
             <NotasRowHeadMain rowMain />
-            <NotasLista reload={reload} onReload={onReload} />
+            <NotasLista reload={reload} onReload={onReload} notas={notas} />
           </div>
         </div>
 
-        <Add onOpenClose={onOpenClose} />
+
+          <Add onOpenClose={(countAll) >= 3 ? (
+            onOpenToastCountNotas
+          ) : (
+            onOpenClose
+          )} />
+    
 
         <BasicModal title='Crear nota' show={show} onClose={onOpenClose}>
           <NotaForm reload={reload} onReload={onReload} onOpenClose={onOpenClose} onToastSuccess={onToastSuccess} />

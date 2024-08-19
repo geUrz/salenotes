@@ -2,15 +2,14 @@
   padding: 20PX 0 25px 0;
   max-width: 350px !important;
   background-color: var(--bg1) !important;
-}
+} 
 
 .content, .actions{
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  flex-direction: row-reverse;
   background-color: var(--bg1) !important;
-}
+}  
 
 .ui.button, .ui.button.primary{
   margin: 20px;
