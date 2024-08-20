@@ -131,12 +131,6 @@ export function NotaDetalles(props) {
 
   const [toggleIVA, setToggleIVA] = useState(false)
 
-  /* const onIVA = () => {
-    setToggleIVA((prevState) => !prevState)
-    console.log(toggleIVA);
-    
-  } */
-
   const onIVA = async () => {
     try {
 

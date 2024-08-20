@@ -55,7 +55,7 @@ export default function Notas(props) {
 
       <BasicLayout title='Notas' categorie='notas' onReload={onReload}>
 
-        {toastSuccess && <ToastSuccess contain='Nota creado exitosamente' onClose={() => setToastSuccess(false)} />}
+        {toastSuccess && <ToastSuccess contain='Nota creada exitosamente' onClose={() => setToastSuccess(false)} />}
 
         {toastCountNotas && <ToastWarning onClose={() => setToastCountNotas(false)} />}
  

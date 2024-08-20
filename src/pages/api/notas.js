@@ -1,4 +1,5 @@
-import pool from "@/libs/db";
+import pool from "@/libs/db"
+import sendNotification from "@/libs/onesignalServer";
 
 export default async function handler(req, res) {
 
@@ -42,7 +43,12 @@ export default async function handler(req, res) {
             const [result] = await pool.query(
                 'INSERT INTO notas (cliente, marca) VALUES (?, ?)',
                 [cliente, marca]
-            );
+            )
+
+            // Envía notificaciones
+            const userIds = [/* Array de IDs de usuario de OneSignal */];
+            await sendNotification('Nueva Nota Creada', `Se ha creado una nueva nota para ${cliente}.`, userIds);
+
             res.status(201).json({ id: result.insertId });
         } catch (error) {
             res.status(500).json({ error: error.message });
