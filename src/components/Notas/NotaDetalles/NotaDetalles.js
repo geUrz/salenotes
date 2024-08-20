@@ -1,4 +1,4 @@
-import { FirmaDigital, IconCloseModal, Loading, ToastSuccess } from '@/components/Layouts'
+import { FirmaDigital, IconCloseModal, Loading, ToastDelete, ToastSuccess } from '@/components/Layouts'
 import { formatCurrency, formatDate, formatId } from '@/helpers'
 import { NotasRowHeadModal } from '../NotasRowHead'
 import { useEffect, useState } from 'react'
@@ -27,6 +27,8 @@ export function NotaDetalles(props) {
   const [currentConcept, setCurrentConcept] = useState(null)
   const [toastSuccess, setToastSuccess] = useState(false)
   const [toastSuccessPDF, setToastSuccessPDF] = useState(false)
+  const [toastSuccessFirma, setToastSuccessFirma] = useState(false)
+  const [toastSuccessDelete, setToastSuccessDelete] = useState(false)
 
   const [nota, setNota] = useState(notas.nota || '')
   const [firma, setFirma] = useState(null)
@@ -98,6 +100,20 @@ export function NotaDetalles(props) {
     }, 3000)
   }
 
+  const onToastSuccessFirma = () => {
+    setToastSuccessFirma(true)
+    setTimeout(() => {
+      setToastSuccessFirma(false)
+    }, 3000)
+  }
+
+  const onToasSuccesstDelete = () => {
+    setToastSuccessDelete(true)
+    setTimeout(() => {
+      setToastSuccessDelete(false)
+    }, 3000)
+  }
+
   const onOpenCloseConfirm = (concepto) => {
     setShowConfirm((prevState) => !prevState)
     setCurrentConcept(concepto.id)
@@ -115,8 +131,25 @@ export function NotaDetalles(props) {
 
   const [toggleIVA, setToggleIVA] = useState(false)
 
-  const onIVA = () => {
+  /* const onIVA = () => {
     setToggleIVA((prevState) => !prevState)
+    console.log(toggleIVA);
+    
+  } */
+
+  const onIVA = async () => {
+    try {
+
+      const newToggleIVA = !toggleIVA
+      setToggleIVA(newToggleIVA)
+      const subtotal = notas.conceptos.reduce((sum, concepto) => sum + concepto.precio * concepto.cantidad, 0);
+      const iva = subtotal * 0.16;
+
+      await axios.put(`/api/notas?id=${notaId.id}`, { iva: newToggleIVA ? iva : 0 })
+      
+    } catch (error) {
+      console.error('Error al actualizar el IVA:', error)
+    }
   }
 
   useEffect(() => {
@@ -172,7 +205,7 @@ export function NotaDetalles(props) {
 
         setTimeout(() => {
           setShowFirma(true)
-        }, 1500)
+        }, 1000)
       }
     } catch (error) {
       console.error('Error al obtener la firma:', error)
@@ -187,9 +220,10 @@ export function NotaDetalles(props) {
 
       if (response.status === 200) {
         console.log('Firma eliminada exitosamente')
+        onToasSuccesstDelete()
         fetchFirma()
         onReload()
-        onOpenCloseConfirmFirma();
+        onOpenCloseConfirmFirma()
       }
     } catch (error) {
       console.error('Error al eliminar la firma:', error)
@@ -205,6 +239,10 @@ export function NotaDetalles(props) {
       {toastSuccess && <ToastSuccess contain='Concepto agregado exitosamente' onClose={() => setToastSuccess(false)} />}
 
       {toastSuccessPDF && <ToastSuccess contain='PDF creado exitosamente' onClose={() => setToastSuccessPDF(false)} />}
+
+      {toastSuccessFirma && <ToastSuccess contain='Firma creada exitosamente' onClose={() => setToastSuccessPDF(false)} />}
+
+      {toastSuccessDelete && <ToastDelete contain='Firma eliminada exitosamente' onClose={() => setToastSuccessPDF(false)} />}
 
       <div className={styles.section} onClick={handleTouchClick}>
 
@@ -249,8 +287,8 @@ export function NotaDetalles(props) {
                 <div onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
                   <Image src={firma} alt="Firma" />
                   {activate && (
-                    <div className={styles.activateTrash}>
-                      <div onClick={onOpenCloseConfirmFirma}>
+                    <div className={styles.activateTrash} onClick={onOpenCloseConfirmFirma}>
+                      <div>
                         <FaTrash />
                       </div>
                     </div>
@@ -373,8 +411,8 @@ export function NotaDetalles(props) {
         <NotaConceptosForm reload={reload} onReload={onReload} onOpenCloseForm={onOpenCloseForm} onAddConcept={onAddConcept} notaId={notaId.id} onToastSuccess={onToastSuccess} />
       </ModalForm>
 
-      <BasicModal show={showModalFirma} onClose={onOpenCloseFirma}>
-        <FirmaDigital reload={reload} onReload={onReload} fetchFirma={fetchFirma} notaId={notaId.id} onOpenCloseFirma={onOpenCloseFirma} />
+      <BasicModal title='Crear firma' show={showModalFirma} onClose={onOpenCloseFirma}>
+        <FirmaDigital reload={reload} onReload={onReload} fetchFirma={fetchFirma} notaId={notaId.id} onToastSuccessFirma={onToastSuccessFirma} onOpenCloseFirma={onOpenCloseFirma} />
       </BasicModal>
 
       <Confirm

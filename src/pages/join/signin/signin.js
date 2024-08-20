@@ -1,5 +1,5 @@
 import { Button, Form, FormField, FormGroup, Input, Label } from 'semantic-ui-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { BasicJoin } from '@/layouts'
 import { FaUser } from 'react-icons/fa'
@@ -8,9 +8,6 @@ import { useRedirectIfAuthenticated } from '@/hook'
 import styles from './signin.module.css'
 
 export default function Signin() {
-
-  const [activate, setActivate] = useState(false)
-  const [touchTimer, setTouchTimer] = useState(null)
 
   const [errors, setErrors] = useState({})
 
@@ -21,19 +18,18 @@ export default function Signin() {
 
   useRedirectIfAuthenticated()
 
-  const handleTouchStart = () => {
-    const timer = setTimeout(() => {
-      setActivate((prevState) => !prevState)
-    }, 2000) 
+  const [activate, setActivate] = useState(false)
 
-    setTouchTimer(timer)
+  const timer = useRef(null)
+
+  const handleTouchStart = () => {
+    timer.current = setTimeout(() => {
+      setActivate(prev => !prev)
+    }, 3000)
   }
 
   const handleTouchEnd = () => {
-    if (touchTimer) {
-      clearTimeout(touchTimer)
-      setTouchTimer(null)
-    }
+    clearTimeout(timer.current)
   }
 
   const handleKeyDown = (e) => {

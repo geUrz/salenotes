@@ -1,6 +1,5 @@
-import { FaInfoCircle, FaMobile, FaMobileAlt, FaTimes, FaWhatsapp } from 'react-icons/fa'
+import { FaInfoCircle, FaMobileAlt, FaTimes, FaWhatsapp } from 'react-icons/fa'
 import styles from './ToastWarning.module.css'
-import { useEffect } from 'react';
 
 export function ToastWarning(props) {
 
@@ -14,10 +13,10 @@ export function ToastWarning(props) {
       </div>
       <div className={styles.toast}>
         <FaInfoCircle />
-        <h1>¡ Haz alcanzado el limite de notas creadas !</h1>
+        <h1>¡ Alcanzaste el limite de notas !</h1>
       </div>
       <div className={styles.info}>
-        <h1>Contacto:</h1>
+        <h1>Contacto para solicitar mas folios:</h1>
         <div>
           <FaMobileAlt />
           <FaWhatsapp />

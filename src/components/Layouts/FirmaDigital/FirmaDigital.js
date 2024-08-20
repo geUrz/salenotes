@@ -6,7 +6,7 @@ import { IconCloseModal } from '../IconCloseModal'
 import axios from 'axios'
 
 export function FirmaDigital(props) {
-  const { notaId, reload, onReload, fetchFirma, onOpenCloseFirma } = props
+  const { notaId, reload, onReload, fetchFirma, onToastSuccessFirma, onOpenCloseFirma } = props
 
   const [trimmedDataURL, setTrimmedDataURL] = useState(null)
   const sigPad = useRef(null)
@@ -34,6 +34,7 @@ export function FirmaDigital(props) {
         firma: signature
       })
 
+      onToastSuccessFirma()
       fetchFirma()
       onReload()
       onOpenCloseFirma()

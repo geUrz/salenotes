@@ -28,7 +28,7 @@ export default async function handler(req, res) {
                 } else {
                     // Consulta general que devuelve todas las columnas
                     try {
-                        const [rows] = await pool.query('SELECT id, cliente, marca, nota, firma, createdAt FROM notas');
+                        const [rows] = await pool.query('SELECT id, cliente, marca, nota, firma, iva, createdAt FROM notas');
                         res.status(200).json(rows);
                     } catch (error) {
                         res.status(500).json({ error: error.message });
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
             res.status(500).json({ error: error.message });
         }
     } else if (req.method === 'PUT') {
-        const { nota, firma } = req.body
+        const { nota, firma, iva } = req.body
 
         try {
             let query = 'UPDATE notas SET';
@@ -62,6 +62,11 @@ export default async function handler(req, res) {
             if (firma !== undefined) {
                 query += ' firma = ?,';
                 params.push(firma);
+            }
+
+            if (iva !== undefined) {
+                query += ' iva = ?,';
+                params.push(iva);
             }
 
             // Remove the trailing comma and add the WHERE clause

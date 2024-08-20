@@ -43,19 +43,19 @@ export function NotaPDF(props) {
 
     doc.setFontSize(`${font1}`)
     doc.setTextColor(0, 0, 0)
-    doc.text('CLICKNET', 4.5, 10)
+    doc.text('LOCK SMITH', 4.5, 10)
     doc.setFontSize(`${font2}`)
     doc.setTextColor(120, 120, 120)
-    doc.text('Punta Este Corporativo', 4.5, 14)
-    doc.text('Calzada Carranza 951', 4.5, 18)
-    doc.text('Piso 10 Suite 304, Interior "E"', 4.5, 22)
-    doc.text('C.P. 2125', 4.5, 26)
+    doc.text('SOLUTIONS', 4.5, 14)
+    doc.text('#', 4.5, 18)
+    doc.text('#', 4.5, 22)
+    doc.text('#', 4.5, 26)
     doc.setFontSize(`${font2}`)
     doc.setTextColor(0, 0, 0)
-    doc.text('Juan Roberto Espinoza Espinoza', 4.5, 30)
+    doc.text('#', 4.5, 30)
     doc.setFontSize(`${font2}`)
     doc.setTextColor(120, 120, 120)
-    doc.text('RFC: EIEJ8906244J3', 4.5, 34)
+    doc.text('#', 4.5, 34)
 
     doc.setFontSize(`${font1}`)
     doc.setTextColor(0, 0, 0)
@@ -84,11 +84,11 @@ export function NotaPDF(props) {
     doc.setFontSize(`${font2}`)
     doc.setTextColor(0, 0, 0)
     doc.text('Fecha/Hora', doc.internal.pageSize.width - marginRight - doc.getTextWidth('Fecha/Hora'), 49)
-    doc.setFontSize(`${font2}`)
+    doc.setFontSize(8)
     doc.setTextColor(120, 120, 120)
     doc.text(
-      `${formatDate(notas.createdAt)}`,
-      doc.internal.pageSize.width - 3.9 - doc.getTextWidth(`${formatDate(notas.createdAt)}`),
+      `${formatDate(notas.createdAt).toUpperCase()}`,
+      doc.internal.pageSize.width - 5.5 - doc.getTextWidth(`${formatDate(notas.createdAt)}`),
       53
     )
 
@@ -181,7 +181,7 @@ export function NotaPDF(props) {
     const marginLeft = pWidth - mRight - tableWidth
 
     doc.autoTable({
-      startY: 112,
+      startY: 106.5,
       margin: { left: marginLeft, bottom: 0, right: marginRight },
       body: verticalData,
       styles: {
@@ -197,18 +197,18 @@ export function NotaPDF(props) {
 
     const firmaWidth = 20
     const firmaHeight = 10
-    const marginRightFirma = 8
+    const marginRightFirma = 9.5
 
     const pgWidth = doc.internal.pageSize.getWidth()
 
     const xPos = pgWidth - firmaWidth - marginRightFirma
 
     if (firma) {
-      doc.addImage(firma, 'PNG', xPos, 125, firmaWidth, firmaHeight) 
+      doc.addImage(firma, 'PNG', xPos, 126.5, firmaWidth, firmaHeight) 
       doc.setFontSize(6)
       doc.setTextColor(50, 50, 50)
-      doc.text('_________________________', doc.internal.pageSize.width - 28 - doc.getTextWidth('Firma'), 136.5)  
-      doc.text('Firma', doc.internal.pageSize.width - 16 - doc.getTextWidth('Firma'), 140)  
+      doc.text('_________________________', doc.internal.pageSize.width - 29 - doc.getTextWidth('Firma'), 138)  
+      doc.text('Firma', doc.internal.pageSize.width - 16.5 - doc.getTextWidth('Firma'), 141.5)  
     } 
 
     doc.setFontSize(6)
