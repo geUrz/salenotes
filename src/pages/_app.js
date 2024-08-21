@@ -1,7 +1,7 @@
 import { AuthProvider } from '@/context/AuthContext'
 import 'semantic-ui-css/semantic.min.css'
-import { useEffect } from 'react'
-import initOneSignal from '@/libs/onesignal'
+import { initializeOneSignal } from '@/libs/onesignal';
+import { useEffect } from 'react';
 import '@/styles/globals.css'
 
 export default function App(props) {
@@ -9,7 +9,7 @@ export default function App(props) {
   const { Component, pageProps } = props
 
   useEffect(() => {
-    initOneSignal();
+    initializeOneSignal();
   }, []);
 
   return(

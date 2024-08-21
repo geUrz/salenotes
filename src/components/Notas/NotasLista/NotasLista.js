@@ -121,7 +121,7 @@ useEffect(() => {
 
       {toastSuccess && <ToastSuccess contain='Concepto creado exitosamente' onClose={() => setToastSuccess(false)} />}
 
-      {toastSuccessConfirm && <ToastSuccess contain='Recibo eliminado exitosamente' onClose={() => setToastSuccessConfirm(false)} />}
+      {toastSuccessConfirm && <ToastSuccess contain='Nota eliminada exitosamente' onClose={() => setToastSuccessConfirm(false)} />}
 
       {toastSuccessDelete && <ToastSuccess contain='Concepto eliminado exitosamente' onClose={() => setToastSuccessConfirm(false)} />}
 
@@ -162,7 +162,7 @@ useEffect(() => {
         }
         onConfirm={() => onDeleteNota(notaSeleccionada.id)}
         onCancel={onShowConfirm}
-        content='¿ Estas seguro de eliminar el nota ?'
+        content='¿ Estas seguro de eliminar la nota ?'
       />
 
     </>
