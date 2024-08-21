@@ -3,9 +3,8 @@ import pool from "@/libs/db"
 
 import axios from "axios";
 
-// Configura tus credenciales de OneSignal
-const ONE_SIGNAL_APP_ID = '8e1dbd58-5c05-4e25-b30b-526187be9374';
-const ONE_SIGNAL_API_KEY = 'MmU5NzQ2OGItYjdmZi00ZGMzLTk1NTgtOWM3ZDJiMTg0YmM3';
+const ONE_SIGNAL_APP_ID = process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID;
+const ONE_SIGNAL_API_KEY = process.env.NEXT_PUBLIC_ONESIGNAL_API_KEY;
 
 // Función para enviar notificación
 async function sendNotification(message) {
@@ -16,7 +15,7 @@ async function sendNotification(message) {
 
   const data = {
     app_id: ONE_SIGNAL_APP_ID,
-    included_segments: ['All'],  // Envía la notificación a todos los dispositivos
+    included_segments: ['All'],  
     contents: { en: message },
   };
 

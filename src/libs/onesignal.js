@@ -4,7 +4,7 @@ export const initializeOneSignal = () => {
       window.OneSignal = window.OneSignal || [];
       OneSignal.push(function() {
         OneSignal.init({
-          appId: '8e1dbd58-5c05-4e25-b30b-526187be9374',
+          appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID,
           notifyButton: {
             enable: true, // Habilita el botón de suscripción
           },
