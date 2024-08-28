@@ -2,18 +2,21 @@ import { BiSolidFilePdf } from 'react-icons/bi'
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
 import QRCode from 'qrcode'
-import { formatCurrency, formatDate, formatId } from '@/helpers'
+import { formatCurrency, formatDate } from '@/helpers'
 import styles from './NotaPDF.module.css'
+import { useState } from 'react'
 
 export function NotaPDF(props) {
 
-  const {notas, notaNota, conceptos, firma} = props
+  const {notas, notaNota, conceptos, firma, ivaStates } = props
+
+  const [pdfUrl, setPdfUrl] = useState('')
   
   const generarPDF = async () => {
 
     if (!notas) return
 
-    const toggleIVA = JSON.parse(localStorage.getItem('ontoggleIVA') || 'true')
+    const toggleIVA = ivaStates[notas.id] !== undefined ? ivaStates[notas.id] : true
 
     const doc = new jsPDF(
       {
@@ -64,19 +67,19 @@ export function NotaPDF(props) {
     doc.setTextColor(120, 120, 120)
     doc.text(`${notas.cliente}`, 4.5, 44)
 
-    doc.setFontSize(12)
+    doc.setFontSize(`${font1}`)
     doc.setTextColor(0, 0, 0)
-    doc.text('INVOICE', doc.internal.pageSize.width - marginRight - doc.getTextWidth('INVOICE'), 34)
+    doc.text('RECIBO', doc.internal.pageSize.width - marginRight - doc.getTextWidth('RECIBO'), 34)
     doc.setFontSize(`${font2}`)
     doc.setTextColor(0, 0, 0)
     doc.text('Folio', doc.internal.pageSize.width - marginRight - doc.getTextWidth('Folio'), 40)
-    doc.setFontSize(`${font2}`)
+    doc.setFontSize(`${font3}`)
     doc.setTextColor(120, 120, 120)
-    doc.text(`${formatId(notas.id)}`, doc.internal.pageSize.width - marginRight - doc.getTextWidth(`${formatId(notas.id)}`), 44)
+    doc.text(`${notas.folio}`, doc.internal.pageSize.width - marginRight - doc.getTextWidth(`${notas.folio}`), 44)
 
     doc.setFontSize(`${font1}`)
     doc.setTextColor(0, 0, 0)
-    doc.text('Marca / Modelo', 4.5, 49)
+    doc.text('Descripción', 4.5, 49)
     doc.setFontSize(`${font2}`)
     doc.setTextColor(120, 120, 120)
     doc.text(`${notas.marca}`, 4.5, 53)
@@ -110,9 +113,9 @@ export function NotaPDF(props) {
       body: conceptos.map(concepto => [
         { content: `${concepto.tipo}`, styles: { halign: 'center' } }, 
         { content: `${concepto.concepto}`, styles: { halign: 'left' } }, 
-        { content: `${formatCurrency(concepto.precio * 1)}`, styles: { halign: 'right' } },  
+        { content: `$${formatCurrency(concepto.precio * 1)}`, styles: { halign: 'right' } },  
         { content: `${concepto.cantidad}`, styles: { halign: 'center' } },  
-        { content: `${formatCurrency(concepto.precio * concepto.cantidad)}`, styles: { halign: 'right' } },  
+        { content: `$${formatCurrency(concepto.precio * concepto.cantidad)}`, styles: { halign: 'right' } },  
         ]),
       headStyles: { fillColor: [0, 150, 170], fontSize: `${font3}`},
       bodyStyles: { fontSize: 7},
@@ -154,7 +157,7 @@ export function NotaPDF(props) {
 
     doc.setFontSize(6.5)
     doc.setTextColor(120, 120, 120)
-    const content = notaNota === undefined ? (
+    const content = notaNota === undefined || notaNota === null  ? (
       `${notas.nota}`
     ) : (
       `${notaNota}`
@@ -169,10 +172,10 @@ export function NotaPDF(props) {
 
     const verticalData = [
       ...toggleIVA ? [
-        ['Subtotal:', `${formatCurrency(subtotal)}`],
-        ['IVA:', `${formatCurrency(iva)}`],
+        ['Subtotal:', `$${formatCurrency(subtotal)}`],
+        ['IVA:', `$${formatCurrency(iva)}`],
       ] : [],
-      ['Total:', `${formatCurrency(total)}`]
+      ['Total:', `$${formatCurrency(total)}`]
     ]
     
     const pWidth = doc.internal.pageSize.getWidth()
@@ -233,16 +236,36 @@ export function NotaPDF(props) {
     const y = 144
     doc.text(text, x, y)
 
-    doc.save(`nota_${formatId(notas.id)}.pdf`)
+    // Guardar el PDF y obtener la URL para compartir
+    const pdfBlob = doc.output('blob')
+    const pdfUrl = URL.createObjectURL(pdfBlob)
+    setPdfUrl(pdfUrl)
 
-    //onToastSuccessPDF()
+    // Descargar el PDF automáticamente
+    doc.save(`nota_${notas.folio}.pdf`)
+  }
 
+  const compartirPDF = () => {
+
+    generarPDF()
+
+    if (navigator.share && pdfUrl) {
+      navigator.share({
+        title: 'Nota PDF',
+        text: 'Aquí tienes tu nota PDF.',
+        url: pdfUrl
+      })
+      .then(() => console.log('Compartido exitosamente'))
+      .catch((error) => console.error('Error al compartir:', error))
+    } else {
+      console.log('La funcionalidad de compartir no está disponible')
+    }
   }
 
   return (
 
     <div className={styles.iconPDF}>
-      <div onClick={generarPDF}>
+      <div onClick={compartirPDF}>
         <BiSolidFilePdf />
       </div>
     </div>

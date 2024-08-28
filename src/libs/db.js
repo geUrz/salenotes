@@ -14,9 +14,8 @@ const pool = mysql.createPool({
 
 export default pool   
 
-/* import mysql from 'mysql2/promise';
+/* import mysql from 'mysql2/promise'
 
-// Configura la conexión a la base de datos
 const pool = mysql.createPool({
   host: 'localhost',   
   user: 'root',           
@@ -27,5 +26,5 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-export default pool   */ 
+export default pool    */
 

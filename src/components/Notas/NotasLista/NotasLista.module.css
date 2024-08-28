@@ -24,8 +24,12 @@
 }
 
 .rowMap h1:nth-child(1){
-  width: 16%;
-  font-size: 12.5px;
+  width: 18%;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
   text-align: center;
 }
 

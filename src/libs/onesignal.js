@@ -1,4 +1,3 @@
-// utils/onesignal.js
 export const initializeOneSignal = () => {
     if (typeof window !== 'undefined') {
       window.OneSignal = window.OneSignal || [];
@@ -6,9 +5,9 @@ export const initializeOneSignal = () => {
         OneSignal.init({
           appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID,
           notifyButton: {
-            enable: true, // Habilita el botón de suscripción
+            enable: true, 
           },
-          allowLocalhostAsSecureOrigin: true, // Para desarrollo en localhost
+          allowLocalhostAsSecureOrigin: true, 
         });
       });
     }

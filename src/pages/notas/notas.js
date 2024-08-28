@@ -7,11 +7,14 @@ import { FaFileAlt } from 'react-icons/fa'
 import { size } from 'lodash'
 import styles from './notas.module.css'
 import ProtectedRoute from '@/components/Layouts/ProtectedRoute/ProtectedRoute'
+import { useAuth } from '@/context/AuthContext'
 
 export default function Notas(props) {
 
   const { rowMain = true } = props
 
+  const {user} = useAuth()
+  
   const [reload, setReload] = useState()
 
   const onReload = () => setReload((prevState) => !prevState)
@@ -24,8 +27,8 @@ export default function Notas(props) {
   const [toastCountNotas, setToastCountNotas] = useState(false)
 
   const [notas, setNotas] = useState([])
-
-  const countAll = size(notas)
+  
+  const countAll = notas.length
 
   const onToastSuccess = () => {
     setToastSuccess(true)
@@ -39,15 +42,18 @@ export default function Notas(props) {
   }
 
   useEffect(() => {
-    (async () => {
-      try {
-        const response = await axios.get('/api/notas')
-        setNotas(response.data)
-      } catch (error) {
-        console.error(error)
-      }
-    })()
-  }, [reload])
+    if (user && user.id) {
+      (async () => {
+        try {
+          const response = await axios.get(`/api/notas?usuario_id=${user.id}`)
+          setNotas(response.data)
+          onReload()
+        } catch (error) {
+          console.error(error)
+        }
+      })()
+    }
+  }, [user])
 
   return (
 

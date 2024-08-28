@@ -17,14 +17,20 @@ export default async function handler(req, res) {
             res.status(500).json({ error: error.message })
         }
     } else if (req.method === 'GET') {
-        const { nota_id } = req.query
+        const { nota_id, nota_ids } = req.query
 
         try {
             let query = 'SELECT * FROM conceptos'
             let params = []
 
-            if (nota_id) {
-                query += ' WHERE nota_id = ?'
+            if (nota_ids) {
+                // Handle multiple nota_ids
+                const ids = nota_ids.split(',').map(id => parseInt(id, 10)); // Convert to integers
+                query += ' WHERE nota_id IN (?)';
+                params.push(ids);
+            } else if (nota_id) {
+                // Handle single nota_id
+                query += ' WHERE nota_id = ?';
                 params.push(nota_id);
             }
 

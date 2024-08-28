@@ -5,12 +5,15 @@ import { NotasRowHeadModal } from '../NotasRowHead'
 import { FaCheck, FaTimes } from 'react-icons/fa'
 import { BiToggleLeft, BiToggleRight } from 'react-icons/bi'
 import axios from 'axios'
-import { formatCurrency } from '@/helpers'
+import { formatCurrency, generateUniqueId  } from '@/helpers'
 import styles from './NotaForm.module.css'
+import { useAuth } from '@/context/AuthContext'
 
 export function NotaForm(props) {
 
   const { reload, onReload, onOpenClose, onToastSuccess } = props
+
+  const { user } = useAuth()
 
   const [showConfirm, setShowConfirm] = useState(false)
   const [cliente, setCliente] = useState('')
@@ -82,8 +85,15 @@ export function NotaForm(props) {
       return
     }
 
+    const folio = generateUniqueId(5)
+
     try {
-      const response = await axios.post('/api/notas', { cliente, marca })
+      const response = await axios.post('/api/notas', { 
+        cliente, 
+        marca, 
+        usuario_id: user.id,
+        folio 
+       })
       const notaId = response.data.id
       await Promise.all(conceptos.map(concepto =>
         axios.post('/api/conceptos', { nota_id: notaId, ...concepto })
@@ -124,17 +134,6 @@ export function NotaForm(props) {
 
   const { subtotal, iva, total } = calcularTotales()
 
-  useEffect(() => {
-    const savedToggleIVA = localStorage.getItem('ontoggleIVA')
-    if (savedToggleIVA) {
-      setToggleIVA(JSON.parse(savedToggleIVA))
-    }
-  }, [])
-
-  useEffect(() => {
-    localStorage.setItem('ontoggleIVA', JSON.stringify(toggleIVA))
-  }, [toggleIVA])
-
   const onIVA = () => {
     setToggleIVA(prevState => (!prevState))
   }
@@ -161,12 +160,13 @@ export function NotaForm(props) {
           </FormGroup>
           <FormGroup widths='equal'>
             <FormField error={!!errors.marca}>
-              <Label>Marca / Modelo</Label>
-              <Input  
+              <Label>Descripción</Label>
+              <TextArea  
                 type="text"
                 value={marca}
                 onChange={(e) => setMarca(e.target.value)}
-              />
+              >
+              </TextArea>
               {errors.marca && <span className={styles.error}>{errors.marca}</span>}
             </FormField>
           </FormGroup>
@@ -266,16 +266,16 @@ export function NotaForm(props) {
               ) : (
                 <>
 
-                  <h1>{formatCurrency(subtotal)}</h1>
-                  <h1>{formatCurrency(iva)}</h1>
+                  <h1>${formatCurrency(subtotal)}</h1>
+                  <h1>${formatCurrency(iva)}</h1>
 
                 </>
               )}
 
               {!toggleIVA ? (
-                <h1>{formatCurrency(subtotal)}</h1>
+                <h1>${formatCurrency(subtotal)}</h1>
               ) : (
-                <h1>{formatCurrency(total)}</h1>
+                <h1>${formatCurrency(total)}</h1>
               )}
 
             </div>

@@ -237,10 +237,11 @@
   height: auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   position: absolute;
   bottom: 20px;
   right: 0px;
+  
 }
 
 .footerDetalles h1{

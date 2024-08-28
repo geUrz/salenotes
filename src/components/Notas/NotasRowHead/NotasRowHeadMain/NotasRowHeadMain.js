@@ -13,7 +13,7 @@ export function NotasRowHeadMain(props) {
       <div className={styles.main}>
         <h1>folio</h1>
         <h1>cliente</h1>
-        <h1>marca / modelo</h1>
+        <h1>descripción</h1>
         <h1><FaCog /></h1>
       </div>
     ) : (

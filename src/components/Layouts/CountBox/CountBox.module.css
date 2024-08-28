@@ -8,19 +8,19 @@
 }
 
 .section div{
-  padding: 8px 0;
-  width: 130px;
+  padding: 8px 5px;
+  width: 120px;
   height: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   background-color: var(--bg2);
+  border-radius: 5px;
   overflow: hidden;
 }
 
 .icon{
-  margin-left: -8px;
-  opacity: .5;
+  opacity: .8;
 }
 
 .icon svg, .icon path{
@@ -29,7 +29,6 @@
 }
 
 .count{
-  padding: 0 10px !important;
   display: flex;
   flex-direction: column;
   align-items: flex-end !important;

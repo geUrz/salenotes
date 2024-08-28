@@ -150,7 +150,7 @@ export function ModUsuarioForm(props) {
         }
         onConfirm={handleSubmit}
         onCancel={onShowConfirm}
-        content='La sesión se cerrara, tendrás que iniciar sesión con el nuevo usuario. ¿ Estas seguro de modificar el usuario ?'
+        content='¿ Estas seguro de modificar el usuario ? La sesión se cerrara'
       />
 
     </>
