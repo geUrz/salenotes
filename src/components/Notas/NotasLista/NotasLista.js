@@ -9,6 +9,7 @@ import { NotaDetalles } from '../NotaDetalles'
 import { Confirm } from 'semantic-ui-react'
 import { useAuth } from '@/context/AuthContext'
 import styles from './NotasLista.module.css'
+import { NotaForm } from '../NotaForm'
 
 export function NotasLista(props) {
   const { reload, onReload } = props
@@ -50,11 +51,11 @@ export function NotasLista(props) {
     } catch (error) {
       console.error('Error fetching notas:', error);
     }
-  };
+  }
 
   useEffect(() => {
     fetchNotas()
-  }, [user])
+  }, [reload, user])
 
   const onShowConfirm = () => setShowConfirm((prevState) => !prevState)
 
@@ -79,6 +80,7 @@ export function NotasLista(props) {
         setShow(false)
         onShowConfirm()
         onToastSuccessConfirm()
+        onReload()
       } else {
         console.error('Error al eliminar la nota: Respuesta del servidor no fue exitosa', response)
       }
@@ -143,18 +145,23 @@ export function NotasLista(props) {
           </div>
         )
       )}
+
+      <BasicModal title='Crear nota' show={show} onClose={onOpenClose}>
+        <NotaForm reload={reload} onReload={onReload} onOpenClose={onOpenClose} onToastSuccess={onToastSuccess} />
+      </BasicModal>
+
       <BasicModal title='detalles de la nota' show={show} onClose={onOpenClose}>
-        <NotaDetalles 
-          notas={notaSeleccionada} 
-          notaId={notaSeleccionada} 
-          reload={reload} 
-          onReload={onReload} 
-          onShowConfirm={onShowConfirm} 
-          onOpenClose={onOpenClose} 
-          onToastSuccess={onToastSuccess} 
-          onAddConcept={onAddConcept} 
-          onDeleteNota={onDeleteNota} 
-          onDeleteConcept={onDeleteConcept} 
+        <NotaDetalles
+          notas={notaSeleccionada}
+          notaId={notaSeleccionada}
+          reload={reload}
+          onReload={onReload}
+          onShowConfirm={onShowConfirm}
+          onOpenClose={onOpenClose}
+          onToastSuccess={onToastSuccess}
+          onAddConcept={onAddConcept}
+          onDeleteNota={onDeleteNota}
+          onDeleteConcept={onDeleteConcept}
         />
       </BasicModal>
       <Confirm

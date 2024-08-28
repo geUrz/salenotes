@@ -54,6 +54,34 @@
   text-align: right;
 }
 
+.iconPlus{
+  margin-top: 30px;
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconPlus div{
+  padding: 8px 10px;
+  background-color: var(--bg1);
+  cursor: pointer;
+}
+
+.iconPlus div:hover{
+  background-color: var(--bg2);
+}
+
+.iconPlus div:active{
+  background-color: var(--bg3);
+}
+
+.iconPlus svg, .iconPlus path{
+  font-size: 18px;
+  cursor: pointer;
+}
+
 .sectionTotal{
   padding: 20px 2px;
   width: 100%;
@@ -143,8 +171,8 @@
   cursor: pointer;
 }
 
-.main span{
+.error{
   margin-top: 5px;
-  font-size: 11.5px;
-  color: red;
+  font-size: 11px;
+  color: azure;
 }

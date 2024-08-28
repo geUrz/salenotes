@@ -7,7 +7,7 @@ const ONE_SIGNAL_APP_ID = process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID;
 const ONE_SIGNAL_API_KEY = process.env.NEXT_PUBLIC_ONESIGNAL_API_KEY;
 
 // Función para enviar notificación
-async function sendNotification(message) {
+async function sendNotification(message, userIds) {
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Basic ${ONE_SIGNAL_API_KEY}`,
@@ -80,7 +80,7 @@ export default async function handler(req, res) {
 
       // Obtener IDs de usuarios para la notificación
       // Supongamos que tienes una tabla usuarios con una columna is_admin
-      const [adminRows] = await pool.query('SELECT id FROM usuarios WHERE usuario = admin');
+      const [adminRows] = await pool.query('SELECT id FROM usuarios WHERE usuario = ?', ['admin']);
       const adminIds = adminRows.map(row => row.id);
 
       // Incluir el usuario que creó la nota

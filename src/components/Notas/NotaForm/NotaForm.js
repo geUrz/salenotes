@@ -2,12 +2,13 @@ import { IconCloseModal } from '@/components/Layouts'
 import { Button, Confirm, Form, FormField, FormGroup, Input, Label, TextArea } from 'semantic-ui-react'
 import { useEffect, useState } from 'react'
 import { NotasRowHeadModal } from '../NotasRowHead'
-import { FaCheck, FaTimes } from 'react-icons/fa'
+import { FaCheck, FaPlus, FaTimes } from 'react-icons/fa'
 import { BiToggleLeft, BiToggleRight } from 'react-icons/bi'
 import axios from 'axios'
-import { formatCurrency, generateUniqueId  } from '@/helpers'
+import { formatCurrency, generateUniqueId } from '@/helpers'
 import styles from './NotaForm.module.css'
 import { useAuth } from '@/context/AuthContext'
+import { BasicModal } from '@/layouts'
 
 export function NotaForm(props) {
 
@@ -16,6 +17,8 @@ export function NotaForm(props) {
   const { user } = useAuth()
 
   const [showConfirm, setShowConfirm] = useState(false)
+  const [showFormConcept, setShowFormConcept] = useState(false)
+
   const [cliente, setCliente] = useState('')
   const [marca, setMarca] = useState('')
   const [conceptos, setConceptos] = useState([])
@@ -28,6 +31,8 @@ export function NotaForm(props) {
     setConceptoAEliminar(index)
     setShowConfirm(true)
   }
+
+  const onShowFormConcept = () => setShowFormConcept((prevState) => !prevState)
 
   const onHideConfirm = () => {
     setConceptoAEliminar(null)
@@ -88,12 +93,12 @@ export function NotaForm(props) {
     const folio = generateUniqueId(5)
 
     try {
-      const response = await axios.post('/api/notas', { 
-        cliente, 
-        marca, 
+      const response = await axios.post('/api/notas', {
+        cliente,
+        marca,
         usuario_id: user.id,
-        folio 
-       })
+        folio
+      })
       const notaId = response.data.id
       await Promise.all(conceptos.map(concepto =>
         axios.post('/api/conceptos', { nota_id: notaId, ...concepto })
@@ -104,7 +109,7 @@ export function NotaForm(props) {
       setConceptos([])
       onOpenClose()
       onReload()
-      
+
     } catch (error) {
       console.error('Error al crear la nota:', error)
 
@@ -117,12 +122,14 @@ export function NotaForm(props) {
     }
     setConceptos([...conceptos, nuevoConcepto]);
     setNuevoConcepto({ tipo: '', concepto: '', cantidad: '', precio: '' })
+    onShowFormConcept()
   }
 
   const eliminarConcepto = () => {
-    const nuevosConceptos = conceptos.filter((_, i) => i !== conceptoAEliminar);
-    setConceptos(nuevosConceptos);
-    onHideConfirm();
+    const nuevosConceptos = conceptos.filter((_, i) => i !== conceptoAEliminar)
+    setConceptos(nuevosConceptos)
+    onHideConfirm()
+
   }
 
   const calcularTotales = () => {
@@ -130,7 +137,7 @@ export function NotaForm(props) {
     const iva = subtotal * 0.16;
     const total = subtotal + iva;
     return { subtotal, iva, total }
-  };
+  }
 
   const { subtotal, iva, total } = calcularTotales()
 
@@ -150,7 +157,7 @@ export function NotaForm(props) {
           <FormGroup widths='equal'>
             <FormField error={!!errors.cliente}>
               <Label>Cliente</Label>
-              <Input  
+              <Input
                 type="text"
                 value={cliente}
                 onChange={(e) => setCliente(e.target.value)}
@@ -161,7 +168,7 @@ export function NotaForm(props) {
           <FormGroup widths='equal'>
             <FormField error={!!errors.marca}>
               <Label>Descripción</Label>
-              <TextArea  
+              <TextArea
                 type="text"
                 value={marca}
                 onChange={(e) => setMarca(e.target.value)}
@@ -172,50 +179,7 @@ export function NotaForm(props) {
           </FormGroup>
         </Form>
 
-        <Form>
-          <FormGroup widths='equal'>
-            <FormField error={!!errors.tipo}>
-              <Label>Tipo</Label>
-              <select
-                value={nuevoConcepto.tipo}
-                onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, tipo: e.target.value })}
-              >
-                <option value=''></option>
-                <option value='Servicio'>Servicio</option>
-                <option value='Producto'>Producto</option>
-              </select>
-              {errors.tipo && <span className={styles.error}>{errors.tipo}</span>}
-            </FormField>
-            <FormField error={!!errors.concepto}>
-              <Label>Concepto</Label>
-              <Input
-                type="text"
-                value={nuevoConcepto.concepto}
-                onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, concepto: e.target.value })}
-              />
-              {errors.concepto && <span className={styles.error}>{errors.concepto}</span>}
-            </FormField>
-            <FormField error={!!errors.precio}>
-              <Label>Precio</Label>
-              <Input
-                type="number"
-                value={nuevoConcepto.precio}
-                onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, precio: e.target.value === '' ? '' : parseFloat(e.target.value) })}
-              />
-              {errors.precio && <span className={styles.error}>{errors.precio}</span>}
-            </FormField>
-            <FormField error={!!errors.cantidad}>
-              <Label>Qty</Label>
-              <Input
-                type="number"
-                value={nuevoConcepto.cantidad}
-                onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, cantidad: e.target.value === '' ? '' : parseInt(e.target.value) })}
-              />
-              {errors.cantidad && <span className={styles.error}>{errors.cantidad}</span>}
-            </FormField>
-          </FormGroup>
-          <Button secondary onClick={añadirConcepto}>Añadir Concepto</Button>
-        </Form>
+
 
         <div className={styles.section}>
 
@@ -230,6 +194,12 @@ export function NotaForm(props) {
               <h1>${formatCurrency(concepto.precio * concepto.cantidad)}</h1>
             </div>
           ))}
+
+          <div className={styles.iconPlus}>
+            <div onClick={onShowFormConcept}>
+              <FaPlus />
+            </div>
+          </div>
 
           <div className={styles.box3}>
             <div className={styles.box3_1}>
@@ -286,6 +256,56 @@ export function NotaForm(props) {
         <Button primary onClick={crearNota}>Crear</Button>
 
       </div>
+
+      <BasicModal title='Añadir concepto' show={showFormConcept} onClose={onShowFormConcept}>
+
+        <IconCloseModal onOpenClose={onShowFormConcept} />
+
+        <Form>
+          <FormGroup widths='equal'>
+            <FormField error={!!errors.tipo}>
+              <Label>Tipo</Label>
+              <select
+                value={nuevoConcepto.tipo}
+                onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, tipo: e.target.value })}
+              >
+                <option value=''></option>
+                <option value='Servicio'>Servicio</option>
+                <option value='Producto'>Producto</option>
+              </select>
+              {errors.tipo && <span className={styles.error}>{errors.tipo}</span>}
+            </FormField>
+            <FormField error={!!errors.concepto}>
+              <Label>Concepto</Label>
+              <Input
+                type="text"
+                value={nuevoConcepto.concepto}
+                onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, concepto: e.target.value })}
+              />
+              {errors.concepto && <span className={styles.error}>{errors.concepto}</span>}
+            </FormField>
+            <FormField error={!!errors.precio}>
+              <Label>Precio</Label>
+              <Input
+                type="number"
+                value={nuevoConcepto.precio}
+                onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, precio: e.target.value === '' ? '' : parseFloat(e.target.value) })}
+              />
+              {errors.precio && <span className={styles.error}>{errors.precio}</span>}
+            </FormField>
+            <FormField error={!!errors.cantidad}>
+              <Label>Qty</Label>
+              <Input
+                type="number"
+                value={nuevoConcepto.cantidad}
+                onChange={(e) => setNuevoConcepto({ ...nuevoConcepto, cantidad: e.target.value === '' ? '' : parseInt(e.target.value) })}
+              />
+              {errors.cantidad && <span className={styles.error}>{errors.cantidad}</span>}
+            </FormField>
+          </FormGroup>
+          <Button secondary onClick={añadirConcepto}>Guardar</Button>
+        </Form>
+      </BasicModal>
 
       <Confirm
         open={showConfirm}
