@@ -93,7 +93,7 @@ export default function Signup() {
          setError('¡ Ocurrió un error inesperado !'); // Fallback para cualquier otro tipo de error
       }
     }
-  };
+  }
 
   return (
 

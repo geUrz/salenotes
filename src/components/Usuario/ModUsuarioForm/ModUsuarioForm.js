@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import { useAuth } from '@/context/AuthContext'
 import { Form, Button, Input, Label, FormGroup, FormField } from 'semantic-ui-react'
@@ -15,12 +15,42 @@ export function ModUsuarioForm(props) {
   const onShowConfirm = () => setShowConfirm((prevState) => !prevState)
 
   const { user, logout } = useAuth()
+  
+  const [activateAdmin, setActivateAdmin] = useState(false)
+
+  const timer = useRef(null)
+
+  const handleTouchStart = () => {
+    timer.current = setTimeout(() => {
+      setActivateAdmin(prev => !prev)
+    }, 3000)
+  }
+
+  const handleTouchEnd = () => {
+    clearTimeout(timer.current)
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.ctrlKey && e.key === '0') {
+      e.preventDefault()
+      setActivateAdmin((prevState) => !prevState)
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+  
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
 
   const [formData, setFormData] = useState({
     newUsuario: user.usuario || '',
     newEmail: user.email || '',
+    newIsAdmin: user.is_admin || '',
     newPassword: '',
-    confirmPassword: '' // Nuevo campo para confirmar la contraseña
+    confirmPassword: '' 
   });
 
   const [error, setError] = useState(null)
@@ -71,6 +101,7 @@ export function ModUsuarioForm(props) {
         userId: user.id,
         newUsuario: formData.newUsuario,
         newEmail: formData.newEmail,
+        newIsAdmin: formData.newIsAdmin,
         newPassword: formData.newPassword,
       })
 
@@ -84,14 +115,14 @@ export function ModUsuarioForm(props) {
         setError('Ocurrió un error inesperado');
       }
     }
-  };
+  }
 
   return (
     <>
 
       <IconCloseModal onOpenClose={onOpenClose} />
 
-      <Form>
+      <Form onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
         <FormGroup>
           <FormField error={!!errors.newUsuario}>
             <Label>Nuevo Usuario</Label>
@@ -113,6 +144,25 @@ export function ModUsuarioForm(props) {
             />
             {errors.newEmail && <span className={styles.error}>{errors.newEmail}</span>}
           </FormField>
+          
+          {!activateAdmin ? (
+            ''
+          ) : (
+            <FormField>
+              <Label>Nivel</Label>
+              <select
+                name='newIsAdmin'
+                type='text'
+                value={formData.newIsAdmin}
+                onChange={handleChange}
+              >
+                <option value=''></option>
+                <option value='true'>admin</option>
+                <option value='false'>usuario</option>
+              </select>
+            </FormField>
+          )}
+
           <FormField>
             <Label>Nueva Contraseña</Label>
             <Input

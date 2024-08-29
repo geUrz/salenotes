@@ -1,7 +1,7 @@
 import { BasicLayout, BasicModal } from '@/layouts'
 import { NotaForm, NotasLista, NotasRowHeadMain } from '@/components/Notas'
 import { useEffect, useState } from 'react'
-import { Add, CountBox, ToastSuccess, ToastWarning } from '@/components/Layouts'
+import { Add, CountBox, Loading, ToastSuccess, ToastWarning } from '@/components/Layouts'
 import axios from 'axios'
 import { FaFileAlt } from 'react-icons/fa'
 import { size } from 'lodash'
@@ -13,9 +13,9 @@ export default function Notas(props) {
 
   const { rowMain = true } = props
 
-  const {user} = useAuth()
+  const {user, loading} = useAuth()
   
-  const [reload, setReload] = useState()
+  const [reload, setReload] = useState(null)
 
   const onReload = () => setReload((prevState) => !prevState)
 
@@ -27,8 +27,6 @@ export default function Notas(props) {
   const [toastCountNotas, setToastCountNotas] = useState(false)
 
   const [notas, setNotas] = useState([])
-  
-  const countAll = notas.length
 
   const onToastSuccess = () => {
     setToastSuccess(true)
@@ -47,13 +45,30 @@ export default function Notas(props) {
         try {
           const response = await axios.get(`/api/notas?usuario_id=${user.id}`)
           setNotas(response.data)
-          onReload()
         } catch (error) {
           console.error(error)
         }
       })()
     }
-  }, [user])
+  }, [reload, user])
+
+  const countAll = notas.length
+
+  if (loading) {
+    <Loading size={45} loading={1} />
+  }
+
+  const handleOpenClose = () => {
+    if (user && user.folioCount !== null && user.folioCount !== undefined) {
+      if (countAll >= user.folioCount) {
+        onOpenToastCountNotas()
+      } else {
+        onOpenClose()
+      }
+    } else {
+      console.warn('folioCount no está definido en el objeto user.')
+    }
+  }
 
   return (
 
@@ -69,6 +84,7 @@ export default function Notas(props) {
           title='Notas'
           icon={<FaFileAlt />}
           count={{ countAll }}
+          user={user}
         />
 
         <div className={styles.main}>
@@ -79,11 +95,7 @@ export default function Notas(props) {
         </div>
 
 
-          <Add onOpenClose={(countAll) >= 3 ? (
-            onOpenToastCountNotas
-          ) : (
-            onOpenClose
-          )} />
+        <Add onOpenClose={handleOpenClose} />
     
 
         <BasicModal title='Crear nota' show={show} onClose={onOpenClose}>

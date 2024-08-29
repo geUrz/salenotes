@@ -1,6 +1,6 @@
 import { BasicLayout, BasicModal } from '@/layouts'
 import ProtectedRoute from '@/components/Layouts/ProtectedRoute/ProtectedRoute'
-import { Loading, ToastSuccess } from '@/components/Layouts'
+import { Loading } from '@/components/Layouts'
 import { useAuth } from '@/context/AuthContext'
 import styles from './usuario.module.css'
 import { FaEdit, FaUser } from 'react-icons/fa'
@@ -41,7 +41,15 @@ export default function Usuario() {
               
                 <h1>{user.usuario}</h1>
                 <h2>{user.email}</h2>
-              
+                <h2>Nivel: 
+                  {(user.is_admin) === 'true' ? (
+                    ' Admin'
+                  ) : (
+                    ' Usuario'
+                  )}
+                </h2>
+                <h2>Folios: {user.folioCount}</h2>
+
               </>
             )}
 

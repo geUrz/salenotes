@@ -16,7 +16,7 @@ export function NotaPDF(props) {
 
     if (!notas) return
 
-    const toggleIVA = ivaStates[notas.id] !== undefined ? ivaStates[notas.id] : true
+    const toggleIVA = ivaStates[notas.id] !== undefined ? ivaStates[notas.id] : false
 
     const doc = new jsPDF(
       {
@@ -46,10 +46,10 @@ export function NotaPDF(props) {
 
     doc.setFontSize(`${font1}`)
     doc.setTextColor(0, 0, 0)
-    doc.text('LOCK SMITH', 4.5, 10)
+    doc.text('CLICKNETMX', 4.5, 10)
     doc.setFontSize(`${font2}`)
     doc.setTextColor(120, 120, 120)
-    doc.text('SOLUTIONS', 4.5, 14)
+    doc.text('CLICKNETMX', 4.5, 14)
     doc.text('#', 4.5, 18)
     doc.text('#', 4.5, 22)
     doc.text('#', 4.5, 26)

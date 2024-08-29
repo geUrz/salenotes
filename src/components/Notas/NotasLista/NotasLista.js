@@ -79,8 +79,8 @@ export function NotasLista(props) {
         setNotas((prevState) => prevState.filter((nota) => nota.id !== notaId))
         setShow(false)
         onShowConfirm()
-        onToastSuccessConfirm()
         onReload()
+        onToastSuccessConfirm()
       } else {
         console.error('Error al eliminar la nota: Respuesta del servidor no fue exitosa', response)
       }

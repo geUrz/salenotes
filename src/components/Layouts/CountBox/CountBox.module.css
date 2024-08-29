@@ -14,7 +14,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--bg2);
   border-radius: 5px;
   overflow: hidden;
 }
@@ -43,4 +42,12 @@
 .section h2{
   font-size: 18px;
   font-family: 'Bebas' !important;
+}
+
+.isActive{
+  background-color: rgb(209, 0, 0) !important;
+}
+
+.isDesactive{
+  background-color: var(--bg2);
 }

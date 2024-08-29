@@ -116,7 +116,10 @@ export function NotaForm(props) {
     }
   }
 
-  const añadirConcepto = () => {
+  const añadirConcepto = (e) => {
+
+    e.preventDefault()
+
     if (!validarFormConceptos()) {
       return
     }
@@ -199,6 +202,7 @@ export function NotaForm(props) {
             <div onClick={onShowFormConcept}>
               <FaPlus />
             </div>
+              <h1>Añadir concepto</h1>
           </div>
 
           <div className={styles.box3}>

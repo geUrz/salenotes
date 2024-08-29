@@ -127,38 +127,54 @@ export function NotaDetalles(props) {
 
   const onIVA = async () => {
     try {
-      const newToggleIVA = !ivaStates[notaId.id];
-      setIvaStates(prevStates => ({
-        ...prevStates,
-        [notaId.id]: newToggleIVA
-      }));
+      const newToggleIVA = !ivaStates[notaId.id]
+      setIvaStates(prevStates => {
+        const updatedStates = {
+          ...prevStates,
+          [notaId.id]: newToggleIVA
+        }
+        localStorage.setItem('ivaStates', JSON.stringify(updatedStates))
+        return updatedStates
+      })
 
-      const subtotal = notas.conceptos.reduce((sum, concepto) => sum + concepto.precio * concepto.cantidad, 0);
-      const iva = subtotal * 0.16;
+      const subtotal = notas.conceptos.reduce((sum, concepto) => sum + concepto.precio * concepto.cantidad, 0)
+      const iva = subtotal * 0.16
 
-      await axios.put(`/api/notas?id=${notaId.id}`, { iva: newToggleIVA ? iva : 0 });
+      await axios.put(`/api/notas?id=${notaId.id}`, { iva: newToggleIVA ? iva : 0 })
     } catch (error) {
-      console.error('Error al actualizar el IVA:', error);
+      console.error('Error al actualizar el IVA:', error)
     }
   }
 
+
+
+
   useEffect(() => {
     const savedIvaStates = localStorage.getItem('ivaStates')
-    if (savedIvaStates) {
-      setIvaStates(JSON.parse(savedIvaStates))
-    }
-  }, [])
+    const parsedIvaStates = savedIvaStates ? JSON.parse(savedIvaStates) : {}
+
+    // Asegúrate de que todos los estados estén inicializados
+    setIvaStates(prevStates => ({
+      ...prevStates,
+      [notaId.id]: parsedIvaStates[notaId.id] !== undefined ? parsedIvaStates[notaId.id] : false
+    }))
+  }, [notaId.id])
+
+
+
 
   useEffect(() => {
     localStorage.setItem('ivaStates', JSON.stringify(ivaStates))
   }, [ivaStates])
+
+
 
   const subtotal = notas.conceptos.reduce((sum, concepto) => sum + concepto.precio * concepto.cantidad, 0)
   const iva = subtotal * 0.16
   const total = ivaStates[notaId.id] ? subtotal + iva : subtotal
 
   const handleNotaChange = (e) => {
-    setNota(e.target.value);
+    setNota(e.target.value)
   }
 
   const handleAddNota = async () => {
@@ -173,7 +189,7 @@ export function NotaDetalles(props) {
         onToastSuccess()
       }
     } catch (error) {
-      console.error('Error al actualizar la nota:', error.response?.data || error.message);
+      console.error('Error al actualizar la nota:', error.response?.data || error.message)
     }
   }
 
@@ -185,7 +201,7 @@ export function NotaDetalles(props) {
 
   const fetchFirma = async () => {
     try {
-      const response = await axios.get(`/api/notas?id=${notaId.id}&firma=true`);
+      const response = await axios.get(`/api/notas?id=${notaId.id}&firma=true`)
       if (response.status === 200) {
         setFirma(response.data.firma)
         setTimeout(() => {
@@ -255,6 +271,7 @@ export function NotaDetalles(props) {
           <div onClick={onOpenCloseForm}>
             <FaPlus />
           </div>
+          <h1>Añadir concepto</h1>
         </div>
 
         <div className={styles.boxMain}>

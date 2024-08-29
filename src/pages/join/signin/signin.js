@@ -5,6 +5,7 @@ import { BasicJoin } from '@/layouts'
 import { FaUser } from 'react-icons/fa'
 import Link from 'next/link'
 import { useRedirectIfAuthenticated } from '@/hook'
+import { Loading } from '@/components/Layouts'
 import styles from './signin.module.css'
 
 export default function Signin() {
@@ -33,7 +34,7 @@ export default function Signin() {
   }
 
   const handleKeyDown = (e) => {
-    if (e.ctrlKey && e.key === 'l') {
+    if (e.ctrlKey && e.key === '0') {
       e.preventDefault()
       setActivate((prevState) => !prevState)
     }
@@ -47,7 +48,7 @@ export default function Signin() {
     }
   }, [])
 
-  const { login } = useAuth()
+  const { login, loading } = useAuth()
   const [error, setError] = useState(null)
 
   const handleChange = (e) => {
@@ -91,6 +92,10 @@ export default function Signin() {
         setError(error?.data?.error || '¡ Ocurrió un error inesperado !');
       }
    }
+  }
+
+  if (loading) {
+    return <Loading size={45} loading={0} />
   }
 
   return (

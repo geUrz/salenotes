@@ -27,7 +27,7 @@ async function sendNotification(message, userIds) {
 }
 
 export default async function handler(req, res) {
-  const { id, usuario_id } = req.query;
+  const { id, usuario_id, filter } = req.query;
 
   if (req.method === 'GET') {
     if (id && req.query.firma) {
@@ -43,19 +43,31 @@ export default async function handler(req, res) {
       }
     } 
     if(usuario_id){
-      try {
-        const [rows] = await pool.query('SELECT id, folio, usuario_id, cliente, marca, nota, firma, iva, createdAt FROM notas WHERE usuario_id = ?', [usuario_id])
-        res.status(200).json(rows)
-      } catch (error) {
-        res.status(500).json({ error: error.message })
+      let query = 'SELECT id, folio, usuario_id, cliente, marca, nota, firma, iva, createdAt FROM notas WHERE usuario_id = ?';
+      const params = [usuario_id];
+
+      if (filter === 'dia') {
+        query += ' AND DATE(createdAt) = CURDATE()';
+      } else if (filter === 'semana') {
+        query += ' AND YEARWEEK(createdAt, 1) = YEARWEEK(CURDATE(), 1)';
+      } else if (filter === 'mes') {
+        query += ' AND YEAR(createdAt) = YEAR(CURDATE()) AND MONTH(createdAt) = MONTH(CURDATE())';
       }
-    } 
+
       try {
-        const [rows] = await pool.query('SELECT id, folio, cliente, marca, nota, firma, iva, createdAt FROM notas')
-        res.status(200).json(rows)
+        const [rows] = await pool.query(query, params);
+        res.status(200).json(rows);
       } catch (error) {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({ error: error.message });
       }
+    } else {
+      try {
+        const [rows] = await pool.query('SELECT id, folio, cliente, marca, nota, firma, iva, createdAt FROM notas');
+        res.status(200).json(rows);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    }
     
   } else if (req.method === 'POST') {
 
@@ -78,17 +90,15 @@ export default async function handler(req, res) {
         [folio, cliente, marca, usuario_id]
       )
 
-      // Obtener IDs de usuarios para la notificación
-      // Supongamos que tienes una tabla usuarios con una columna is_admin
-      const [adminRows] = await pool.query('SELECT id FROM usuarios WHERE usuario = ?', ['admin']);
+      // Obtener IDs de usuarios administradores
+      const [adminRows] = await pool.query('SELECT id FROM usuarios WHERE is_admin = ?', ['true']);
       const adminIds = adminRows.map(row => row.id);
-
-      // Incluir el usuario que creó la nota
-      const userIds = [usuario_id, ...adminIds];
 
       // Enviar notificación
       const message = `Se ha creado una nueva nota para el cliente ${cliente}.`;
-      await sendNotification(userIds, message);
+      if (adminIds.length > 0) {
+        await sendNotification(message, adminIds);
+      }
 
       res.status(201).json({ id: result.insertId })
     } catch (error) {
